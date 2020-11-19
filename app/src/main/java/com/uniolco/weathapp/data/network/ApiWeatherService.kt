@@ -1,4 +1,4 @@
-package com.uniolco.weathapp.data
+package com.uniolco.weathapp.data.network
 
 import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
 import com.uniolco.weathapp.data.network.response.CurrentWeatherResponse
@@ -24,7 +24,9 @@ interface ApiWeatherService {
     ): Deferred<CurrentWeatherResponse>
 
     companion object{
-        operator fun invoke(): ApiWeatherService{ // we can use our service as if were a function
+        operator fun invoke(
+            connectivityInterceptor: ConnectivityInterceptor
+        ): ApiWeatherService { // we can use our service as if were a function
             val requestInterceptor = Interceptor{chain ->
                 val url = chain.request()
                     .url()
@@ -37,7 +39,10 @@ interface ApiWeatherService {
 
             }
             val okHttpClient = OkHttpClient.Builder()
-                .addInterceptor(requestInterceptor).build()
+                .addInterceptor(requestInterceptor)
+                .addInterceptor(connectivityInterceptor) // we could use just ConnectivityInterceptorImpl as argument
+                    //but it's not good because of tight coupling, that's why we use interface to further do DI with Kodein
+                .build()
 
             return Retrofit.Builder()
                 .client(okHttpClient)
