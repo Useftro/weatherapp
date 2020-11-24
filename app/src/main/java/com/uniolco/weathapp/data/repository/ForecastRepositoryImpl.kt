@@ -1,5 +1,6 @@
 package com.uniolco.weathapp.data.repository
 
+import android.os.Looper
 import androidx.lifecycle.LiveData
 import com.uniolco.weathapp.data.db.CurrentWeatherDao
 import com.uniolco.weathapp.data.network.WeatherNetworkDataSource
@@ -9,6 +10,7 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.threeten.bp.ZonedDateTime
+import java.util.logging.Handler
 
 class ForecastRepositoryImpl(
     private val currentWeatherDao: CurrentWeatherDao,

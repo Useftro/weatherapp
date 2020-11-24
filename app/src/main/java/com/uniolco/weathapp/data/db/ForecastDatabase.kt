@@ -8,7 +8,7 @@ import com.uniolco.weathapp.data.network.response.CurrentWeatherResponse
 
 @Database(
     entities = [CurrentWeatherResponse::class],
-    version = 1,
+    version = 2,
 //    exportSchema = false // check some info about this
 )
 @TypeConverters(WeatherConverter::class)
@@ -26,7 +26,7 @@ abstract class ForecastDatabase: RoomDatabase() {
 
         private fun buildDatabase(context: Context) =
             Room.databaseBuilder(context.applicationContext, // context of all application not a fragment or anything else
-                ForecastDatabase::class.java, "forecast.db").addMigrations().build()
+                ForecastDatabase::class.java, "forecast.db").fallbackToDestructiveMigration().build()
 
     }
 }

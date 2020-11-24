@@ -29,8 +29,8 @@ data class CurrentWeatherResponse(
     val sys: Sys,
     @ColumnInfo(name = "visibility")
     val visibility: Int,
-    @ColumnInfo(name = "weather")
-    val weather: List<Weather>,
+//    @ColumnInfo(name = "weather")
+//    val weather: List<Weather>,
     @Embedded(prefix = "wind_")
     val wind: Wind
 ){
