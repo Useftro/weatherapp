@@ -2,7 +2,6 @@ package com.uniolco.weathapp.data.network.response
 
 
 import androidx.room.*
-import com.uniolco.weathapp.data.db.converter.WeatherConverter
 import com.uniolco.weathapp.data.db.entity.*
 
 const val CURRENT_WEATHER_ID = 0
@@ -29,8 +28,8 @@ data class CurrentWeatherResponse(
     val sys: Sys,
     @ColumnInfo(name = "visibility")
     val visibility: Int,
-//    @ColumnInfo(name = "weather")
-//    val weather: List<Weather>,
+    @ColumnInfo(name = "weather")
+    val weather: List<Weather>,
     @Embedded(prefix = "wind_")
     val wind: Wind
 ){

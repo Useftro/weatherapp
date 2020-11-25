@@ -2,13 +2,12 @@ package com.uniolco.weathapp.data.db
 
 import android.content.Context
 import androidx.room.*
-import androidx.room.migration.Migration
 import com.uniolco.weathapp.data.db.converter.WeatherConverter
 import com.uniolco.weathapp.data.network.response.CurrentWeatherResponse
 
 @Database(
     entities = [CurrentWeatherResponse::class],
-    version = 2,
+    version = 3,
 //    exportSchema = false // check some info about this
 )
 @TypeConverters(WeatherConverter::class)
