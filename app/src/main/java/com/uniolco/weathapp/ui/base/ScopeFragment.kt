@@ -7,6 +7,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlin.coroutines.CoroutineContext
 
+
+// Creating own scope for fragment to avoid GlobalScope because of lifecycle of Fragment
 abstract class ScopeFragment: Fragment(), CoroutineScope {
     private lateinit var job: Job
 

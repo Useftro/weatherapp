@@ -1,6 +1,7 @@
 package com.uniolco.weathapp
 
 import android.app.Application
+import androidx.preference.PreferenceManager
 import com.jakewharton.threetenabp.AndroidThreeTen
 import com.uniolco.weathapp.data.db.ForecastDatabase
 import com.uniolco.weathapp.data.network.*
@@ -26,12 +27,13 @@ class ForecastApplication: Application(), KodeinAware {
         bind<WeatherNetworkDataSource>() with singleton { WeatherNetworkDataSourceImpl(instance()) }
         bind<ForecastRepository>() with singleton { ForecastRepositoryImpl(instance(), instance()) }
         // doesn't need to be a singleton, then we can straight use provider
-        bind() from provider { CurrentWeatherViewModelFactory(instance()) }
+        bind() from provider { CurrentWeatherViewModelFactory(instance()) } // each time creating a new instance of Factory
     }
 
     override fun onCreate() {
         super.onCreate()
-        AndroidThreeTen.init(this)
+        AndroidThreeTen.init(this) // using ThreeTen because of Java 8 which is not
+        // good to use because of new java.time
     }
 
 }

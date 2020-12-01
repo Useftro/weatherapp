@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <PreferenceCategory
+        android:title="Location">
+        <SwitchPreference
+            android:key="USE_DEVICE_LOCATION"
+            android:title="Device location"
+            android:summary="Switch to allow using your location"
+            android:defaultValue="true"
+            app:disableDependentsState="true"/>
+
+        <EditTextPreference
+            android:key="CUSTOM_LOCATION"
+            android:title="Location"
+            android:summary="Location for which weather is displayed"
+            android:defaultValue="London"
+            android:dependency="USE_DEVICE_LOCATION"/>
+
+
+    </PreferenceCategory>
+</PreferenceScreen>

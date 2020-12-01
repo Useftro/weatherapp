@@ -23,6 +23,8 @@ abstract class ForecastDatabase: RoomDatabase() {
             instance ?: buildDatabase(context).also { instance = it } // whatever returned, instance is equal to it
         }
 
+
+        // room has no lifecycle
         private fun buildDatabase(context: Context) =
             Room.databaseBuilder(context.applicationContext, // context of all application not a fragment or anything else
                 ForecastDatabase::class.java, "forecast.db").fallbackToDestructiveMigration().build()

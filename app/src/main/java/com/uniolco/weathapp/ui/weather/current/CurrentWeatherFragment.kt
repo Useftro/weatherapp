@@ -2,24 +2,15 @@ package com.uniolco.weathapp.ui.weather.current
 
 import androidx.lifecycle.ViewModelProviders
 import android.os.Bundle
-import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import com.uniolco.weathapp.R
-import com.uniolco.weathapp.data.network.ApiWeatherService
-import com.uniolco.weathapp.data.network.ConnectivityInterceptorImpl
-import com.uniolco.weathapp.data.network.WeatherNetworkDataSource
-import com.uniolco.weathapp.data.network.WeatherNetworkDataSourceImpl
 import com.uniolco.weathapp.ui.base.ScopeFragment
 import kotlinx.android.synthetic.main.current_weather_fragment.*
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import org.kodein.di.Kodein
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.x.closestKodein
 import org.kodein.di.generic.instance
@@ -46,17 +37,6 @@ class CurrentWeatherFragment : ScopeFragment(), KodeinAware {
             get(CurrentWeatherViewModel::class.java)
 
         bindUI()
-//        // TODO: Use the ViewModel
-//        val apiService = ApiWeatherService(ConnectivityInterceptorImpl(this.requireContext()))
-//        val weatherNetworkDataSource = WeatherNetworkDataSourceImpl(apiService)
-//
-//        weatherNetworkDataSource.downloadedCurrentWeather.observe(viewLifecycleOwner, Observer {
-//            currentWeatherTextView.text = it.toString()
-//        })
-//
-//        GlobalScope.launch(Dispatchers.Main) {
-//            weatherNetworkDataSource.fetchCurrentWeather("London")
-//        }
     }
 
     private fun bindUI() = launch {
@@ -68,6 +48,7 @@ class CurrentWeatherFragment : ScopeFragment(), KodeinAware {
             updateDate(it.dt.toLong())
             updateTemperature(it.main.temp, it.main.feelsLike)
             updateCondition(it.wind.speed, it.weather[0].description, it.main.humidity, it.main.pressure)
+            
         })
     }
 
@@ -81,9 +62,6 @@ class CurrentWeatherFragment : ScopeFragment(), KodeinAware {
         val netDate = Date(time*1000)
         val date =sdf.format(netDate)
         (activity as? AppCompatActivity)?.supportActionBar?.title = date
-
-        // java.time.format.DateTimeFormatter.ISO_INSTANT
-        //                .format(java.time.Instant.ofEpochSecond(time))
     }
 
     private fun updateTemperature(temperature: Double, temperatureFeelsLike: Double){
