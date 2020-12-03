@@ -1,10 +1,15 @@
 package com.uniolco.weathapp
 
 import android.app.Application
+import android.content.Context
+import androidx.multidex.MultiDexApplication
 import androidx.preference.PreferenceManager
+import com.google.android.gms.location.LocationServices
 import com.jakewharton.threetenabp.AndroidThreeTen
 import com.uniolco.weathapp.data.db.ForecastDatabase
 import com.uniolco.weathapp.data.network.*
+import com.uniolco.weathapp.data.provider.LocationProvider
+import com.uniolco.weathapp.data.provider.LocationProviderImpl
 import com.uniolco.weathapp.data.repository.ForecastRepository
 import com.uniolco.weathapp.data.repository.ForecastRepositoryImpl
 import com.uniolco.weathapp.ui.weather.current.CurrentWeatherViewModelFactory
@@ -25,7 +30,9 @@ class ForecastApplication: Application(), KodeinAware {
         bind<ConnectivityInterceptor>() with singleton { ConnectivityInterceptorImpl(instance()) }
         bind() from singleton { ApiWeatherService(instance()) }
         bind<WeatherNetworkDataSource>() with singleton { WeatherNetworkDataSourceImpl(instance()) }
-        bind<ForecastRepository>() with singleton { ForecastRepositoryImpl(instance(), instance()) }
+        bind() from provider { LocationServices.getFusedLocationProviderClient(instance<Context>()) }
+        bind<LocationProvider>() with singleton { LocationProviderImpl(instance(), instance()) }
+        bind<ForecastRepository>() with singleton { ForecastRepositoryImpl(instance(), instance(), instance()) }
         // doesn't need to be a singleton, then we can straight use provider
         bind() from provider { CurrentWeatherViewModelFactory(instance()) } // each time creating a new instance of Factory
     }

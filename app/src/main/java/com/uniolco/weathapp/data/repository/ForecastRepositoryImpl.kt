@@ -3,12 +3,16 @@ package com.uniolco.weathapp.data.repository
 import android.os.Looper
 import androidx.lifecycle.LiveData
 import com.uniolco.weathapp.data.db.CurrentWeatherDao
+import com.uniolco.weathapp.data.db.entity.Coord
 import com.uniolco.weathapp.data.network.WeatherNetworkDataSource
 import com.uniolco.weathapp.data.network.response.CurrentWeatherResponse
+import com.uniolco.weathapp.data.provider.LocationProvider
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import org.threeten.bp.Instant
+import org.threeten.bp.ZoneId
 import org.threeten.bp.ZonedDateTime
 import java.util.logging.Handler
 
@@ -16,7 +20,8 @@ import java.util.logging.Handler
 // just doing it easier to change something in future
 class ForecastRepositoryImpl(
     private val currentWeatherDao: CurrentWeatherDao,
-    private val weatherNetworkDataSource: WeatherNetworkDataSource
+    private val weatherNetworkDataSource: WeatherNetworkDataSource,
+    private val locationProvider: LocationProvider
 ) : ForecastRepository {
 
     init {
@@ -33,6 +38,18 @@ class ForecastRepositoryImpl(
         }
     }
 
+    override suspend fun getCurrentLocation(): LiveData<Coord> {
+        return withContext(Dispatchers.IO){
+            return@withContext currentWeatherDao.getLocation()
+        }
+    }
+
+    override suspend fun getCurrentTime(): Long {
+        return withContext(Dispatchers.IO){
+            return@withContext getCurrentTime()
+        }
+    }
+
     private fun persistFetchedCurrentWeather(fetchedWeather: CurrentWeatherResponse){
         GlobalScope.launch(Dispatchers.IO) {
             currentWeatherDao.insertOrUpdate(fetchedWeather)
@@ -40,13 +57,24 @@ class ForecastRepositoryImpl(
     }
 
     private suspend fun initWeatherData(){
-        if(isFetchCurrentNeeded(ZonedDateTime.now().minusHours(1))) // dummy value
+        val lastWeatherLocation = currentWeatherDao.getLocation().value
+        val lastWeatherLocationName = currentWeatherDao.getWeatherMetric().value
+
+        if ((lastWeatherLocation == null || lastWeatherLocationName == null) || locationProvider.hasLocationChanged(lastWeatherLocation, lastWeatherLocationName)) {
+            fetchCurrentWeather()
+            return
+        }
+
+        if(isFetchCurrentNeeded(ZonedDateTime.ofInstant(
+                Instant.ofEpochSecond(
+                    getCurrentTime()
+                ), ZoneId.systemDefault()))) // dummy value
             fetchCurrentWeather() // from here we init our weather forecast
     }
 
     private suspend fun fetchCurrentWeather(){
         weatherNetworkDataSource.fetchCurrentWeather(
-            "Minsk"
+            locationProvider.getPreferredLocationString()
         )
     }
 

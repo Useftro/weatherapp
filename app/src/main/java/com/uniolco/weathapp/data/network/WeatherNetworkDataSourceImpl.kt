@@ -16,6 +16,7 @@ class WeatherNetworkDataSourceImpl(
 
     override suspend fun fetchCurrentWeather(location: String) {
         try{
+            Log.d("LOCATION", location)
             val fetchedCurrentWeather = apiWeatherService
                 .getCurrentWeather(location).await()
             _downloadedCurrentWeather.postValue(fetchedCurrentWeather)

@@ -14,10 +14,10 @@ data class CurrentWeatherResponse(
     val clouds: Clouds,
     @ColumnInfo(name = "cod")
     val cod: Int,
-    @Embedded(prefix = "coord_") // prefix means coord_lat, coord_lon
+    @Embedded //(prefix = "coord") // prefix means coord_lat, coord_lon
     val coord: Coord,
     @ColumnInfo(name = "dt")
-    val dt: Int,
+    val dt: Long,
     @ColumnInfo(name = "identification_key")
     val id: Int,
     @Embedded(prefix = "main_")

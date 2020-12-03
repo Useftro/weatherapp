@@ -1,5 +1,6 @@
 package com.uniolco.weathapp.data.network
 
+import android.util.Log
 import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
 import com.uniolco.weathapp.data.network.response.CurrentWeatherResponse
 import kotlinx.coroutines.Deferred
@@ -34,6 +35,8 @@ interface ApiWeatherService {
                     .addQueryParameter("appid", API_KEY)
                     .build()
                 val request = chain.request().newBuilder().url(url).build()
+
+                Log.d("Request", request.toString())
 
                 return@Interceptor chain.proceed(request)
 

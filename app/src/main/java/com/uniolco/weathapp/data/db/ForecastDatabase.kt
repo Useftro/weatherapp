@@ -7,7 +7,7 @@ import com.uniolco.weathapp.data.network.response.CurrentWeatherResponse
 
 @Database(
     entities = [CurrentWeatherResponse::class],
-    version = 3,
+    version = 4,
 //    exportSchema = false // check some info about this
 )
 @TypeConverters(WeatherConverter::class)

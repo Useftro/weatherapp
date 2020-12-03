@@ -3,6 +3,7 @@ package com.uniolco.weathapp.data.db
 import androidx.lifecycle.LiveData
 import androidx.room.*
 import com.uniolco.weathapp.data.db.converter.WeatherConverter
+import com.uniolco.weathapp.data.db.entity.Coord
 import com.uniolco.weathapp.data.db.unitlocalized.ImperialCurrentWeather
 import com.uniolco.weathapp.data.db.unitlocalized.MetricCurrentWeather
 import com.uniolco.weathapp.data.network.response.CURRENT_WEATHER_ID
@@ -17,6 +18,12 @@ interface CurrentWeatherDao {
 
     @Query("SELECT * FROM current_weather")
     fun getWeatherMetric(): LiveData<CurrentWeatherResponse> //LiveData is like observer who notifies subscribers that data has been changed
+
+    @Query("SELECT latitude, longitude FROM current_weather")
+    fun getLocation(): LiveData<Coord>
+
+    @Query("SELECT dt FROM current_weather")
+    fun getTime(): Long
 //
 //
 //    @Query("SELECT * FROM current_weather WHERE id = $CURRENT_WEATHER_ID")

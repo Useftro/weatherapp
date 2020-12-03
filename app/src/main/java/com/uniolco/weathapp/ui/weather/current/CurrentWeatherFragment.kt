@@ -2,6 +2,7 @@ package com.uniolco.weathapp.ui.weather.current
 
 import androidx.lifecycle.ViewModelProviders
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -35,17 +36,24 @@ class CurrentWeatherFragment : ScopeFragment(), KodeinAware {
         super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProviders.of(this, viewModelFactory).
             get(CurrentWeatherViewModel::class.java)
-
+        Log.d("ViewModelCurrentLoc", viewModel.weatherLocation.toString())
         bindUI()
     }
 
     private fun bindUI() = launch {
         val currentWeather = viewModel.weather.await()
+        val currentLocation = viewModel.weatherLocation.await()
+        Log.d("CURRENTLOCATION", currentLocation.toString())
+
+        currentLocation.observe(viewLifecycleOwner, Observer { location ->
+            if (location == null) return@Observer
+        })
+
         currentWeather.observe(viewLifecycleOwner, Observer {
             if(it == null) return@Observer
             progressBar.visibility = View.GONE
-            updateLocation("Minsk")
-            updateDate(it.dt.toLong())
+            updateLocation(it.name)
+            updateDate(it.dt)
             updateTemperature(it.main.temp, it.main.feelsLike)
             updateCondition(it.wind.speed, it.weather[0].description, it.main.humidity, it.main.pressure)
             
@@ -61,7 +69,7 @@ class CurrentWeatherFragment : ScopeFragment(), KodeinAware {
         val sdf = SimpleDateFormat("dd/MM/yyyy hh:mm:ss a")
         val netDate = Date(time*1000)
         val date =sdf.format(netDate)
-        (activity as? AppCompatActivity)?.supportActionBar?.title = date
+        (activity as? AppCompatActivity)?.supportActionBar?.subtitle = date
     }
 
     private fun updateTemperature(temperature: Double, temperatureFeelsLike: Double){
