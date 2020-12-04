@@ -2,7 +2,7 @@ package com.uniolco.weathapp.data.network.response
 
 
 import androidx.room.*
-import com.uniolco.weathapp.data.db.entity.*
+import com.uniolco.weathapp.data.db.entity.current.*
 
 const val CURRENT_WEATHER_ID = 0
 

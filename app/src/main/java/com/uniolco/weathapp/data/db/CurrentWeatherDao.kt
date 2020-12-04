@@ -2,11 +2,7 @@ package com.uniolco.weathapp.data.db
 
 import androidx.lifecycle.LiveData
 import androidx.room.*
-import com.uniolco.weathapp.data.db.converter.WeatherConverter
-import com.uniolco.weathapp.data.db.entity.Coord
-import com.uniolco.weathapp.data.db.unitlocalized.ImperialCurrentWeather
-import com.uniolco.weathapp.data.db.unitlocalized.MetricCurrentWeather
-import com.uniolco.weathapp.data.network.response.CURRENT_WEATHER_ID
+import com.uniolco.weathapp.data.db.entity.current.Coord
 import com.uniolco.weathapp.data.network.response.CurrentWeatherResponse
 
 

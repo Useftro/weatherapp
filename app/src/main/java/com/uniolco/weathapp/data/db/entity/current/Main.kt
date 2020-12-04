@@ -1,4 +1,4 @@
-package com.uniolco.weathapp.data.db.entity
+package com.uniolco.weathapp.data.db.entity.current
 
 import com.google.gson.annotations.SerializedName
 

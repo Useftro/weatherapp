@@ -5,10 +5,9 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.pm.PackageManager
 import android.location.Location
-import android.util.Log
 import androidx.core.content.ContextCompat
 import com.google.android.gms.location.FusedLocationProviderClient
-import com.uniolco.weathapp.data.db.entity.Coord
+import com.uniolco.weathapp.data.db.entity.current.Coord
 import com.uniolco.weathapp.data.network.response.CurrentWeatherResponse
 import com.uniolco.weathapp.internal.LocationPermissionNotGrantedException
 import com.uniolco.weathapp.internal.asDeferred
@@ -67,7 +66,7 @@ class LocationProviderImpl(
             try{
                 val deviceLocation = getLastDeviceLocation().await()
                     ?: return "${getCustomLocationName()}"
-                return "${deviceLocation.latitude}, ${deviceLocation.longitude}"
+                return "${deviceLocation.latitude} ${deviceLocation.longitude}"
             } catch(e: LocationPermissionNotGrantedException){
                 return "${getCustomLocationName()}"
             }

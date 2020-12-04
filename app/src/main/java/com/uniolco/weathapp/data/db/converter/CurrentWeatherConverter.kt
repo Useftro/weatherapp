@@ -1,12 +1,11 @@
 package com.uniolco.weathapp.data.db.converter
 
-import android.util.Log
 import androidx.room.TypeConverter
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import com.uniolco.weathapp.data.db.entity.Weather
+import com.uniolco.weathapp.data.db.entity.current.Weather
 
-class WeatherConverter {
+class CurrentWeatherConverter {
 
     @TypeConverter
     fun fromWeather(value: List<Weather>): String {

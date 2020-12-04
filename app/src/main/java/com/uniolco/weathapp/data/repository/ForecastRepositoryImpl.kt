@@ -1,11 +1,12 @@
 package com.uniolco.weathapp.data.repository
 
-import android.os.Looper
 import androidx.lifecycle.LiveData
 import com.uniolco.weathapp.data.db.CurrentWeatherDao
-import com.uniolco.weathapp.data.db.entity.Coord
+import com.uniolco.weathapp.data.db.OneCallWeatherDao
+import com.uniolco.weathapp.data.db.entity.current.Coord
 import com.uniolco.weathapp.data.network.WeatherNetworkDataSource
 import com.uniolco.weathapp.data.network.response.CurrentWeatherResponse
+import com.uniolco.weathapp.data.network.response.OneCallServerResponse
 import com.uniolco.weathapp.data.provider.LocationProvider
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -14,12 +15,12 @@ import kotlinx.coroutines.withContext
 import org.threeten.bp.Instant
 import org.threeten.bp.ZoneId
 import org.threeten.bp.ZonedDateTime
-import java.util.logging.Handler
 
 
 // just doing it easier to change something in future
 class ForecastRepositoryImpl(
     private val currentWeatherDao: CurrentWeatherDao,
+//    private val oneCallWeatherDao: OneCallWeatherDao,
     private val weatherNetworkDataSource: WeatherNetworkDataSource,
     private val locationProvider: LocationProvider
 ) : ForecastRepository {
@@ -36,6 +37,13 @@ class ForecastRepositoryImpl(
             return@withContext currentWeatherDao.getWeatherMetric()
             //return@withContext if (metric) currentWeatherDao.getWeatherMetric()
         }
+    }
+
+    override suspend fun getOneCallWeather(): LiveData<OneCallServerResponse> {
+        TODO("FDFDFD")
+//        return withContext(Dispatchers.IO){
+//            return@withContext oneCallWeatherDao.getData()
+//        }
     }
 
     override suspend fun getCurrentLocation(): LiveData<Coord> {
