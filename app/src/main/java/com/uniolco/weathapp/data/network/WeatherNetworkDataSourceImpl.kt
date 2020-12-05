@@ -37,6 +37,7 @@ class WeatherNetworkDataSourceImpl(
                 getOneCallWeather(latitude, longitude)
                 .await()
             _downloadedOneCallWeather.postValue(fetchedOneCallWeather)
+            Log.d("MIHAILCOORD", "${latitude}, ${longitude}")
             Log.d("MIHAIL", _downloadedOneCallWeather.value.toString())
         }
         catch (e: NoConnectivityException){

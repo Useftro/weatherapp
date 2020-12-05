@@ -5,6 +5,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.pm.PackageManager
 import android.location.Location
+import android.util.Log
 import androidx.core.content.ContextCompat
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.uniolco.weathapp.data.db.entity.current.Coord
@@ -25,14 +26,13 @@ class LocationProviderImpl(
 
     override suspend fun hasLocationChanged(
         lastWeatherLocation: Coord,
-        currentWeatherResponse: CurrentWeatherResponse
     ): Boolean {
         val deviceLocationChanged = try {
             hasDeviceLocationChanged(lastWeatherLocation)
         } catch (e: LocationPermissionNotGrantedException){
             false
         }
-        return deviceLocationChanged || hasCustomLocationChanged(currentWeatherResponse)
+        return deviceLocationChanged
     }
 
     private suspend fun hasDeviceLocationChanged(lastWeatherLocation: Coord): Boolean {
@@ -41,7 +41,7 @@ class LocationProviderImpl(
 
         val deviceLocation = getLastDeviceLocation().await()
             ?: return false
-
+        Log.d("hasDeviceLocationChanged: ", "YES!")
         val comparisonThreshold = 0.03
         return Math.abs(deviceLocation.latitude - lastWeatherLocation.latitude) > comparisonThreshold &&
                 Math.abs(deviceLocation.longitude - lastWeatherLocation.longitude) > comparisonThreshold
@@ -53,7 +53,7 @@ class LocationProviderImpl(
     }
 
     private fun getCustomLocationName(): String? {
-        return preferences.getString(CUSTOM_LOCATION, "London")
+        return preferences.getString(CUSTOM_LOCATION, "Minsk")
     }
 
 

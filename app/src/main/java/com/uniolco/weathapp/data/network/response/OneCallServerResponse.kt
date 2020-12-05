@@ -6,6 +6,7 @@ import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.google.gson.annotations.SerializedName
+import com.uniolco.weathapp.data.db.entity.onecall.Minutely
 import com.uniolco.weathapp.data.db.entity.onecall.Current
 import com.uniolco.weathapp.data.db.entity.onecall.Daily
 import com.uniolco.weathapp.data.db.entity.onecall.Hourly
@@ -24,6 +25,8 @@ data class OneCallServerResponse(
     val lat: Double,
     @ColumnInfo(name = "longi")
     val lon: Double,
+//    @ColumnInfo(name = "minutely")
+//    val minutely: List<Minutely>,
     @ColumnInfo(name = "timezone")
     val timezone: String,
     @SerializedName("timezone_offset")
