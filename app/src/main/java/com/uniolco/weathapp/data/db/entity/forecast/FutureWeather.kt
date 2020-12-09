@@ -12,9 +12,10 @@ import com.google.gson.annotations.SerializedName
 data class FutureWeather(
     @PrimaryKey(autoGenerate = true)
     val id: Int? = null,
+    @Embedded
     val astro: Astro,
     val date: String,
-    @Embedded(prefix = "day_")
+    @Embedded
     val day: Day,
     val hour: List<Hour>
 )

@@ -5,14 +5,15 @@ import androidx.room.*
 import com.uniolco.weathapp.data.db.converter.*
 import com.uniolco.weathapp.data.db.entity.current.CurrentWeather
 import com.uniolco.weathapp.data.db.entity.current.WeatherLocation
+import com.uniolco.weathapp.data.db.entity.forecast.FutureWeather
 
 @Database(
-    entities = [CurrentWeather::class, WeatherLocation::class],
-    version = 13,
+    entities = [CurrentWeather::class, WeatherLocation::class, FutureWeather::class],
+    version = 14,
 //    exportSchema = false // check some info about this
 )
 //@TypeConverters(CurrentWeatherConditionConverter::class)
-@TypeConverters(LocalDateConverter::class)
+@TypeConverters(LocalDateConverter::class, FutureWeatherHourConverter::class)
 abstract class ForecastDatabase: RoomDatabase() {
     abstract fun currentWeatherDao(): CurrentWeatherDao
     abstract fun weatherLocationDao(): WeatherLocationDao

@@ -3,21 +3,28 @@ package com.uniolco.weathapp.data.repository
 import android.util.Log
 import androidx.lifecycle.LiveData
 import com.uniolco.weathapp.data.db.CurrentWeatherDao
+import com.uniolco.weathapp.data.db.FutureWeatherDao
 import com.uniolco.weathapp.data.db.WeatherLocationDao
 import com.uniolco.weathapp.data.db.entity.current.CurrentWeather
 import com.uniolco.weathapp.data.db.entity.current.WeatherLocation
+import com.uniolco.weathapp.data.db.unitlocalized.future.UnitSpecificSimpleFutureWeatherEntry
+import com.uniolco.weathapp.data.network.NUMBER_OF_DAYS
 import com.uniolco.weathapp.data.network.WeatherNetworkDataSource
 import com.uniolco.weathapp.data.network.response.CurrentWeatherResponse
+import com.uniolco.weathapp.data.network.response.FutureWeatherResponse
 import com.uniolco.weathapp.data.provider.LocationProvider
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import org.threeten.bp.LocalDate
+import org.threeten.bp.ZonedDateTime
 
 
 // just doing it easier to change something in future
 class ForecastRepositoryImpl(
     private val currentWeatherDao: CurrentWeatherDao,
+    private val futureWeatherDao: FutureWeatherDao,
     private val weatherLocationDao: WeatherLocationDao,
     private val weatherNetworkDataSource: WeatherNetworkDataSource,
     private val locationProvider: LocationProvider
@@ -26,6 +33,22 @@ class ForecastRepositoryImpl(
     init {
         weatherNetworkDataSource.downloadedCurrentWeather.observeForever { newCurrentWeather ->
             persistFetchedCurrentWeather(newCurrentWeather) // on data changes we are updating our data
+        }
+        weatherNetworkDataSource.downloadedFutureWeather.observeForever { newFutureWeather ->
+            persistFetchedFutureWeather(newFutureWeather)
+        }
+    }
+
+    private fun persistFetchedFutureWeather(newFutureWeather: FutureWeatherResponse) {
+        fun deleteOldForecastData(){
+            val today = LocalDate.now()
+            futureWeatherDao.deleteOldEntries(today)
+        }
+        GlobalScope.launch(Dispatchers.IO) {
+            deleteOldForecastData()
+            val futureWeatherList = newFutureWeather.futureWeatherEntries.forecastdays
+            futureWeatherDao.insert(futureWeatherList)
+            weatherLocationDao.insertOrUpdate(newFutureWeather.location)
         }
     }
 
@@ -45,15 +68,31 @@ class ForecastRepositoryImpl(
     }
 
     private suspend fun initWeatherData(){
-        val lastWeatherLocation = weatherLocationDao.getLocation().value
+        val lastWeatherLocation = weatherLocationDao.getLocationNonLive()
 
         if (lastWeatherLocation == null || locationProvider.hasLocationChanged(lastWeatherLocation)){
             fetchCurrentWeather()
+            fetchFutureWeather()
             return
         }
 
         if (isFetchCurrentNeeded(lastWeatherLocation.zonedDateTime))
             fetchCurrentWeather()
+
+        if(isFetchFutureNeeded())
+            fetchFutureWeather()
+    }
+
+    private fun isFetchFutureNeeded(): Boolean {
+        val today = LocalDate.now()
+        val futureWeatherCount = futureWeatherDao.countFutureWeather(today)
+        return futureWeatherCount < NUMBER_OF_DAYS
+    }
+
+    private suspend fun fetchFutureWeather() {
+        weatherNetworkDataSource.fetchFutureWeather(
+            locationProvider.getPreferredLocationString()
+        )
     }
 
     private fun isFetchCurrentNeeded(lastFetchTime: org.threeten.bp.ZonedDateTime): Boolean {
@@ -64,6 +103,13 @@ class ForecastRepositoryImpl(
     override suspend fun getWeatherLocation(): LiveData<WeatherLocation> {
         return withContext(Dispatchers.IO){
             return@withContext weatherLocationDao.getLocation()
+        }
+    }
+
+    override suspend fun getFutureWeatherList(startDate: LocalDate): LiveData<out List<UnitSpecificSimpleFutureWeatherEntry>> {
+        return withContext(Dispatchers.IO){
+            initWeatherData()
+            return@withContext futureWeatherDao.getSimpleWeatherForecastMetric(startDate)
         }
     }
 

@@ -4,10 +4,11 @@ import androidx.lifecycle.ViewModel
 import com.uniolco.weathapp.data.repository.ForecastRepository
 import com.uniolco.weathapp.internal.UnitSystem
 import com.uniolco.weathapp.internal.lazyDeferred
+import com.uniolco.weathapp.ui.base.WeatherViewModel
 
 class CurrentWeatherViewModel(
     private val forecastRepository: ForecastRepository
-) : ViewModel() {
+) : WeatherViewModel(forecastRepository) {
     private val unitSystem = UnitSystem.METRIC
 
     val isMetric: Boolean
@@ -16,9 +17,5 @@ class CurrentWeatherViewModel(
     // lazy so we call it only when view needs new data
     val weather by lazyDeferred {
         forecastRepository.getCurrentWeather()
-    }
-
-    val weatherLocation by lazyDeferred {
-        forecastRepository.getWeatherLocation()
     }
 }

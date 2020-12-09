@@ -2,19 +2,34 @@ package com.uniolco.weathapp.ui.weather.future.list
 
 import androidx.lifecycle.ViewModelProviders
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Observer
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.uniolco.weathapp.R
+import com.uniolco.weathapp.data.db.unitlocalized.future.UnitSpecificSimpleFutureWeatherEntry
+import com.uniolco.weathapp.ui.base.ScopeFragment
+import com.xwray.groupie.GroupAdapter
+import com.xwray.groupie.ViewHolder
+import kotlinx.android.synthetic.main.future_list_weather_fragment.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import org.kodein.di.Kodein
+import org.kodein.di.KodeinAware
+import org.kodein.di.android.x.closestKodein
+import org.kodein.di.generic.instance
+import org.threeten.bp.LocalDate
 
-class FutureListWeatherFragment : Fragment() {
-
-    companion object {
-        fun newInstance() = FutureListWeatherFragment()
-    }
+class FutureListWeatherFragment : ScopeFragment(), KodeinAware {
+    override val kodein by closestKodein()
 
     private lateinit var viewModel: FutureListWeatherViewModel
+    private val viewModelFactory: FutureListWeatherViewModelFactory by instance()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -25,8 +40,59 @@ class FutureListWeatherFragment : Fragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProviders.of(this).get(FutureListWeatherViewModel::class.java)
-        // TODO: Use the ViewModel
+        viewModel = ViewModelProviders.of(this, viewModelFactory)
+            .get(FutureListWeatherViewModel::class.java)
+        bindUI()
     }
 
+    private fun bindUI() = launch(Dispatchers.Main) {
+        val futureWeatherEntries = viewModel.weatherEntries.await()
+        val weatherLocation = viewModel.weatherLocation.await()
+
+        weatherLocation.observe(viewLifecycleOwner, Observer { location ->
+            if (location == null){
+                return@Observer
+            }
+            updateLocation(location.name)
+        })
+
+        futureWeatherEntries.observe(viewLifecycleOwner, Observer { weatherEntries ->
+            if (weatherEntries == null) return@Observer
+            group_loading.visibility = View.GONE
+            updateDate(weatherEntries[0].date, weatherEntries[weatherEntries.lastIndex].date)
+            initRecyclerView(weatherEntries.toItems())
+
+        })
+    }
+
+    private fun updateLocation(name: String) {
+        (activity as? AppCompatActivity)?.supportActionBar?.title = name
+    }
+
+    private fun updateDate(startDate: LocalDate, endDate: LocalDate){
+        (activity as? AppCompatActivity)?.supportActionBar?.subtitle =
+            "${startDate.dayOfMonth}.${startDate.month} - ${endDate.dayOfMonth}.${endDate.month}"
+    }
+
+    private fun initRecyclerView(items: List<FutureWeatherItem>){
+        val groupAdapter = GroupAdapter<ViewHolder>().apply {
+            addAll(items)
+        }
+
+
+        recyclerView.apply {
+            layoutManager = LinearLayoutManager(this@FutureListWeatherFragment.context)
+            adapter = groupAdapter
+        }
+
+        groupAdapter.setOnItemClickListener { item, view ->
+            Toast.makeText(this@FutureListWeatherFragment.context, "Biba", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun List<UnitSpecificSimpleFutureWeatherEntry>.toItems(): List<FutureWeatherItem>{
+        return this.map {
+            FutureWeatherItem(it)
+        }
+    }
 }

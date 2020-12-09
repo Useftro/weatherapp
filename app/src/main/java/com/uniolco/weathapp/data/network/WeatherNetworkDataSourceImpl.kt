@@ -37,6 +37,7 @@ class WeatherNetworkDataSourceImpl(
             val fetchedFutureWeather = apiWeatherService
                 .getFutureWeather(location, NUMBER_OF_DAYS).await()
             _downloadedFutureWeather.postValue(fetchedFutureWeather)
+            Log.d("VALUES", fetchedFutureWeather.futureWeatherEntries.forecastdays.size.toString())
         }
         catch (e: NoConnectivityException){
             Log.e("Connectivity", "No internet connection fetchCurrentWeather", e)
