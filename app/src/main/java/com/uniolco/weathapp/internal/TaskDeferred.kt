@@ -5,7 +5,7 @@ import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.Deferred
 
 // creating it because of lastLocation in getLastDeviceLocation in LocationProvider that returns
-// Task<Location> but we need to return Deferred<Coord>
+// Task<WeatherLocation> but we need to return Deferred<Coord>
 
 fun <T> Task<T>.asDeferred(): Deferred<T>{
     val deferred = CompletableDeferred<T>()

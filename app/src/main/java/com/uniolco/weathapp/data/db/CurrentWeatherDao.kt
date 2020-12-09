@@ -2,7 +2,8 @@ package com.uniolco.weathapp.data.db
 
 import androidx.lifecycle.LiveData
 import androidx.room.*
-import com.uniolco.weathapp.data.db.entity.current.Coord
+import com.uniolco.weathapp.data.db.entity.current.CurrentWeather
+import com.uniolco.weathapp.data.db.entity.current.WeatherLocation
 import com.uniolco.weathapp.data.network.response.CurrentWeatherResponse
 
 
@@ -10,16 +11,11 @@ import com.uniolco.weathapp.data.network.response.CurrentWeatherResponse
 interface CurrentWeatherDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE) // REPLACE because when updating we will always have a conflict
     // because of the same id
-    fun insertOrUpdate(currentWeather: CurrentWeatherResponse)
+    fun insertOrUpdate(currentWeather: CurrentWeather)
 
     @Query("SELECT * FROM current_weather")
-    fun getWeatherMetric(): LiveData<CurrentWeatherResponse> //LiveData is like observer who notifies subscribers that data has been changed
+    fun getWeatherMetric(): LiveData<CurrentWeather> //LiveData is like observer who notifies subscribers that data has been changed
 
-    @Query("SELECT latitude, longitude FROM current_weather")
-    fun getLocation(): LiveData<Coord>
-
-    @Query("SELECT dt FROM current_weather")
-    fun getTime(): Long
 //
 //
 //    @Query("SELECT * FROM current_weather WHERE id = $CURRENT_WEATHER_ID")

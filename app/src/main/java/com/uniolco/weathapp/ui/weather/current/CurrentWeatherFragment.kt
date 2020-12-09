@@ -15,6 +15,7 @@ import kotlinx.coroutines.launch
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.x.closestKodein
 import org.kodein.di.generic.instance
+import org.threeten.bp.ZonedDateTime
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -36,7 +37,6 @@ class CurrentWeatherFragment : ScopeFragment(), KodeinAware {
         super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProviders.of(this, viewModelFactory).
             get(CurrentWeatherViewModel::class.java)
-        Log.d("ViewModelCurrentLoc", viewModel.weatherLocation.toString())
         bindUI()
     }
 
@@ -44,24 +44,17 @@ class CurrentWeatherFragment : ScopeFragment(), KodeinAware {
         val currentWeather = viewModel.weather.await()
         val currentLocation = viewModel.weatherLocation.await()
 
-        val oneCallWeather = viewModel.onecallWeather.await()
-
-        Log.d("CURRENTWEATHER", currentWeather.value.toString())
-        Log.d("CURRENTLOCATION", currentLocation.value.toString())
-
-        Log.d("ONECALL", oneCallWeather.value.toString())
-
         currentLocation.observe(viewLifecycleOwner, Observer { location ->
             if (location == null) return@Observer
+            updateLocation(location.name)
+            updateDate(location.zonedDateTime)
         })
 
         currentWeather.observe(viewLifecycleOwner, Observer {
             if(it == null) return@Observer
             progressBar.visibility = View.GONE
-            updateLocation(it.name)
-            updateDate(it.dt)
-            updateTemperature(it.main.temp, it.main.feelsLike)
-            updateCondition(it.wind.speed, it.weather[0].description, it.main.humidity, it.main.pressure)
+            updateTemperature(it.tempC, it.feelslikeC)
+            updateCondition(it.windKph, it.visKm.toString(), it.humidity, it.pressureMb.toInt())
             
         })
     }
@@ -70,17 +63,13 @@ class CurrentWeatherFragment : ScopeFragment(), KodeinAware {
         (activity as? AppCompatActivity)?.supportActionBar?.title = location
     }
 
-    private fun updateDate(time: Long){
-
-        val sdf = SimpleDateFormat("dd/MM/yyyy hh:mm:ss a")
-        val netDate = Date(time*1000)
-        val date =sdf.format(netDate)
-        (activity as? AppCompatActivity)?.supportActionBar?.subtitle = date
+    private fun updateDate(time: ZonedDateTime){
+        (activity as? AppCompatActivity)?.supportActionBar?.subtitle = time.toString()
     }
 
     private fun updateTemperature(temperature: Double, temperatureFeelsLike: Double){
-        textView_temperature.text = "${temperature-273.15}°C"
-        textView_feels_like_temperature.text = String.format("Feels like: %.2f°C", temperatureFeelsLike-273.15)
+        textView_temperature.text = "${temperature}°C"
+        textView_feels_like_temperature.text = String.format("Feels like: ${temperatureFeelsLike}°C")
     }
 
     private fun updateCondition(windSpeed: Double, weatherDescription: String, humidity: Int,
@@ -88,7 +77,7 @@ class CurrentWeatherFragment : ScopeFragment(), KodeinAware {
         textView_wind.text = "Wind speed: $windSpeed m/s"
         textView_humidity.text = "Humidity: $humidity%"
         textView_pressure.text = "Pressure: ${pressure*0.75} mmHg"
-        textView_weatherDesc.text = "Few words about weather: $weatherDescription"
+        textView_weatherDesc.text = "Visibility: $weatherDescription"
     }
 
 }

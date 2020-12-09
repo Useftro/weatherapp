@@ -1,13 +1,10 @@
 package com.uniolco.weathapp.data.repository
 
 import androidx.lifecycle.LiveData
-import com.uniolco.weathapp.data.db.entity.current.Coord
-import com.uniolco.weathapp.data.network.response.CurrentWeatherResponse
-import com.uniolco.weathapp.data.network.response.OneCallServerResponse
+import com.uniolco.weathapp.data.db.entity.current.CurrentWeather
+import com.uniolco.weathapp.data.db.entity.current.WeatherLocation
 
 interface ForecastRepository {
-    suspend fun getCurrentWeather(): LiveData<CurrentWeatherResponse>
-    suspend fun getOneCallWeather(): LiveData<OneCallServerResponse>
-    suspend fun getCurrentLocation(): LiveData<Coord>
-    suspend fun getCurrentTime(): Long
+    suspend fun getCurrentWeather(): LiveData<CurrentWeather>
+    suspend fun getWeatherLocation(): LiveData<WeatherLocation>
 }

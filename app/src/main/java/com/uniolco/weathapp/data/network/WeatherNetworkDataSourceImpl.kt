@@ -4,7 +4,6 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.uniolco.weathapp.data.network.response.CurrentWeatherResponse
-import com.uniolco.weathapp.data.network.response.OneCallServerResponse
 import com.uniolco.weathapp.internal.NoConnectivityException
 
 class WeatherNetworkDataSourceImpl(
@@ -14,10 +13,6 @@ class WeatherNetworkDataSourceImpl(
     private val _downloadedCurrentWeather = MutableLiveData<CurrentWeatherResponse>()
     override val downloadedCurrentWeather: LiveData<CurrentWeatherResponse>
         get() = _downloadedCurrentWeather
-
-    private val _downloadedOneCallWeather = MutableLiveData<OneCallServerResponse>()
-    override val downloadedOneCallWeather: LiveData<OneCallServerResponse>
-        get() = _downloadedOneCallWeather
 
     override suspend fun fetchCurrentWeather(location: String) {
         try{
@@ -31,17 +26,4 @@ class WeatherNetworkDataSourceImpl(
         }
     }
 
-    override suspend fun fetchOneCallWeather(latitude: String, longitude: String) {
-        try{
-            val fetchedOneCallWeather = apiWeatherService.
-                getOneCallWeather(latitude, longitude)
-                .await()
-            _downloadedOneCallWeather.postValue(fetchedOneCallWeather)
-            Log.d("MIHAILCOORD", "${latitude}, ${longitude}")
-            Log.d("MIHAIL", _downloadedOneCallWeather.value.toString())
-        }
-        catch (e: NoConnectivityException){
-            Log.e("Connectivity", "No internet connection fetchOneCall", e)
-        }
-    }
 }

@@ -3,7 +3,6 @@ package com.uniolco.weathapp.data.network
 import android.util.Log
 import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
 import com.uniolco.weathapp.data.network.response.CurrentWeatherResponse
-import com.uniolco.weathapp.data.network.response.OneCallServerResponse
 import kotlinx.coroutines.Deferred
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
@@ -12,24 +11,19 @@ import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
 import retrofit2.http.Query
 
-const val API_KEY = "e6837893ce79229aee822e26a1556818"
+const val API_KEY = "3cf54167b82e44289c7144355200812"
 
 // api.openweathermap.org/data/2.5/weather?q=London&appid=e6837893ce79229aee822e26a1556818
 
-const val BASE_URL = "https://api.openweathermap.org/data/2.5/"
+const val BASE_URL = "https://api.weatherapi.com/v1/"
 
 interface ApiWeatherService {
 
-    @GET(value = "weather")
+    @GET(value = "current.json")
     fun getCurrentWeather(
         @Query("q") location: String
     ): Deferred<CurrentWeatherResponse>
 
-    @GET(value = "onecall")
-    fun getOneCallWeather(
-        @Query("lat") latitude: String,
-        @Query("lon") longitude: String
-    ): Deferred<OneCallServerResponse>
 
     companion object{
         operator fun invoke(
@@ -39,8 +33,9 @@ interface ApiWeatherService {
                 val url = chain.request()
                     .url()
                     .newBuilder()
-                    .addQueryParameter("appid", API_KEY)
+                    .addQueryParameter("key", API_KEY)
                     .build()
+                Log.d("URL", url.toString())
                 val request = chain.request().newBuilder().url(url).build()
 
                 Log.d("Request", request.toString())
@@ -50,7 +45,8 @@ interface ApiWeatherService {
             }
             val okHttpClient = OkHttpClient.Builder()
                 .addInterceptor(requestInterceptor)
-                .addInterceptor(connectivityInterceptor) // we could use just ConnectivityInterceptorImpl as argument
+                .addInterceptor(connectivityInterceptor)
+                 // we could use just ConnectivityInterceptorImpl as argument
                     //but it's not good because of tight coupling, that's why we use interface to further do DI with Kodein
                 .build()
 

@@ -3,19 +3,18 @@ package com.uniolco.weathapp.data.db
 import android.content.Context
 import androidx.room.*
 import com.uniolco.weathapp.data.db.converter.*
-import com.uniolco.weathapp.data.network.response.CurrentWeatherResponse
-import com.uniolco.weathapp.data.network.response.OneCallServerResponse
+import com.uniolco.weathapp.data.db.entity.current.CurrentWeather
+import com.uniolco.weathapp.data.db.entity.current.WeatherLocation
 
 @Database(
-    entities = [CurrentWeatherResponse::class, OneCallServerResponse::class],
-    version = 11,
+    entities = [CurrentWeather::class, WeatherLocation::class],
+    version = 13,
 //    exportSchema = false // check some info about this
 )
-@TypeConverters(CurrentWeatherConverter::class, OneCallWeatherConverter::class, DailyConverter::class,
-                HourlyConverter::class/*, MinutelyConverter::class*/)
+//@TypeConverters(CurrentWeatherConditionConverter::class)
 abstract class ForecastDatabase: RoomDatabase() {
     abstract fun currentWeatherDao(): CurrentWeatherDao
-    abstract fun oneCallWeatherDao(): OneCallWeatherDao
+    abstract fun weatherLocationDao(): WeatherLocationDao
 
     // database should be a singleton
     companion object{

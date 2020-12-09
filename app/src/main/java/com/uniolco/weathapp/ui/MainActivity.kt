@@ -82,7 +82,7 @@ class MainActivity : AppCompatActivity(), KodeinAware {
             if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)
                 bindLocationManager()
             else
-                Toast.makeText(this, "Set location manually in settings", Toast.LENGTH_LONG).show()
+                Toast.makeText(this, "Set weatherLocation manually in settings", Toast.LENGTH_LONG).show()
         }
     }
 
