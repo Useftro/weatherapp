@@ -3,6 +3,7 @@ package com.uniolco.weathapp.data.network
 import android.util.Log
 import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
 import com.uniolco.weathapp.data.network.response.CurrentWeatherResponse
+import com.uniolco.weathapp.data.network.response.FutureWeatherResponse
 import kotlinx.coroutines.Deferred
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
@@ -23,6 +24,12 @@ interface ApiWeatherService {
     fun getCurrentWeather(
         @Query("q") location: String
     ): Deferred<CurrentWeatherResponse>
+
+    @GET(value = "forecast.json")
+    fun getFutureWeather(
+        @Query("q") location: String,
+        @Query("days") days: Int
+    ): Deferred<FutureWeatherResponse>
 
 
     companion object{

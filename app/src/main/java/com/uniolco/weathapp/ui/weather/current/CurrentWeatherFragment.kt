@@ -18,6 +18,8 @@ import org.kodein.di.generic.instance
 import org.threeten.bp.ZonedDateTime
 import java.text.SimpleDateFormat
 import java.util.*
+import com.uniolco.weathapp.internal.glide.ForecastAppGlideModule
+import com.uniolco.weathapp.internal.glide.GlideApp
 
 class CurrentWeatherFragment : ScopeFragment(), KodeinAware {
     override val kodein by closestKodein()
@@ -55,7 +57,9 @@ class CurrentWeatherFragment : ScopeFragment(), KodeinAware {
             progressBar.visibility = View.GONE
             updateTemperature(it.tempC, it.feelslikeC)
             updateCondition(it.windKph, it.visKm.toString(), it.humidity, it.pressureMb.toInt())
-            
+            GlideApp.with(this@CurrentWeatherFragment)
+                .load("https:${it.condition.icon}")
+                .into(imageView_Weather)
         })
     }
 

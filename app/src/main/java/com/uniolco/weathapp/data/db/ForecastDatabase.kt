@@ -12,9 +12,11 @@ import com.uniolco.weathapp.data.db.entity.current.WeatherLocation
 //    exportSchema = false // check some info about this
 )
 //@TypeConverters(CurrentWeatherConditionConverter::class)
+@TypeConverters(LocalDateConverter::class)
 abstract class ForecastDatabase: RoomDatabase() {
     abstract fun currentWeatherDao(): CurrentWeatherDao
     abstract fun weatherLocationDao(): WeatherLocationDao
+    abstract fun futureWeatherDao(): FutureWeatherDao
 
     // database should be a singleton
     companion object{
@@ -29,7 +31,7 @@ abstract class ForecastDatabase: RoomDatabase() {
         // room has no lifecycle
         private fun buildDatabase(context: Context) =
             Room.databaseBuilder(context.applicationContext, // context of all application not a fragment or anything else
-                ForecastDatabase::class.java, "forecast.db").fallbackToDestructiveMigration().build()
+                ForecastDatabase::class.java, "forecastContainer.db").fallbackToDestructiveMigration().build()
 
     }
 }
