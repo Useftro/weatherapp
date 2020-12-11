@@ -2,7 +2,6 @@ package com.uniolco.weathapp.ui.weather.current
 
 import androidx.lifecycle.ViewModelProviders
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,9 +15,7 @@ import org.kodein.di.KodeinAware
 import org.kodein.di.android.x.closestKodein
 import org.kodein.di.generic.instance
 import org.threeten.bp.ZonedDateTime
-import java.text.SimpleDateFormat
 import java.util.*
-import com.uniolco.weathapp.internal.glide.ForecastAppGlideModule
 import com.uniolco.weathapp.internal.glide.GlideApp
 
 class CurrentWeatherFragment : ScopeFragment(), KodeinAware {
@@ -72,13 +69,13 @@ class CurrentWeatherFragment : ScopeFragment(), KodeinAware {
     }
 
     private fun updateTemperature(temperature: Double, temperatureFeelsLike: Double){
-        textView_temperature.text = "${temperature}°C"
+        textView_avgTemperature.text = "${temperature}°C"
         textView_feels_like_temperature.text = String.format("Feels like: ${temperatureFeelsLike}°C")
     }
 
     private fun updateCondition(windSpeed: Double, weatherDescription: String, humidity: Int,
     pressure: Int){
-        textView_wind.text = "Wind speed: $windSpeed m/s"
+        textView_maxWind.text = "Wind speed: $windSpeed m/s"
         textView_humidity.text = "Humidity: $humidity%"
         textView_pressure.text = "Pressure: ${pressure*0.75} mmHg"
         textView_weatherDesc.text = "Visibility: $weatherDescription"

@@ -2,24 +2,23 @@ package com.uniolco.weathapp.ui.weather.future.list
 
 import androidx.lifecycle.ViewModelProviders
 import android.os.Bundle
-import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
+import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.uniolco.weathapp.R
-import com.uniolco.weathapp.data.db.unitlocalized.future.UnitSpecificSimpleFutureWeatherEntry
+import com.uniolco.weathapp.data.db.converter.LocalDateConverter
+import com.uniolco.weathapp.data.db.unitlocalized.future.list.UnitSpecificSimpleFutureWeatherEntry
 import com.uniolco.weathapp.ui.base.ScopeFragment
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.ViewHolder
 import kotlinx.android.synthetic.main.future_list_weather_fragment.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import org.kodein.di.Kodein
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.x.closestKodein
 import org.kodein.di.generic.instance
@@ -86,7 +85,9 @@ class FutureListWeatherFragment : ScopeFragment(), KodeinAware {
         }
 
         groupAdapter.setOnItemClickListener { item, view ->
-            Toast.makeText(this@FutureListWeatherFragment.context, "Biba", Toast.LENGTH_SHORT).show()
+            (item as? FutureWeatherItem)?.let {
+                navigateToWeatherDetail(it.weatherEntry.date, view)
+            }
         }
     }
 
@@ -94,5 +95,11 @@ class FutureListWeatherFragment : ScopeFragment(), KodeinAware {
         return this.map {
             FutureWeatherItem(it)
         }
+    }
+
+    private fun navigateToWeatherDetail(date: LocalDate, view: View){
+        val dateString = LocalDateConverter.dateToString(date)!!
+        val actionDetail = FutureListWeatherFragmentDirections.actionDetailed(dateString)
+        Navigation.findNavController(view).navigate(actionDetail)
     }
 }

@@ -6,7 +6,8 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.uniolco.weathapp.data.db.entity.forecast.FutureWeather
-import com.uniolco.weathapp.data.db.unitlocalized.future.MetricSimpleFutureWeatherEntry
+import com.uniolco.weathapp.data.db.unitlocalized.future.detailed.MetricSpecificDetailedFutureWeatherEntry
+import com.uniolco.weathapp.data.db.unitlocalized.future.list.MetricSimpleFutureWeatherEntry
 import org.threeten.bp.LocalDate
 
 @Dao
@@ -16,6 +17,9 @@ interface FutureWeatherDao {
 
     @Query("SELECT * FROM future_weather WHERE date(date) >= date(:startDate)")
     fun getSimpleWeatherForecastMetric(startDate: LocalDate): LiveData<List<MetricSimpleFutureWeatherEntry>>
+
+    @Query("SELECT * FROM future_weather WHERE date(date) = date(:date)")
+    fun getDetailedMetricWeatherByDate(date: LocalDate): LiveData<MetricSpecificDetailedFutureWeatherEntry>
 
     @Query("SELECT count(id) FROM future_weather WHERE date(date) >= date(:startDate)")
     fun countFutureWeather(startDate: LocalDate): Int

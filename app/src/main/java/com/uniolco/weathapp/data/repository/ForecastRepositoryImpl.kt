@@ -1,13 +1,13 @@
 package com.uniolco.weathapp.data.repository
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import com.uniolco.weathapp.data.db.CurrentWeatherDao
 import com.uniolco.weathapp.data.db.FutureWeatherDao
 import com.uniolco.weathapp.data.db.WeatherLocationDao
 import com.uniolco.weathapp.data.db.entity.current.CurrentWeather
 import com.uniolco.weathapp.data.db.entity.current.WeatherLocation
-import com.uniolco.weathapp.data.db.unitlocalized.future.UnitSpecificSimpleFutureWeatherEntry
+import com.uniolco.weathapp.data.db.unitlocalized.future.detailed.UnitSpecificDetailedFutureWeatherEntry
+import com.uniolco.weathapp.data.db.unitlocalized.future.list.UnitSpecificSimpleFutureWeatherEntry
 import com.uniolco.weathapp.data.network.NUMBER_OF_DAYS
 import com.uniolco.weathapp.data.network.WeatherNetworkDataSource
 import com.uniolco.weathapp.data.network.response.CurrentWeatherResponse
@@ -18,7 +18,6 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.threeten.bp.LocalDate
-import org.threeten.bp.ZonedDateTime
 
 
 // just doing it easier to change something in future
@@ -110,6 +109,13 @@ class ForecastRepositoryImpl(
         return withContext(Dispatchers.IO){
             initWeatherData()
             return@withContext futureWeatherDao.getSimpleWeatherForecastMetric(startDate)
+        }
+    }
+
+    override suspend fun getFutureWeatherByDate(date: LocalDate): LiveData<out UnitSpecificDetailedFutureWeatherEntry> {
+        return withContext(Dispatchers.IO){
+            initWeatherData()
+            return@withContext futureWeatherDao.getDetailedMetricWeatherByDate(date)
         }
     }
 

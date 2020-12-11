@@ -31,7 +31,7 @@
             tools:text="1.1.2000" />
 
         <TextView
-            android:id="@+id/textView_temperature"
+            android:id="@+id/textView_avgTemperature"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
@@ -75,7 +75,7 @@
             app:layout_constraintDimensionRatio="1:1"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toEndOf="@+id/textView_temperature"
+            app:layout_constraintStart_toEndOf="@+id/textView_avgTemperature"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.0"
             app:layout_constraintWidth_percent="0.15"

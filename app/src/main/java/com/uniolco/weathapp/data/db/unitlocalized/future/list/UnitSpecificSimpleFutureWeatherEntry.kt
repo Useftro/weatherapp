@@ -1,4 +1,4 @@
-package com.uniolco.weathapp.data.db.unitlocalized.future
+package com.uniolco.weathapp.data.db.unitlocalized.future.list
 
 import org.threeten.bp.LocalDate
 
