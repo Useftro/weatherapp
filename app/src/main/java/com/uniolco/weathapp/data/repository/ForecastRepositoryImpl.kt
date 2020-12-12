@@ -2,10 +2,12 @@ package com.uniolco.weathapp.data.repository
 
 import androidx.lifecycle.LiveData
 import com.uniolco.weathapp.data.db.CurrentWeatherDao
+import com.uniolco.weathapp.data.db.FavoriteWeatherDao
 import com.uniolco.weathapp.data.db.FutureWeatherDao
 import com.uniolco.weathapp.data.db.WeatherLocationDao
 import com.uniolco.weathapp.data.db.entity.current.CurrentWeather
 import com.uniolco.weathapp.data.db.entity.current.WeatherLocation
+import com.uniolco.weathapp.data.db.entity.favorite.FavoriteEntry
 import com.uniolco.weathapp.data.db.unitlocalized.future.detailed.UnitSpecificDetailedFutureWeatherEntry
 import com.uniolco.weathapp.data.db.unitlocalized.future.list.UnitSpecificSimpleFutureWeatherEntry
 import com.uniolco.weathapp.data.network.NUMBER_OF_DAYS
@@ -25,6 +27,7 @@ class ForecastRepositoryImpl(
     private val currentWeatherDao: CurrentWeatherDao,
     private val futureWeatherDao: FutureWeatherDao,
     private val weatherLocationDao: WeatherLocationDao,
+    private val favoriteWeatherDao: FavoriteWeatherDao,
     private val weatherNetworkDataSource: WeatherNetworkDataSource,
     private val locationProvider: LocationProvider
 ) : ForecastRepository {
@@ -117,6 +120,10 @@ class ForecastRepositoryImpl(
             initWeatherData()
             return@withContext futureWeatherDao.getDetailedMetricWeatherByDate(date)
         }
+    }
+
+    override suspend fun getFavorites(): LiveData<FavoriteEntry> {
+        TODO("Not yet implemented")
     }
 
     private suspend fun fetchCurrentWeather(){
