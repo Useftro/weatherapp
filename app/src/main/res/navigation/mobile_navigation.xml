@@ -32,8 +32,8 @@
         android:name="com.uniolco.weathapp.ui.settings.SettingsFragment"
         android:label="SettingsFragment" />
     <fragment
-        android:id="@+id/favoriteCitiesListFragment"
-        android:name="com.uniolco.weathapp.ui.favorite.FavoriteCitiesListFragment"
-        android:label="fragment_favorite_cities_list"
-        tools:layout="@layout/fragment_favorite_cities_list" />
+        android:id="@+id/favoriteListWeatherFragment"
+        android:name="com.uniolco.weathapp.ui.favorite.FavoriteListWeatherFragment"
+        android:label="favorite_list_weather_fragment"
+        tools:layout="@layout/favorite_list_weather_fragment" />
 </navigation>

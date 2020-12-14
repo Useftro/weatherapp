@@ -5,9 +5,11 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import com.uniolco.weathapp.R
+import com.uniolco.weathapp.data.db.entity.favorite.Locations
 import com.uniolco.weathapp.ui.base.ScopeFragment
 import kotlinx.android.synthetic.main.current_weather_fragment.*
 import kotlinx.coroutines.launch
@@ -47,8 +49,9 @@ class CurrentWeatherFragment : ScopeFragment(), KodeinAware {
             if (location == null) return@Observer
             updateLocation(location.name)
             updateDate(location.zonedDateTime)
+            addToFavorite(Locations(0, location))
         })
-
+        val count = 0
         currentWeather.observe(viewLifecycleOwner, Observer {
             if(it == null) return@Observer
             progressBar.visibility = View.GONE
@@ -60,6 +63,15 @@ class CurrentWeatherFragment : ScopeFragment(), KodeinAware {
         })
     }
 
+    private fun addToFavorite(favoriteLocation: Locations){
+        favorite_button.setOnClickListener {
+            launch {
+                viewModel.insertIntoFavorite(favoriteLocation)
+            }
+            Toast.makeText(favorite_button.context, "ADDED", Toast.LENGTH_LONG).show()
+        }
+    }
+
     private fun updateLocation(location: String){
         (activity as? AppCompatActivity)?.supportActionBar?.title = location
     }
@@ -69,7 +81,7 @@ class CurrentWeatherFragment : ScopeFragment(), KodeinAware {
     }
 
     private fun updateTemperature(temperature: Double, temperatureFeelsLike: Double){
-        textView_avgTemperature.text = "${temperature}°C"
+        textView_cityName.text = "${temperature}°C"
         textView_feels_like_temperature.text = String.format("Feels like: ${temperatureFeelsLike}°C")
     }
 

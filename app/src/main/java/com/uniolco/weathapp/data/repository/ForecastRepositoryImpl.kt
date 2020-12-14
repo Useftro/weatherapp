@@ -8,6 +8,7 @@ import com.uniolco.weathapp.data.db.WeatherLocationDao
 import com.uniolco.weathapp.data.db.entity.current.CurrentWeather
 import com.uniolco.weathapp.data.db.entity.current.WeatherLocation
 import com.uniolco.weathapp.data.db.entity.favorite.FavoriteEntry
+import com.uniolco.weathapp.data.db.entity.favorite.Locations
 import com.uniolco.weathapp.data.db.unitlocalized.future.detailed.UnitSpecificDetailedFutureWeatherEntry
 import com.uniolco.weathapp.data.db.unitlocalized.future.list.UnitSpecificSimpleFutureWeatherEntry
 import com.uniolco.weathapp.data.network.NUMBER_OF_DAYS
@@ -61,6 +62,12 @@ class ForecastRepositoryImpl(
             //return@withContext if (metric) currentWeatherDao.getWeatherMetric()
         }
     }
+
+/*    private fun persistFavoriteWeather(favoriteWeather: FavoriteEntry){
+        GlobalScope.launch(Dispatchers.IO) {
+            favoriteWeatherDao.insertLocation(favoriteWeather)
+        }
+    }*/
 
     private fun persistFetchedCurrentWeather(fetchedWeather: CurrentWeatherResponse){
         GlobalScope.launch(Dispatchers.IO) {
@@ -122,8 +129,36 @@ class ForecastRepositoryImpl(
         }
     }
 
-    override suspend fun getFavorites(): LiveData<FavoriteEntry> {
-        TODO("Not yet implemented")
+    override suspend fun getFavorites(): List<FavoriteEntry> {
+        return withContext(Dispatchers.IO){
+            return@withContext favoriteWeatherDao.getAllFavorites()
+        }
+    }
+
+    override suspend fun getAllLocations(): List<Locations> {
+        return withContext(Dispatchers.IO){
+            return@withContext favoriteWeatherDao.getAllLocations()
+        }
+    }
+
+    override suspend fun insertLocations(
+        weatherLocation: Locations
+    ) {
+        GlobalScope.launch(Dispatchers.IO) {
+            favoriteWeatherDao.insertLocations(weatherLocation)
+        }
+    }
+
+    override suspend fun deleteLocation(locations: Locations) {
+        GlobalScope.launch(Dispatchers.IO) {
+            favoriteWeatherDao.deleteLocation(locations)
+        }
+    }
+
+    override suspend fun insertFavoriteEntry(favoriteEntry: FavoriteEntry) {
+        GlobalScope.launch(Dispatchers.IO) {
+            favoriteWeatherDao.insertWeather(favoriteEntry)
+        }
     }
 
     private suspend fun fetchCurrentWeather(){

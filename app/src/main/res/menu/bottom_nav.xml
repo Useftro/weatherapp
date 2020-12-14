@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
+        android:title="Favorite"
+        android:id="@+id/favoriteListWeatherFragment"
+        android:icon="@drawable/ic_baseline_list" />
+    <item
         android:id="@+id/currentWeatherFragment"
         android:icon="@drawable/ic_today"
         android:title="Today"/>
-    <item
-        android:id="@+id/favoriteCitiesListFragment"
-        android:icon="@drawable/ic_baseline_list"
-        android:title="Favorite" />
     <item
         android:id="@+id/futureListWeatherFragment"
         android:icon="@drawable/ic_calendar_week"

@@ -6,12 +6,13 @@ import com.uniolco.weathapp.data.db.converter.*
 import com.uniolco.weathapp.data.db.entity.current.CurrentWeather
 import com.uniolco.weathapp.data.db.entity.current.WeatherLocation
 import com.uniolco.weathapp.data.db.entity.favorite.FavoriteEntry
+import com.uniolco.weathapp.data.db.entity.favorite.Locations
 import com.uniolco.weathapp.data.db.entity.forecast.FutureWeather
 
 @Database(
     entities = [CurrentWeather::class, WeatherLocation::class, FutureWeather::class,
-               FavoriteEntry::class],
-    version = 15,
+               FavoriteEntry::class, Locations::class],
+    version = 17,
 //    exportSchema = false // check some info about this
 )
 //@TypeConverters(CurrentWeatherConditionConverter::class)
@@ -20,6 +21,7 @@ abstract class ForecastDatabase: RoomDatabase() {
     abstract fun currentWeatherDao(): CurrentWeatherDao
     abstract fun weatherLocationDao(): WeatherLocationDao
     abstract fun futureWeatherDao(): FutureWeatherDao
+    abstract fun favoriteWeatherDao(): FavoriteWeatherDao
 
     // database should be a singleton
     companion object{

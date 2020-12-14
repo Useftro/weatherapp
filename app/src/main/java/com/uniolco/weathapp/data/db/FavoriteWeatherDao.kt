@@ -1,17 +1,31 @@
 package com.uniolco.weathapp.data.db
 
-import androidx.lifecycle.LiveData
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
-import androidx.room.Query
+import androidx.room.*
+import com.uniolco.weathapp.data.db.entity.current.CurrentWeather
 import com.uniolco.weathapp.data.db.entity.favorite.FavoriteEntry
+import com.uniolco.weathapp.data.db.entity.favorite.Locations
 
 @Dao
 interface FavoriteWeatherDao {
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insert(favorite: FavoriteEntry)
+    @Insert
+    fun insertWeather(favoriteEntry: FavoriteEntry)
 
     @Query("SELECT * FROM favorite_weather")
-    fun getAllFavorites(): LiveData<FavoriteEntry>
+    fun getAllFavorites(): List<FavoriteEntry>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insertLocations(weatherLocation: Locations)
+
+    @Query("SELECT * from favorite_locations")
+    fun getAllLocations(): List<Locations>
+
+    @Suppress("AndroidUnresolvedRoomSqlReference")
+    @Query("SELECT id_loc FROM favorite_locations WHERE name = :tableName")
+    fun getIdNumber(tableName: String): Long?
+
+    @Update
+    fun updateWeatherInLocation(currentWeather: CurrentWeather)
+
+    @Delete
+    fun deleteLocation(locations: Locations)
 }

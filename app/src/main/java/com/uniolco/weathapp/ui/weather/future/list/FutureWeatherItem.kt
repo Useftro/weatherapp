@@ -13,7 +13,7 @@ class FutureWeatherItem(
     override fun bind(viewHolder: ViewHolder, position: Int) {
         viewHolder.apply {
             textView_date.text = weatherEntry.date.toString()
-            textView_avgTemperature.text = weatherEntry.averageTemp.toString()
+            textView_cityName.text = weatherEntry.averageTemp.toString()
             textView_Humidity.text = weatherEntry.avgHumidity.toString()
             GlideApp.with(this.containerView).load("https:" + weatherEntry.conditionIcon).into(imageView_condition_icon)
         }

@@ -32,7 +32,7 @@
         android:layout_width="123dp"
         android:layout_height="138dp"
         android:src="@drawable/ic_weather_sunny"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/favorite_button"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.804"
         app:layout_constraintStart_toStartOf="@+id/guideline"
@@ -40,7 +40,7 @@
         app:layout_constraintVertical_bias="0.133" />
 
     <TextView
-        android:id="@+id/textView_avgTemperature"
+        android:id="@+id/textView_cityName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
@@ -65,10 +65,10 @@
         android:layout_marginBottom="8dp"
         android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/textView_avgTemperature"
+        app:layout_constraintEnd_toEndOf="@+id/textView_cityName"
         app:layout_constraintHorizontal_bias="0.423"
-        app:layout_constraintStart_toStartOf="@+id/textView_avgTemperature"
-        app:layout_constraintTop_toBottomOf="@+id/textView_avgTemperature"
+        app:layout_constraintStart_toStartOf="@+id/textView_cityName"
+        app:layout_constraintTop_toBottomOf="@+id/textView_cityName"
         app:layout_constraintVertical_bias="0.0"
         tools:text="Feels like 20.4°C"
         android:layout_marginRight="8dp" />
@@ -140,6 +140,17 @@
         app:layout_constraintTop_toBottomOf="@+id/textView_humidity"
         app:layout_constraintVertical_bias="0.0"
         tools:text="WeatherDesc" />
+
+    <Button
+        android:id="@+id/favorite_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="120dp"
+        android:text="add to favorite"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/guideline"
+        app:layout_constraintTop_toBottomOf="@+id/progressBar" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

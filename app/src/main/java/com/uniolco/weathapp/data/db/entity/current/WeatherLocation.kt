@@ -2,6 +2,7 @@ package com.uniolco.weathapp.data.db.entity.current
 
 
 import androidx.room.Entity
+import androidx.room.Ignore
 import androidx.room.PrimaryKey
 import com.google.gson.annotations.SerializedName
 import org.threeten.bp.Instant
@@ -21,10 +22,10 @@ data class WeatherLocation(
     val name: String,
     val region: String,
     @SerializedName("tz_id")
-    val tzId: String
+    val tzId: String,
 ){
     @PrimaryKey(autoGenerate = false)
-    var id = WEATHER_LOCATION_ID
+    var id_w = WEATHER_LOCATION_ID
 
     val zonedDateTime: ZonedDateTime
         get(){

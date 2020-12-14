@@ -92,7 +92,7 @@ class FutureDetailWeatherFragment : ScopeFragment(), KodeinAware {
 
     private fun updateTemperatures(temp: Double, temp_max: Double, temp_min: Double){
         textView_min_max_temperature.text = "Min: ${temp_min}°C, Max: ${temp_max}°C"
-        textView_avgTemperature.text = "$temp°C"
+        textView_cityName.text = "$temp°C"
     }
 
     private fun updateWindSpeed(windSpeed: Double){
