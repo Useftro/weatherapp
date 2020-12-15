@@ -12,7 +12,7 @@ import com.uniolco.weathapp.data.db.entity.forecast.FutureWeather
 @Database(
     entities = [CurrentWeather::class, WeatherLocation::class, FutureWeather::class,
                FavoriteEntry::class, Locations::class],
-    version = 17,
+    version = 20,
 //    exportSchema = false // check some info about this
 )
 //@TypeConverters(CurrentWeatherConditionConverter::class)

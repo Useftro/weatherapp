@@ -7,6 +7,7 @@ import com.uniolco.weathapp.data.network.response.FutureWeatherResponse
 interface WeatherNetworkDataSource {
     val downloadedCurrentWeather: LiveData<CurrentWeatherResponse>
     val downloadedFutureWeather: LiveData<FutureWeatherResponse>
+    val downloadedFavoriteWeather: LiveData<CurrentWeatherResponse>
 
     suspend fun fetchCurrentWeather(
         location: String
@@ -14,6 +15,9 @@ interface WeatherNetworkDataSource {
 
     suspend fun fetchFutureWeather(
         location: String
+    )
 
+    suspend fun fetchFavoriteWeather(
+        location: String
     )
 }

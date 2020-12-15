@@ -35,5 +35,17 @@
         android:id="@+id/favoriteListWeatherFragment"
         android:name="com.uniolco.weathapp.ui.favorite.FavoriteListWeatherFragment"
         android:label="favorite_list_weather_fragment"
-        tools:layout="@layout/favorite_list_weather_fragment" />
+        tools:layout="@layout/favorite_list_weather_fragment" >
+        <action
+            android:id="@+id/action_favoriteListWeatherFragment_to_favoriteDetailWeatherFragment"
+            app:destination="@id/favoriteDetailWeatherFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/favoriteDetailWeatherFragment"
+        android:name="com.uniolco.weathapp.ui.favorite.detail.FavoriteDetailWeatherFragment"
+        android:label="FavoriteDetailWeatherFragment" >
+        <argument
+            android:name="locationName"
+            app:argType="string" />
+    </fragment>
 </navigation>

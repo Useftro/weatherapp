@@ -7,11 +7,14 @@ import com.uniolco.weathapp.data.db.entity.favorite.Locations
 
 @Dao
 interface FavoriteWeatherDao {
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertWeather(favoriteEntry: FavoriteEntry)
 
     @Query("SELECT * FROM favorite_weather")
     fun getAllFavorites(): List<FavoriteEntry>
+
+    @Query("SELECT * FROM favorite_weather WHERE weather_location_name LIKE :location")
+    fun getExactFavorite(location: String): FavoriteEntry
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertLocations(weatherLocation: Locations)

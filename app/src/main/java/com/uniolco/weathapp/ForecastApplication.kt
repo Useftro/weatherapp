@@ -13,6 +13,7 @@ import com.uniolco.weathapp.data.provider.LocationProviderImpl
 import com.uniolco.weathapp.data.repository.ForecastRepository
 import com.uniolco.weathapp.data.repository.ForecastRepositoryImpl
 import com.uniolco.weathapp.ui.favorite.FavoriteListWeatherViewModelFactory
+import com.uniolco.weathapp.ui.favorite.detail.FavoriteDetailWeatherViewModelFactory
 import com.uniolco.weathapp.ui.weather.current.CurrentWeatherViewModelFactory
 import com.uniolco.weathapp.ui.weather.future.detail.FutureDetailWeatherViewModelFactory
 import com.uniolco.weathapp.ui.weather.future.list.FutureListWeatherViewModelFactory
@@ -41,7 +42,9 @@ class ForecastApplication: Application(), KodeinAware {
         bind() from provider { CurrentWeatherViewModelFactory(instance()) } // each time creating a new instance of Factory
         bind() from provider { FutureListWeatherViewModelFactory(instance()) } // each time creating a new instance of Facto
         bind() from provider { FavoriteListWeatherViewModelFactory(instance()) }
+//        bind() from provider { FavoriteDetailWeatherViewModelFactory(instance())}
         bind() from factory { detailDate: LocalDate -> FutureDetailWeatherViewModelFactory(detailDate, instance()) }
+        bind() from factory { location: String -> FavoriteDetailWeatherViewModelFactory(location, instance()) }
     }
 
     override fun onCreate() {

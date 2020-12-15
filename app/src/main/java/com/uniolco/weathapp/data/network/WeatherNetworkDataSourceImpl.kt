@@ -21,6 +21,10 @@ class WeatherNetworkDataSourceImpl(
     override val downloadedFutureWeather: LiveData<FutureWeatherResponse>
         get() = _downloadedFutureWeather
 
+    private val _downloadedFavoriteWeather = MutableLiveData<CurrentWeatherResponse>()
+    override val downloadedFavoriteWeather: LiveData<CurrentWeatherResponse>
+        get() = _downloadedFavoriteWeather
+
     override suspend fun fetchCurrentWeather(location: String) {
         try{
             val fetchedCurrentWeather = apiWeatherService
@@ -38,6 +42,17 @@ class WeatherNetworkDataSourceImpl(
                 .getFutureWeather(location, NUMBER_OF_DAYS).await()
             _downloadedFutureWeather.postValue(fetchedFutureWeather)
             Log.d("VALUES", fetchedFutureWeather.futureWeatherEntries.forecastdays.size.toString())
+        }
+        catch (e: NoConnectivityException){
+            Log.e("Connectivity", "No internet connection fetchCurrentWeather", e)
+        }
+    }
+
+    override suspend fun fetchFavoriteWeather(location: String) {
+        try{
+            val fetchedFavoriteWeather = apiWeatherService
+                .getCurrentWeather(location).await()
+            _downloadedFavoriteWeather.postValue(fetchedFavoriteWeather)
         }
         catch (e: NoConnectivityException){
             Log.e("Connectivity", "No internet connection fetchCurrentWeather", e)

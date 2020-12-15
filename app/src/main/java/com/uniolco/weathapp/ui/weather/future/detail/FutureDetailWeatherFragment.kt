@@ -1,4 +1,4 @@
-package com.uniolco.weathapp.ui.weather.future.detail
+    package com.uniolco.weathapp.ui.weather.future.detail
 
 import androidx.lifecycle.ViewModelProviders
 import android.os.Bundle

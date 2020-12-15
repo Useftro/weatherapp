@@ -3,18 +3,16 @@ package com.uniolco.weathapp.ui.favorite
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.lifecycle.Observer
+import androidx.appcompat.app.AppCompatActivity
+import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.uniolco.weathapp.R
 import com.uniolco.weathapp.data.db.entity.favorite.Locations
-import com.uniolco.weathapp.data.db.unitlocalized.future.list.UnitSpecificSimpleFutureWeatherEntry
 import com.uniolco.weathapp.ui.base.ScopeFragment
-import com.uniolco.weathapp.ui.weather.current.CurrentWeatherViewModelFactory
-import com.uniolco.weathapp.ui.weather.future.list.FutureWeatherItem
+import com.uniolco.weathapp.ui.favorite.FavoriteListWeatherFragmentDirections.*
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.ViewHolder
 import kotlinx.android.synthetic.main.favorite_list_weather_fragment.*
@@ -58,6 +56,11 @@ class FavoriteListWeatherFragment : ScopeFragment(), KodeinAware {
 //                favorite_text_View.text = favorite.toString()
 //            })
         initRecyclerView(favorites.toItems())
+        updateTitle()
+    }
+
+    private fun updateTitle(){
+        (activity as? AppCompatActivity)?.supportActionBar?.title = "Favorite"
     }
 
     private fun initRecyclerView(items: List<FavoriteListItem>){
@@ -71,11 +74,14 @@ class FavoriteListWeatherFragment : ScopeFragment(), KodeinAware {
             adapter = groupAdapter
         }
 
-//        groupAdapter.setOnItemClickListener { item, view ->
-//            (item as? FutureWeatherItem)?.let {
-//                navigateToWeatherDetail(it.weatherEntry.date, view)
-//            }
-//        }
+        groupAdapter.setOnItemClickListener { item, view ->
+            (item as? FavoriteListItem)?.let {
+                navigateToFavoriteDetail(it.locations.location.name, view)
+            }
+            Log.d("ITEM", item.id.toString() + "||")
+        }
+
+
     }
 
 
@@ -89,6 +95,11 @@ class FavoriteListWeatherFragment : ScopeFragment(), KodeinAware {
         launch {
             viewModel.deleteLocation(locations)
         }
+    }
+
+    private fun navigateToFavoriteDetail(locationName: String, view: View){
+        val actionDetail = FavoriteListWeatherFragmentDirections.actionFavoriteListWeatherFragmentToFavoriteDetailWeatherFragment(locationName)
+        Navigation.findNavController(view).navigate(actionDetail)
     }
 
 }

@@ -40,6 +40,9 @@ class ForecastRepositoryImpl(
         weatherNetworkDataSource.downloadedFutureWeather.observeForever { newFutureWeather ->
             persistFetchedFutureWeather(newFutureWeather)
         }
+        weatherNetworkDataSource.downloadedFavoriteWeather.observeForever { newFavoriteWeather ->
+            persistFavoriteWeather(FavoriteEntry(weather = newFavoriteWeather))
+        }
     }
 
     private fun persistFetchedFutureWeather(newFutureWeather: FutureWeatherResponse) {
@@ -63,11 +66,18 @@ class ForecastRepositoryImpl(
         }
     }
 
-/*    private fun persistFavoriteWeather(favoriteWeather: FavoriteEntry){
+    private fun persistFavoriteWeather(favoriteWeather: FavoriteEntry){
         GlobalScope.launch(Dispatchers.IO) {
-            favoriteWeatherDao.insertLocation(favoriteWeather)
+            favoriteWeatherDao.insertWeather(favoriteWeather)
         }
-    }*/
+    }
+
+    override suspend fun getExactFavorite(location: String): FavoriteEntry{
+        return withContext(Dispatchers.IO){
+            fetchFavoriteWeather(location)
+            return@withContext favoriteWeatherDao.getExactFavorite(location)
+        }
+    }
 
     private fun persistFetchedCurrentWeather(fetchedWeather: CurrentWeatherResponse){
         GlobalScope.launch(Dispatchers.IO) {
@@ -75,6 +85,8 @@ class ForecastRepositoryImpl(
             weatherLocationDao.insertOrUpdate(fetchedWeather.location)
         }
     }
+
+
 
     private suspend fun initWeatherData(){
         val lastWeatherLocation = weatherLocationDao.getLocationNonLive()
@@ -96,6 +108,12 @@ class ForecastRepositoryImpl(
         val today = LocalDate.now()
         val futureWeatherCount = futureWeatherDao.countFutureWeather(today)
         return futureWeatherCount < NUMBER_OF_DAYS
+    }
+
+    private suspend fun fetchFavoriteWeather(locations: String){
+        weatherNetworkDataSource.fetchFavoriteWeather(
+            locations
+        )
     }
 
     private suspend fun fetchFutureWeather() {
@@ -129,8 +147,9 @@ class ForecastRepositoryImpl(
         }
     }
 
-    override suspend fun getFavorites(): List<FavoriteEntry> {
+    override suspend fun getFavorites(locations: String): List<FavoriteEntry> {
         return withContext(Dispatchers.IO){
+            fetchFavoriteWeather(locations)
             return@withContext favoriteWeatherDao.getAllFavorites()
         }
     }
