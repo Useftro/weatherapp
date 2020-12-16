@@ -100,7 +100,7 @@ class FutureDetailWeatherFragment : ScopeFragment(), KodeinAware {
     }
 
     private fun updateChanceOfRain(chanceOfRain: String){
-        textView_chanceOfRain.text = "Chance of rain: $chanceOfRain"
+        textView_coluds.text = "Chance of rain: $chanceOfRain"
     }
 
     private fun updateSunsetAndSunrise(sunset: String, sunrise: String){

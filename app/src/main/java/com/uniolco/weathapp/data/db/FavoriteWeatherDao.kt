@@ -1,5 +1,6 @@
 package com.uniolco.weathapp.data.db
 
+import androidx.lifecycle.LiveData
 import androidx.room.*
 import com.uniolco.weathapp.data.db.entity.current.CurrentWeather
 import com.uniolco.weathapp.data.db.entity.favorite.FavoriteEntry
@@ -20,7 +21,10 @@ interface FavoriteWeatherDao {
     fun insertLocations(weatherLocation: Locations)
 
     @Query("SELECT * from favorite_locations")
-    fun getAllLocations(): List<Locations>
+    fun getAllLocations(): LiveData<List<Locations>>
+
+    @Query("DELETE FROM favorite_locations")
+    fun deleteAllLocations()
 
     @Suppress("AndroidUnresolvedRoomSqlReference")
     @Query("SELECT id_loc FROM favorite_locations WHERE name = :tableName")

@@ -2,8 +2,6 @@ package com.uniolco.weathapp
 
 import android.app.Application
 import android.content.Context
-import androidx.multidex.MultiDexApplication
-import androidx.preference.PreferenceManager
 import com.google.android.gms.location.LocationServices
 import com.jakewharton.threetenabp.AndroidThreeTen
 import com.uniolco.weathapp.data.db.ForecastDatabase
@@ -12,7 +10,7 @@ import com.uniolco.weathapp.data.provider.LocationProvider
 import com.uniolco.weathapp.data.provider.LocationProviderImpl
 import com.uniolco.weathapp.data.repository.ForecastRepository
 import com.uniolco.weathapp.data.repository.ForecastRepositoryImpl
-import com.uniolco.weathapp.ui.favorite.FavoriteListWeatherViewModelFactory
+import com.uniolco.weathapp.ui.favorite.list.FavoriteListWeatherViewModelFactory
 import com.uniolco.weathapp.ui.favorite.detail.FavoriteDetailWeatherViewModelFactory
 import com.uniolco.weathapp.ui.weather.current.CurrentWeatherViewModelFactory
 import com.uniolco.weathapp.ui.weather.future.detail.FutureDetailWeatherViewModelFactory

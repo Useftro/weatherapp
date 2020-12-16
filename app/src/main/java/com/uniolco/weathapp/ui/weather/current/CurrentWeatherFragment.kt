@@ -77,7 +77,7 @@ class CurrentWeatherFragment : ScopeFragment(), KodeinAware {
     }
 
     private fun updateDate(time: ZonedDateTime){
-        (activity as? AppCompatActivity)?.supportActionBar?.subtitle = time.toString()
+        (activity as? AppCompatActivity)?.supportActionBar?.subtitle = "${time.dayOfMonth}.${time.month}"
     }
 
     private fun updateTemperature(temperature: Double, temperatureFeelsLike: Double){

@@ -154,7 +154,7 @@ class ForecastRepositoryImpl(
         }
     }
 
-    override suspend fun getAllLocations(): List<Locations> {
+    override suspend fun getAllLocations(): LiveData<out List<Locations>> {
         return withContext(Dispatchers.IO){
             return@withContext favoriteWeatherDao.getAllLocations()
         }
@@ -171,6 +171,12 @@ class ForecastRepositoryImpl(
     override suspend fun deleteLocation(locations: Locations) {
         GlobalScope.launch(Dispatchers.IO) {
             favoriteWeatherDao.deleteLocation(locations)
+        }
+    }
+
+    override suspend fun deleteAllLocations() {
+        GlobalScope.launch(Dispatchers.IO) {
+            favoriteWeatherDao.deleteAllLocations()
         }
     }
 

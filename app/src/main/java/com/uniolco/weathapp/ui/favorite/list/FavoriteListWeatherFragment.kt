@@ -1,4 +1,4 @@
-package com.uniolco.weathapp.ui.favorite
+package com.uniolco.weathapp.ui.favorite.list
 
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
@@ -6,13 +6,14 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Observer
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.uniolco.weathapp.R
 import com.uniolco.weathapp.data.db.entity.favorite.Locations
 import com.uniolco.weathapp.ui.base.ScopeFragment
-import com.uniolco.weathapp.ui.favorite.FavoriteListWeatherFragmentDirections.*
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.ViewHolder
 import kotlinx.android.synthetic.main.favorite_list_weather_fragment.*
@@ -50,17 +51,31 @@ class FavoriteListWeatherFragment : ScopeFragment(), KodeinAware {
 
     private fun bindUI() = launch {
         val favorites = viewModel.favorites.await()
-//            favorites.observe(viewLifecycleOwner, Observer { favorite ->
-//                if (favorite == null) return@Observer
-//                Log.d("FAVORITE", favorite.toString())
-//                favorite_text_View.text = favorite.toString()
-//            })
-        initRecyclerView(favorites.toItems())
+
+        favorites.observe(viewLifecycleOwner, Observer { favorits ->
+            if(favorits == null) return@Observer
+            initRecyclerView(favorits.toItems())
+        })
         updateTitle()
+        updateSubtitle()
+        deleteAll()
     }
 
     private fun updateTitle(){
         (activity as? AppCompatActivity)?.supportActionBar?.title = "Favorite"
+    }
+
+    private fun updateSubtitle(){
+        (activity as? AppCompatActivity)?.supportActionBar?.subtitle = ""
+    }
+
+    private suspend fun deleteAll(){
+        clearAll_button.setOnClickListener {
+            launch {
+                viewModel.deleteAllLocations()
+            }
+            Toast.makeText(clearAll_button.context, "Deleted all favorite places", Toast.LENGTH_LONG).show()
+        }
     }
 
     private fun initRecyclerView(items: List<FavoriteListItem>){
@@ -80,7 +95,6 @@ class FavoriteListWeatherFragment : ScopeFragment(), KodeinAware {
             }
             Log.d("ITEM", item.id.toString() + "||")
         }
-
 
     }
 

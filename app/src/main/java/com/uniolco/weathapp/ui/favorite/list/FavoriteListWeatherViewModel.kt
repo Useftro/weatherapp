@@ -1,4 +1,4 @@
-package com.uniolco.weathapp.ui.favorite
+package com.uniolco.weathapp.ui.favorite.list
 
 import androidx.lifecycle.ViewModel
 import com.uniolco.weathapp.data.db.entity.favorite.Locations
@@ -15,5 +15,9 @@ class FavoriteListWeatherViewModel(
 
     suspend fun deleteLocation(locations: Locations){
         forecastRepository.deleteLocation(locations)
+    }
+
+    suspend fun deleteAllLocations(){
+        forecastRepository.deleteAllLocations()
     }
 }

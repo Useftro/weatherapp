@@ -11,9 +11,7 @@ import com.uniolco.weathapp.R
 import com.uniolco.weathapp.internal.glide.GlideApp
 import com.uniolco.weathapp.ui.base.ScopeFragment
 import kotlinx.android.synthetic.main.favorite_detail_weather_fragment.*
-import kotlinx.android.synthetic.main.future_detail_weather_fragment.*
-import kotlinx.android.synthetic.main.future_detail_weather_fragment.imageView_condition_icon
-import kotlinx.android.synthetic.main.future_detail_weather_fragment.textView_chanceOfRain
+import kotlinx.android.synthetic.main.future_detail_weather_fragment.textView_coluds
 import kotlinx.android.synthetic.main.future_detail_weather_fragment.textView_cityName
 import kotlinx.android.synthetic.main.future_detail_weather_fragment.textView_humitidy
 import kotlinx.android.synthetic.main.future_detail_weather_fragment.textView_maxWind
@@ -49,13 +47,11 @@ class FavoriteDetailWeatherFragment : ScopeFragment(), KodeinAware {
     private fun bindUI() = launch {
         val weather = viewModel.exactWeather.await()
         updateLocation(weather.weather.location.name)
-
-//        updateChanceOfRain(weather.weather.current)
-//        updateSunsetAndSunrise(weather.weather.current., weather.sunrise)
         updateTemperatures(weather.weather.current.tempC, weather.weather.current.feelslikeC)
         updateVisibility(weather.weather.current.visKm)
         updateWindSpeed(weather.weather.current.windKph)
         updateHumidity(weather.weather.current.humidity)
+        updateClouds(weather.weather.current.cloud)
         GlideApp.with(imageView_cond).load("https://" + weather.weather.current.condition.icon).into(imageView_cond)
         Log.d("ARGUILS", weather.toString())
     }
@@ -84,11 +80,11 @@ class FavoriteDetailWeatherFragment : ScopeFragment(), KodeinAware {
     }
 
     private fun updateWindSpeed(windSpeed: Double){
-        textView_maxWind.text = "Wind speed: \n ${windSpeed/3.6} m/s"
+        textView_maxWind.text = "Wind speed: \n $windSpeed km/h"
     }
 
-    private fun updateChanceOfRain(chanceOfRain: String){
-        textView_chanceOfRain.text = "Chance of rain: $chanceOfRain"
+    private fun updateClouds(clouds: Int){
+        textView_coluds.text = "Clouds: $clouds"
     }
 
     private fun updateSunsetAndSunrise(sunset: String, sunrise: String){

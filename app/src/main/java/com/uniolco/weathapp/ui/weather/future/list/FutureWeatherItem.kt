@@ -13,8 +13,9 @@ class FutureWeatherItem(
     override fun bind(viewHolder: ViewHolder, position: Int) {
         viewHolder.apply {
             textView_date.text = weatherEntry.date.toString()
-            textView_cityName.text = weatherEntry.averageTemp.toString()
-            textView_Humidity.text = weatherEntry.avgHumidity.toString()
+            textView_cityName.text = weatherEntry.averageTemp.toString() + "°C"
+            textView_Humidity.text = "Humidity: " + weatherEntry.avgHumidity.toString()
+            textView_wind.text = "Wind: " + weatherEntry.maxWindSpeed + " km/h"
             GlideApp.with(this.containerView).load("https:" + weatherEntry.conditionIcon).into(imageView_condition_icon)
         }
     }

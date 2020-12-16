@@ -14,7 +14,7 @@
             android:key="CUSTOM_LOCATION"
             android:title="Location"
             android:summary="Location for which weather is displayed"
-            android:defaultValue="London"
+            android:defaultValue="Nulles"
             android:dependency="USE_DEVICE_LOCATION"/>
 
 

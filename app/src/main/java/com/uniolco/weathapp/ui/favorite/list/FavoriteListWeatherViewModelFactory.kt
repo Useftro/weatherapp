@@ -1,4 +1,4 @@
-package com.uniolco.weathapp.ui.favorite
+package com.uniolco.weathapp.ui.favorite.list
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider

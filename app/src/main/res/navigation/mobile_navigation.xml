@@ -33,7 +33,7 @@
         android:label="SettingsFragment" />
     <fragment
         android:id="@+id/favoriteListWeatherFragment"
-        android:name="com.uniolco.weathapp.ui.favorite.FavoriteListWeatherFragment"
+        android:name="com.uniolco.weathapp.ui.favorite.list.FavoriteListWeatherFragment"
         android:label="favorite_list_weather_fragment"
         tools:layout="@layout/favorite_list_weather_fragment" >
         <action
