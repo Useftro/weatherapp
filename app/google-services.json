@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "925571887365",
+    "project_id": "weatherapp-ddd9c",
+    "storage_bucket": "weatherapp-ddd9c.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:925571887365:android:d64cdf292f2c982cc4c76c",
+        "android_client_info": {
+          "package_name": "com.uniolco.weathapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "925571887365-dv97sjrcfjnnaf7gp8i5hqchgra49inm.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAb9leEKjq9aFzeQCn18ufb6v3Au_WGFuc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "925571887365-dv97sjrcfjnnaf7gp8i5hqchgra49inm.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

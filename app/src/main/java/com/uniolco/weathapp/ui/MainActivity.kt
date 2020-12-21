@@ -5,9 +5,12 @@ import android.content.pm.PackageManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.core.graphics.component1
+import androidx.core.view.get
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import androidx.navigation.ui.NavigationUI
@@ -30,6 +33,7 @@ class MainActivity : AppCompatActivity(), KodeinAware {
 
     private val locationCallback = object : LocationCallback() {
         override fun onLocationResult(p0: LocationResult?) {
+            Log.d("LOCATI,", p0.toString())
             super.onLocationResult(p0)
         }
     }
@@ -40,15 +44,16 @@ class MainActivity : AppCompatActivity(), KodeinAware {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
+        val data = intent.getBooleanExtra("Logged", true)
+        Log.d("DATA", data.toString())
 
         navController = Navigation.findNavController(this, R.id.nav_host_fragment) // setting up navigation controller
 
         bottom_nav.setupWithNavController(navController) // setting up bottom nav bar
-
+        if(!data)
+            bottom_nav.menu.getItem(0).isVisible = false
         NavigationUI.setupActionBarWithNavController(this, navController)
-        Log.d("BEFOREREQ", "Before req") // DELETE
         requestLocationPermission()
-        Log.d("IFSTATEMENT", "before if") // DELETE
         if (hasLocationPermission()){
             bindLocationManager()
         }
@@ -79,7 +84,7 @@ class MainActivity : AppCompatActivity(), KodeinAware {
         grantResults: IntArray
     ) {
         if (requestCode == MY_PERMISSION_ACCESS_COARSE_LOCATION){
-            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)
+            if (!grantResults.contains(PackageManager.PERMISSION_DENIED))
                 bindLocationManager()
             else
                 Toast.makeText(this, "Set weatherLocation manually in settings", Toast.LENGTH_LONG).show()

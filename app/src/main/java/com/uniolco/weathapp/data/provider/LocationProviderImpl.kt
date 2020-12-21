@@ -33,6 +33,11 @@ class LocationProviderImpl(
         return deviceLocationChanged || hasCustomLocationChanged(lastWeatherLocation)
     }
 
+/*    private fun hasLocationPermission(): Boolean {
+        return ContextCompat.checkSelfPermission(this,
+            Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED
+    }*/
+
     override suspend fun getPreferredLocationString(): String {
         if (isUsingDeviceLocation()) {
             try {

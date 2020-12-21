@@ -2,4 +2,27 @@
     <string name="app_name">weatherapp</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+
+
+    <string name="loginText">Enter your login</string>
+    <string name="passwordText">Enter your password</string>
+
+    <string name="loginButton">Login</string>
+    <string name="signupButton">Sign Up</string>
+    <string name="noLoggingButton">Continue without logging</string>
+
+    <string name="signup">Sign up</string>
+    <string name="phoneText">Enter your phone number</string>
+    <string name="emailText">Enter your email</string>
+    <string name="nameText">Enter your name</string>
+    <string name="surnameText">Enter your surname</string>
+    <string name="addressText">Enter your address</string>
+
+    <string name="nameTextView"> Name: </string>
+    <string name="statusTextView"> Status: </string>
+    <string name="speciesTextView"> Species: </string>
+    <string name="genderTextView"> Gender: </string>
+    <string name="originTextView"> Origin: </string>
+    <string name="locationTextView"> Last known location: </string>
+
 </resources>

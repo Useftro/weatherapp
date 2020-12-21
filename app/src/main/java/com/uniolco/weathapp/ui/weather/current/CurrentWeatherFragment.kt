@@ -2,6 +2,7 @@ package com.uniolco.weathapp.ui.weather.current
 
 import androidx.lifecycle.ViewModelProviders
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -33,6 +34,7 @@ class CurrentWeatherFragment : ScopeFragment(), KodeinAware {
     ): View? {
         return inflater.inflate(R.layout.current_weather_fragment, container, false)
     }
+    
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
@@ -42,19 +44,20 @@ class CurrentWeatherFragment : ScopeFragment(), KodeinAware {
     }
 
     private fun bindUI() = launch {
-        val currentWeather = viewModel.weather.await()
         val currentLocation = viewModel.weatherLocation.await()
+        val currentWeather = viewModel.weather.await()
 
         currentLocation.observe(viewLifecycleOwner, Observer { location ->
-            if (location == null) return@Observer
+            Log.d("TGGG", currentLocation.value?.name.toString())
+            progressBar0.visibility = View.GONE
             updateLocation(location.name)
             updateDate(location.zonedDateTime)
             addToFavorite(Locations(0, location))
+            if (location == null) return@Observer
         })
-        val count = 0
         currentWeather.observe(viewLifecycleOwner, Observer {
             if(it == null) return@Observer
-            progressBar.visibility = View.GONE
+            progressBar0.visibility = View.GONE
             updateTemperature(it.tempC, it.feelslikeC)
             updateCondition(it.windKph, it.visKm.toString(), it.humidity, it.pressureMb.toInt())
             GlideApp.with(this@CurrentWeatherFragment)
