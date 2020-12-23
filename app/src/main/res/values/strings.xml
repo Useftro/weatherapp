@@ -8,6 +8,7 @@
     <string name="passwordText">Enter your password</string>
 
     <string name="loginButton">Login</string>
+    <string name="lognButn">Login</string>
     <string name="signupButton">Sign Up</string>
     <string name="noLoggingButton">Continue without logging</string>
 

@@ -18,5 +18,15 @@
             android:dependency="USE_DEVICE_LOCATION"/>
 
 
+
     </PreferenceCategory>
+    <PreferenceCategory
+        android:title="Login">
+        <Preference
+            android:title="Login"
+            android:key="LOG_BUTTON"
+            android:summary="Press this area to login or to log out"
+            />
+    </PreferenceCategory>
+
 </PreferenceScreen>

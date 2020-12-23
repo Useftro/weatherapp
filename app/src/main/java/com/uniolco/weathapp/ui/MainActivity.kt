@@ -7,10 +7,13 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.component1
+import androidx.core.os.bundleOf
 import androidx.core.view.get
+import androidx.lifecycle.Observer
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import androidx.navigation.ui.NavigationUI
@@ -19,6 +22,7 @@ import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationResult
 import com.uniolco.weathapp.R
+import com.uniolco.weathapp.ui.base.SharedViewModel
 import kotlinx.android.synthetic.main.activity_main.*
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.closestKodein
@@ -44,14 +48,24 @@ class MainActivity : AppCompatActivity(), KodeinAware {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
-        val data = intent.getBooleanExtra("Logged", true)
+        val data = intent.getBooleanExtra("Logged", false)
         Log.d("DATA", data.toString())
 
-        navController = Navigation.findNavController(this, R.id.nav_host_fragment) // setting up navigation controller
-
+        navController = Navigation.findNavController(this, R.id.nav_host_fragment)
+        navController.setGraph(R.navigation.mobile_navigation, bundleOf(Pair("Logged", data)))
+        // setting up navigation controller
+        Log.d("RTYUI", navController.currentDestination.toString())
         bottom_nav.setupWithNavController(navController) // setting up bottom nav bar
-        if(!data)
-            bottom_nav.menu.getItem(0).isVisible = false
+        val model: SharedViewModel by viewModels()
+        model.selected.postValue(data)
+        model.selected.observe(this, Observer {
+            if(it == false){
+                bottom_nav.menu.getItem(0).isVisible = false
+            }
+            else{
+                bottom_nav.menu.getItem(0).isVisible = true
+            }
+        })
         NavigationUI.setupActionBarWithNavController(this, navController)
         requestLocationPermission()
         if (hasLocationPermission()){
