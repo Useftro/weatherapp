@@ -7,14 +7,12 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
-import androidx.navigation.fragment.navArgs
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import com.google.firebase.auth.FirebaseAuth
 import com.uniolco.weathapp.R
 import com.uniolco.weathapp.ui.LoginActivity
 import com.uniolco.weathapp.ui.base.SharedViewModel
-import com.uniolco.weathapp.ui.weather.current.CurrentWeatherFragment
 
 const val LOG_BUTTON = "LOG_BUTTON"
 
@@ -29,13 +27,19 @@ class SettingsFragment: PreferenceFragmentCompat() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         (activity as? AppCompatActivity)?.supportActionBar?.title = "Settings"
-        (activity as? AppCompatActivity)?.supportActionBar?.subtitle = " "
         val preferenceButton = findPreference<Preference>(LOG_BUTTON)!!
-        Log.d("OPOPOP", arguments.toString())
-        val args: CurrentWeatherFragment by navArgs()
-        model.selected.observe(viewLifecycleOwner, Observer { item ->
-            Log.d("FGFGFG", item.toString())
+        var subtitle = " "
 
+        model.authorized.observe(viewLifecycleOwner, Observer { item ->
+            if (item == true){
+                preferenceButton.title = "Log out"
+            }
+            else{
+                preferenceButton.title = "Log in"
+            }
+            Log.d("FGFGFG", item.toString())
+            if(item == null)
+                return@Observer
             preferenceButton.setOnPreferenceClickListener(object: Preference.OnPreferenceClickListener{
                 override fun onPreferenceClick(preference: Preference?): Boolean {
                     if(item == false){
@@ -45,7 +49,7 @@ class SettingsFragment: PreferenceFragmentCompat() {
                     else{
                         try {
                             FirebaseAuth.getInstance().signOut()
-                            model.selected.postValue(false)
+                            model.authorized.postValue(false)
                             Toast.makeText(preferenceButton.context,"Signed out!", Toast.LENGTH_SHORT).show()
                         }
                         catch (e: Exception){
@@ -56,5 +60,12 @@ class SettingsFragment: PreferenceFragmentCompat() {
                 }
             })
         })
+        if(model.authorized.value == true){
+            subtitle = "Hello, ${model.personInfo.value?.name.toString()}!"
+        }
+        else{
+            subtitle = "Not authorised."
+        }
+        (activity as? AppCompatActivity)?.supportActionBar?.subtitle = subtitle
     }
 }

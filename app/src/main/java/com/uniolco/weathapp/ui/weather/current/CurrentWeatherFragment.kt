@@ -11,9 +11,11 @@ import android.view.animation.AnimationUtils
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import com.uniolco.weathapp.R
 import com.uniolco.weathapp.data.db.entity.favorite.Locations
+import com.uniolco.weathapp.data.firebase.User
 import com.uniolco.weathapp.ui.base.ScopeFragment
 import kotlinx.android.synthetic.main.current_weather_fragment.*
 import kotlinx.coroutines.launch
@@ -24,6 +26,7 @@ import org.threeten.bp.ZonedDateTime
 import java.util.*
 import com.uniolco.weathapp.internal.glide.GlideApp
 import com.uniolco.weathapp.ui.base.SharedViewModel
+import kotlinx.coroutines.Dispatchers
 
 class CurrentWeatherFragment : ScopeFragment(), KodeinAware {
     override val kodein by closestKodein()
@@ -39,6 +42,91 @@ class CurrentWeatherFragment : ScopeFragment(), KodeinAware {
     ): View? {
         return inflater.inflate(R.layout.current_weather_fragment, container, false)
 
+    }
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        viewModel = ViewModelProviders.of(this, viewModelFactory).
+            get(CurrentWeatherViewModel::class.java)
+        bindUI()
+
+    }
+
+    private fun bindUI() = launch {
+        val currentLocation = viewModel.weatherLocation.await()
+        val currentWeather = viewModel.weather.await()
+        currentLocation.observe(viewLifecycleOwner, Observer { location ->
+            Log.d("TGGG", currentLocation.value?.name.toString())
+            progressBar0.visibility = View.GONE
+            updateLocation(location.name)
+            updateDate(location.zonedDateTime)
+            addToFavorite(Locations(0, location))
+            if (location == null) return@Observer
+        })
+        currentWeather.observe(viewLifecycleOwner, Observer {
+            if(it == null) return@Observer
+            progressBar0.visibility = View.GONE
+            updateTemperature(it.tempC, it.feelslikeC)
+            updateCondition(it.windKph, it.visKm.toString(), it.humidity, it.pressureMb.toInt())
+            GlideApp.with(this@CurrentWeatherFragment)
+                .load("https:${it.condition.icon}")
+                .into(imageView_Weather)
+        })
+        model.authorized.observe(viewLifecycleOwner, Observer {
+            if(it == null) return@Observer
+            if (it == false){
+                buttonDisappearOrAppear(disappear = true, clickable = false)
+            }
+            else{
+                buttonDisappearOrAppear(disappear = false, clickable = true)
+            }
+        })
+        model.registered.observe(viewLifecycleOwner, Observer {
+            if(it == null) return@Observer
+            if(it == true){
+                val user = model.personInfo.value
+                Log.d("ININININ", user.toString())
+                if (user != null) {
+                    insertUser(user)
+                    model.registered.postValue(false)
+                }
+            }
+            else{
+                model.personInfo.postValue(viewModel.getUser(model.email.value.toString()).value)
+                Log.d("IPIPIPIP", model.personInfo.value.toString() + "; EMAIL: " + model.email.value.toString())
+            }
+        })
+        Log.d("USSSSSSR", model.personInfo.value.toString())
+    }
+
+    private fun addToFavorite(favoriteLocation: Locations){
+        favorite_button.setOnClickListener {
+            launch {
+                viewModel.insertIntoFavorite(favoriteLocation)
+            }
+            Toast.makeText(favorite_button.context, "ADDED", Toast.LENGTH_LONG).show()
+        }
+    }
+
+    private fun updateLocation(location: String){
+        (activity as? AppCompatActivity)?.supportActionBar?.title = location
+    }
+
+    private fun updateDate(time: ZonedDateTime){
+        (activity as? AppCompatActivity)?.supportActionBar?.subtitle = "${time.dayOfMonth}.${time.month}"
+    }
+
+    private fun updateTemperature(temperature: Double, temperatureFeelsLike: Double){
+        textView_cityName.text = "${temperature}°C"
+        textView_feels_like_temperature.text = String.format("Feels like: ${temperatureFeelsLike}°C")
+    }
+
+    private fun updateCondition(windSpeed: Double, weatherDescription: String, humidity: Int,
+    pressure: Int){
+        textView_maxWind.text = "Wind speed: $windSpeed m/s"
+        textView_humidity.text = "Humidity: $humidity%"
+        textView_pressure.text = "Pressure: ${pressure*0.75} mmHg"
+        textView_weatherDesc.text = "Visibility: $weatherDescription"
     }
 
     // true = disappear
@@ -71,76 +159,9 @@ class CurrentWeatherFragment : ScopeFragment(), KodeinAware {
         favorite_button.startAnimation(anim)
 //            favorite_button.animate().scaleX(0.0f).scaleY(0.0f).rotation(1080f).setDuration(5000).start()
     }
-    
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProviders.of(this, viewModelFactory).
-            get(CurrentWeatherViewModel::class.java)
-        val data = arguments?.getBoolean("Logged", false)
-        
-        bindUI()
-    }
-
-    private fun bindUI() = launch {
-        val currentLocation = viewModel.weatherLocation.await()
-        val currentWeather = viewModel.weather.await()
-        currentLocation.observe(viewLifecycleOwner, Observer { location ->
-            Log.d("TGGG", currentLocation.value?.name.toString())
-            progressBar0.visibility = View.GONE
-            updateLocation(location.name)
-            updateDate(location.zonedDateTime)
-            addToFavorite(Locations(0, location))
-            if (location == null) return@Observer
-        })
-        currentWeather.observe(viewLifecycleOwner, Observer {
-            if(it == null) return@Observer
-            progressBar0.visibility = View.GONE
-            updateTemperature(it.tempC, it.feelslikeC)
-            updateCondition(it.windKph, it.visKm.toString(), it.humidity, it.pressureMb.toInt())
-            GlideApp.with(this@CurrentWeatherFragment)
-                .load("https:${it.condition.icon}")
-                .into(imageView_Weather)
-        })
-        model.selected.observe(viewLifecycleOwner, Observer {
-            if(it == null) return@Observer
-            if (it == false){
-                buttonDisappearOrAppear(disappear = true, clickable = false)
-            }
-            else{
-                buttonDisappearOrAppear(disappear = false, clickable = true)
-            }
-        })
-    }
-
-    private fun addToFavorite(favoriteLocation: Locations){
-        favorite_button.setOnClickListener {
-            launch {
-                viewModel.insertIntoFavorite(favoriteLocation)
-            }
-            Toast.makeText(favorite_button.context, "ADDED", Toast.LENGTH_LONG).show()
-        }
-    }
-
-    private fun updateLocation(location: String){
-        (activity as? AppCompatActivity)?.supportActionBar?.title = location
-    }
-
-    private fun updateDate(time: ZonedDateTime){
-        (activity as? AppCompatActivity)?.supportActionBar?.subtitle = "${time.dayOfMonth}.${time.month}"
-    }
-
-    private fun updateTemperature(temperature: Double, temperatureFeelsLike: Double){
-        textView_cityName.text = "${temperature}°C"
-        textView_feels_like_temperature.text = String.format("Feels like: ${temperatureFeelsLike}°C")
-    }
-
-    private fun updateCondition(windSpeed: Double, weatherDescription: String, humidity: Int,
-    pressure: Int){
-        textView_maxWind.text = "Wind speed: $windSpeed m/s"
-        textView_humidity.text = "Humidity: $humidity%"
-        textView_pressure.text = "Pressure: ${pressure*0.75} mmHg"
-        textView_weatherDesc.text = "Visibility: $weatherDescription"
+    private fun insertUser(user: User) = launch {
+        viewModel.insertOrUpdateUser(user)
     }
 
 }

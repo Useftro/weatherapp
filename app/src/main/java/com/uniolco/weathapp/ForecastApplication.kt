@@ -30,12 +30,13 @@ class ForecastApplication: Application(), KodeinAware {
         bind() from singleton { instance<ForecastDatabase>().weatherLocationDao() }
         bind() from singleton { instance<ForecastDatabase>().futureWeatherDao() }
         bind() from singleton { instance<ForecastDatabase>().favoriteWeatherDao() }
+        bind() from singleton { instance<ForecastDatabase>().userDao() }
         bind<ConnectivityInterceptor>() with singleton { ConnectivityInterceptorImpl(instance()) }
         bind() from singleton { ApiWeatherService(instance()) }
         bind<WeatherNetworkDataSource>() with singleton { WeatherNetworkDataSourceImpl(instance()) }
         bind() from provider { LocationServices.getFusedLocationProviderClient(instance<Context>()) }
         bind<LocationProvider>() with singleton { LocationProviderImpl(instance(), instance()) }
-        bind<ForecastRepository>() with singleton { ForecastRepositoryImpl(instance(), instance(), instance(), instance(), instance(), instance()) }
+        bind<ForecastRepository>() with singleton { ForecastRepositoryImpl(instance(), instance(), instance(), instance(), instance(), instance(), instance()) }
         // doesn't need to be a singleton, then we can straight use provider
         bind() from provider { CurrentWeatherViewModelFactory(instance()) } // each time creating a new instance of Factory
         bind() from provider { FutureListWeatherViewModelFactory(instance()) } // each time creating a new instance of Facto

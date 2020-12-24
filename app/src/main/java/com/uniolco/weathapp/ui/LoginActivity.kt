@@ -5,7 +5,6 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.util.Patterns
-import android.view.View
 import android.widget.Toast
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
@@ -14,8 +13,6 @@ import com.google.firebase.ktx.Firebase
 import com.uniolco.weathapp.R
 import kotlinx.android.synthetic.main.activity_login.*
 import kotlinx.android.synthetic.main.activity_login.passwordEditText
-import kotlinx.android.synthetic.main.activity_sign_up.*
-import kotlin.math.log
 
 class LoginActivity : AppCompatActivity() {
 
@@ -38,6 +35,7 @@ class LoginActivity : AppCompatActivity() {
         contWoLogButton.setOnClickListener {
             val intent = Intent(this, MainActivity::class.java)
             intent.putExtra("Logged", false)
+            intent.putExtra("registered", false)
             startActivity(intent)
             finish()
         }
@@ -78,12 +76,20 @@ class LoginActivity : AppCompatActivity() {
 
     private fun updateUI(currentUser: FirebaseUser?) {
         if(currentUser != null){
-            val intent = Intent(this, MainActivity::class.java)
-            intent.putExtra("Logged", true)
-            intent.putExtra("Name", currentUser.displayName)
-            intent.putExtra("Email", currentUser.email)
-            intent.putExtra("Phone", currentUser.phoneNumber)
-            startActivity(intent)
+            val inten = Intent(this, MainActivity::class.java)
+            inten.putExtra("Logged", true)
+            inten.putExtra("Email", currentUser.email)
+
+            inten.putExtra("login", intent.getStringExtra("login"))
+            inten.putExtra("email", intent.getStringExtra("email"))
+            inten.putExtra("phone", intent.getStringExtra("phone"))
+            inten.putExtra("name", intent.getStringExtra("name"))
+            inten.putExtra("surname", intent.getStringExtra("surname"))
+            inten.putExtra("address", intent.getStringExtra("address"))
+
+
+            inten.putExtra("registered", intent.getBooleanExtra("registered", false))
+            startActivity(inten)
             finish()
         }
     }

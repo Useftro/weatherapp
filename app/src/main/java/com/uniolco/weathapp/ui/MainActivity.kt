@@ -5,14 +5,11 @@ import android.content.pm.PackageManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.core.graphics.component1
 import androidx.core.os.bundleOf
-import androidx.core.view.get
 import androidx.lifecycle.Observer
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
@@ -22,6 +19,7 @@ import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationResult
 import com.uniolco.weathapp.R
+import com.uniolco.weathapp.data.firebase.User
 import com.uniolco.weathapp.ui.base.SharedViewModel
 import kotlinx.android.synthetic.main.activity_main.*
 import org.kodein.di.KodeinAware
@@ -48,24 +46,37 @@ class MainActivity : AppCompatActivity(), KodeinAware {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
-        val data = intent.getBooleanExtra("Logged", false)
-        Log.d("DATA", data.toString())
+        val logged = intent.getBooleanExtra("Logged", false)
+        val registered = intent.getBooleanExtra("registered", false)
+        val email = intent.getStringExtra("Email")
+
+
+        val user = User(
+            intent.getStringExtra("login").toString(),
+            intent.getStringExtra("email").toString(),
+            intent.getStringExtra("phone").toString(),
+            intent.getStringExtra("name").toString(),
+            intent.getStringExtra("surname").toString(),
+            intent.getStringExtra("address").toString())
+
+        Log.d("DATA", logged.toString())
+        Log.d("MAINUSER", user.toString())
 
         navController = Navigation.findNavController(this, R.id.nav_host_fragment)
-        navController.setGraph(R.navigation.mobile_navigation, bundleOf(Pair("Logged", data)))
+        navController.setGraph(R.navigation.mobile_navigation, bundleOf(Pair("Logged", logged)))
         // setting up navigation controller
         Log.d("RTYUI", navController.currentDestination.toString())
         bottom_nav.setupWithNavController(navController) // setting up bottom nav bar
         val model: SharedViewModel by viewModels()
-        model.selected.postValue(data)
-        model.selected.observe(this, Observer {
-            if(it == false){
-                bottom_nav.menu.getItem(0).isVisible = false
-            }
-            else{
-                bottom_nav.menu.getItem(0).isVisible = true
-            }
-        })
+
+        model.authorized.postValue(logged)
+        model.registered.postValue(registered)
+        model.personInfo.postValue(user)
+        model.email.postValue(email)
+        Log.d("EMAAAAAIl", email.toString())
+        Log.d("REGISTEREEEEEEEED", registered.toString())
+
+        observeModel(model)
         NavigationUI.setupActionBarWithNavController(this, navController)
         requestLocationPermission()
         if (hasLocationPermission()){
@@ -73,6 +84,12 @@ class MainActivity : AppCompatActivity(), KodeinAware {
         }
         else
             requestLocationPermission()
+    }
+
+    private fun observeModel(model: SharedViewModel){
+        model.authorized.observe(this, Observer {
+            bottom_nav.menu.getItem(0).isVisible = it != false
+        })
     }
 
     private fun hasLocationPermission(): Boolean {

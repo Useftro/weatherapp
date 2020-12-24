@@ -2,11 +2,19 @@ package com.uniolco.weathapp.ui.base
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.uniolco.weathapp.data.firebase.User
 
 class SharedViewModel : ViewModel() {
-    val selected = MutableLiveData<Boolean>()
+    val authorized = MutableLiveData<Boolean>()
+    val personInfo = MutableLiveData<User>()
+    val registered = MutableLiveData<Boolean>()
+    val email = MutableLiveData<String>()
 
     fun select(item: Boolean) {
-        selected.value = item
+        authorized.value = item
+    }
+
+    fun selectPersonInfo(item: User){
+        personInfo.value = item
     }
 }

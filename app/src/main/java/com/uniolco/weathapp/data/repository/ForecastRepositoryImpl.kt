@@ -1,16 +1,14 @@
 package com.uniolco.weathapp.data.repository
 
 import androidx.lifecycle.LiveData
-import com.uniolco.weathapp.data.db.CurrentWeatherDao
-import com.uniolco.weathapp.data.db.FavoriteWeatherDao
-import com.uniolco.weathapp.data.db.FutureWeatherDao
-import com.uniolco.weathapp.data.db.WeatherLocationDao
+import com.uniolco.weathapp.data.db.*
 import com.uniolco.weathapp.data.db.entity.current.CurrentWeather
 import com.uniolco.weathapp.data.db.entity.current.WeatherLocation
 import com.uniolco.weathapp.data.db.entity.favorite.FavoriteEntry
 import com.uniolco.weathapp.data.db.entity.favorite.Locations
 import com.uniolco.weathapp.data.db.unitlocalized.future.detailed.UnitSpecificDetailedFutureWeatherEntry
 import com.uniolco.weathapp.data.db.unitlocalized.future.list.UnitSpecificSimpleFutureWeatherEntry
+import com.uniolco.weathapp.data.firebase.User
 import com.uniolco.weathapp.data.network.NUMBER_OF_DAYS
 import com.uniolco.weathapp.data.network.WeatherNetworkDataSource
 import com.uniolco.weathapp.data.network.response.CurrentWeatherResponse
@@ -29,6 +27,7 @@ class ForecastRepositoryImpl(
     private val futureWeatherDao: FutureWeatherDao,
     private val weatherLocationDao: WeatherLocationDao,
     private val favoriteWeatherDao: FavoriteWeatherDao,
+    private val userDao: UserDao,
     private val weatherNetworkDataSource: WeatherNetworkDataSource,
     private val locationProvider: LocationProvider
 ) : ForecastRepository {
@@ -183,6 +182,18 @@ class ForecastRepositoryImpl(
     override suspend fun insertFavoriteEntry(favoriteEntry: FavoriteEntry) {
         GlobalScope.launch(Dispatchers.IO) {
             favoriteWeatherDao.insertWeather(favoriteEntry)
+        }
+    }
+
+    override/* suspend */fun getUser(email: String): LiveData<User> {
+/*        return withContext(Dispatchers.IO){*/
+            return userDao.getUser(email)
+//        }
+    }
+
+    override suspend fun insertUser(user: User) {
+        GlobalScope.launch(Dispatchers.IO) {
+            userDao.insertOrUpdateUser(user)
         }
     }
 

@@ -7,6 +7,7 @@ import android.util.Log
 import android.util.Patterns
 import android.view.View
 import android.widget.Toast
+import androidx.core.os.bundleOf
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.FirebaseDatabase
@@ -39,7 +40,7 @@ class SignUpActivity : AppCompatActivity() {
         if(!Patterns.EMAIL_ADDRESS.matcher(emailEditText.text.toString()).matches()){
             error("Please enter valid email!")
         }
-
+        var registered = false
         auth.createUserWithEmailAndPassword(emailEditText.text.toString(), passwordEditText.text.toString())
             .addOnCompleteListener(this) { task ->
 
@@ -47,12 +48,16 @@ class SignUpActivity : AppCompatActivity() {
                     // Sign in success, update UI with the signed-in user's information
                     Log.d("TAG", "createUserWithEmail:success")
 
-                    val user = User(loginEditText.text.toString(),
+                    val user = User(
+                    loginEditText.text.toString(),
                     emailEditText.text.toString(),
                     phoneEditText.text.toString(),
                     nameEditText.text.toString(),
                     surnameEditText.text.toString(),
                     addressEditText.text.toString())
+                    Log.d("SIGNUOPPPPP", user.toString())
+                    registered = true
+                    Log.d("REGEGEGEG", registered.toString())
 
                     FirebaseDatabase.getInstance().getReference("Users").child(
                         FirebaseAuth.getInstance().currentUser?.uid.toString()
@@ -64,7 +69,15 @@ class SignUpActivity : AppCompatActivity() {
                             Toast.makeText(this, "Registration failed", Toast.LENGTH_SHORT).show()
                         }
                     }
-                    startActivity(Intent(this, LoginActivity::class.java))
+                    val intent = Intent(this, LoginActivity::class.java)
+                    intent.putExtra("login", user.login)
+                    intent.putExtra("email", user.email)
+                    intent.putExtra("phone", user.phoneNumber)
+                    intent.putExtra("name", user.name)
+                    intent.putExtra("surname", user.surname)
+                    intent.putExtra("address", user.address)
+                    intent.putExtra("registered", registered)
+                    startActivity(intent)
                     finish()
                 } else {
                     // If sign in fails, display a message to the user.
