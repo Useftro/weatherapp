@@ -8,6 +8,12 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProviders
+import com.google.android.gms.maps.CameraUpdateFactory
+import com.google.android.gms.maps.GoogleMap
+import com.google.android.gms.maps.MapView
+import com.google.android.gms.maps.OnMapReadyCallback
+import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.MarkerOptions
 import com.uniolco.weathapp.R
 import com.uniolco.weathapp.internal.glide.GlideApp
 import com.uniolco.weathapp.ui.base.ScopeFragment
@@ -26,7 +32,7 @@ import org.kodein.di.KodeinAware
 import org.kodein.di.android.x.closestKodein
 import org.kodein.di.generic.factory
 
-class FavoriteDetailWeatherFragment : ScopeFragment(), KodeinAware {
+class FavoriteDetailWeatherFragment : ScopeFragment(), KodeinAware, OnMapReadyCallback {
 
     override val kodein: Kodein by closestKodein()
 
@@ -39,11 +45,18 @@ class FavoriteDetailWeatherFragment : ScopeFragment(), KodeinAware {
 
     private lateinit var viewModel: FavoriteDetailWeatherViewModel
 
+    private var mMap: MapView? = null
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.favorite_detail_weather_fragment, container, false)
+        val view = inflater.inflate(R.layout.favorite_detail_weather_fragment, container, false)
+        mMap = view?.findViewById(R.id.mapView) as MapView
+        mMap?.onCreate(savedInstanceState)
+        mMap?.getMapAsync(this)
+        return view
+        //inflater.inflate(R.layout.favorite_detail_weather_fragment, container, false)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -67,6 +80,11 @@ class FavoriteDetailWeatherFragment : ScopeFragment(), KodeinAware {
         updateClouds(weather.weather.current.cloud)
         GlideApp.with(imageView_cond).load("https://" + weather.weather.current.condition.icon).into(imageView_cond)
         Log.d("ARGUILS", weather.toString())
+    }
+
+    private suspend fun getCurrentLocation(): Pair<Double, Double>{
+        val weather = viewModel.exactWeather.await()
+        return Pair(weather.weather.location.lat, weather.weather.location.lon)
     }
 
     private fun updateTitle(){
@@ -101,6 +119,44 @@ class FavoriteDetailWeatherFragment : ScopeFragment(), KodeinAware {
 
     private fun updateHumidity(humidity: Int){
         textView_humitidy.text = "Humidity: $humidity"
+    }
+
+    override fun onMapReady(p0: GoogleMap) {
+        launch {
+            val pair = getCurrentLocation()
+            p0.moveCamera(CameraUpdateFactory.newLatLngZoom(LatLng(pair.first, pair.second), 5f))
+            p0.addMarker(MarkerOptions().position(LatLng(pair.first, pair.second)))
+        }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        mMap?.onPause()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        mMap?.onResume()
+    }
+
+    override fun onStart() {
+        super.onStart()
+        mMap?.onStart()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        mMap?.onStop()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        mMap?.onDestroy()
+    }
+
+    override fun onLowMemory() {
+        super.onLowMemory()
+        mMap?.onLowMemory()
     }
 
 }
