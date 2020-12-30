@@ -28,12 +28,8 @@ import org.kodein.di.generic.instance
 class FavoriteListWeatherFragment : ScopeFragment(), KodeinAware {
 
     override val kodein by closestKodein()
-    private val viewModelFactory: FavoriteListWeatherViewModelFactory by instance()
     private lateinit var viewModel: FavoriteListWeatherViewModel
-
-    companion object {
-        fun newInstance() = FavoriteListWeatherFragment()
-    }
+    private val viewModelFactory: FavoriteListWeatherViewModelFactory by instance()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,

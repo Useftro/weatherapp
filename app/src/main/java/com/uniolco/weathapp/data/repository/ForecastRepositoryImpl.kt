@@ -1,5 +1,6 @@
 package com.uniolco.weathapp.data.repository
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import com.uniolco.weathapp.data.db.*
 import com.uniolco.weathapp.data.db.entity.current.CurrentWeather
@@ -73,6 +74,7 @@ class ForecastRepositoryImpl(
 
     override suspend fun getExactFavorite(location: String): FavoriteEntry{
         return withContext(Dispatchers.IO){
+            Log.d("LOCALOCALOCALOCA", location)
             fetchFavoriteWeather(location)
             return@withContext favoriteWeatherDao.getExactFavorite(location)
         }
@@ -164,6 +166,7 @@ class ForecastRepositoryImpl(
     ) {
         GlobalScope.launch(Dispatchers.IO) {
             favoriteWeatherDao.insertLocations(weatherLocation)
+            fetchFavoriteWeather(weatherLocation.location.name)
         }
     }
 

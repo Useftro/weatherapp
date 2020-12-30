@@ -61,7 +61,7 @@ class SettingsFragment: PreferenceFragmentCompat() {
             })
         })
         if(model.authorized.value == true){
-            subtitle = "Hello, ${model.personInfo.value?.name.toString()}!"
+            subtitle = "Hello, ${model.email.value}!"
         }
         else{
             subtitle = "Not authorised."

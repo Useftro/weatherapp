@@ -23,6 +23,14 @@ class LoginActivity : AppCompatActivity() {
         setContentView(R.layout.activity_login)
         auth = Firebase.auth
 
+//        if(auth.currentUser != null){
+//            val intent = Intent(this, MainActivity::class.java)
+//            intent.putExtra("Logged", true)
+//            intent.putExtra("registered", false)
+//            startActivity(intent)
+//            finish()
+//        }
+
         signupButton.setOnClickListener {
             startActivity(Intent(this, SignUpActivity::class.java))
             finish()

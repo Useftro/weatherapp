@@ -11,7 +11,7 @@ class FavoriteDetailWeatherViewModel(
     private val forecastRepository: ForecastRepository
     ) : ViewModel() {
 
-        val exactWeather by lazyDeferred {
-            forecastRepository.getExactFavorite(location)
-        }
+    val exactWeather by lazyDeferred {
+        forecastRepository.getExactFavorite(location)
+    }
 }

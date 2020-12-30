@@ -1,12 +1,15 @@
 package com.uniolco.weathapp.data.network
 
+import android.content.Context
 import android.util.Log
+import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.uniolco.weathapp.data.network.response.CurrentWeatherResponse
 import com.uniolco.weathapp.data.network.response.FutureWeatherResponse
 import com.uniolco.weathapp.internal.CityNotFound
 import com.uniolco.weathapp.internal.NoConnectivityException
+import kotlin.coroutines.coroutineContext
 
 const val NUMBER_OF_DAYS = 7
 
@@ -35,9 +38,6 @@ class WeatherNetworkDataSourceImpl(
         }
         catch (e: NoConnectivityException){
             Log.e("Connectivity", "No internet connection fetchCurrentWeather", e)
-        }
-        catch (e: CityNotFound){
-            Log.e("City", "No city according to request has been found")
         }
         catch (e: retrofit2.HttpException){
             Log.e("Cityyy", "Oh shit, I'm sorry...")

@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.ViewModelProviders
 import com.uniolco.weathapp.R
 import com.uniolco.weathapp.internal.glide.GlideApp
 import com.uniolco.weathapp.ui.base.ScopeFragment
@@ -20,13 +21,14 @@ import kotlinx.android.synthetic.main.future_detail_weather_fragment.textView_su
 import kotlinx.android.synthetic.main.future_detail_weather_fragment.textView_sunset
 import kotlinx.android.synthetic.main.future_detail_weather_fragment.textView_visibility
 import kotlinx.coroutines.launch
+import org.kodein.di.Kodein
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.x.closestKodein
 import org.kodein.di.generic.factory
 
 class FavoriteDetailWeatherFragment : ScopeFragment(), KodeinAware {
 
-    override val kodein by closestKodein()
+    override val kodein: Kodein by closestKodein()
 
     private val viewModelFactoryInstanceFactory:
             ((String) -> FavoriteDetailWeatherViewModelFactory) by factory()
@@ -44,9 +46,20 @@ class FavoriteDetailWeatherFragment : ScopeFragment(), KodeinAware {
         return inflater.inflate(R.layout.favorite_detail_weather_fragment, container, false)
     }
 
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        val safeArgs = arguments?.let { FavoriteDetailWeatherFragmentArgs.fromBundle(it) }
+
+        Log.d("ARGS", safeArgs.toString())
+        val loc = safeArgs?.locationName.toString()
+        viewModel = ViewModelProviders.of(this, viewModelFactoryInstanceFactory(loc)).get(FavoriteDetailWeatherViewModel::class.java)
+        bindUI()
+    }
+
     private fun bindUI() = launch {
         val weather = viewModel.exactWeather.await()
-        updateLocation(weather.weather.location.name)
+        Log.d("WEWEWEWe", weather.toString())
+        updateLocation(weather.weather.location.name.toString())
         updateTemperatures(weather.weather.current.tempC, weather.weather.current.feelslikeC)
         updateVisibility(weather.weather.current.visKm)
         updateWindSpeed(weather.weather.current.windKph)
@@ -58,16 +71,6 @@ class FavoriteDetailWeatherFragment : ScopeFragment(), KodeinAware {
 
     private fun updateTitle(){
         (activity as? AppCompatActivity)?.supportActionBar?.title = "Favorite"
-    }
-
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        val safeArgs = arguments?.let { FavoriteDetailWeatherFragmentArgs.fromBundle(it) }
-
-        Log.d("ARGS", safeArgs.toString())
-        val loc = safeArgs?.locationName.toString()
-        viewModel = ViewModelProvider(this, viewModelFactoryInstanceFactory(loc)).get(FavoriteDetailWeatherViewModel::class.java)
-        bindUI()
     }
 
     private fun updateLocation(location: String){

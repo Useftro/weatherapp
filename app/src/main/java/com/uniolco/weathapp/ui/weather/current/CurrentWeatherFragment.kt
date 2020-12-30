@@ -1,5 +1,6 @@
 package com.uniolco.weathapp.ui.weather.current
 
+import android.graphics.drawable.Drawable
 import androidx.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.util.Log
@@ -10,9 +11,11 @@ import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.res.ResourcesCompat
+import androidx.core.graphics.alpha
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
+import com.bumptech.glide.load.resource.gif.GifDrawable
 import com.uniolco.weathapp.R
 import com.uniolco.weathapp.data.db.entity.favorite.Locations
 import com.uniolco.weathapp.data.firebase.User
@@ -26,7 +29,15 @@ import org.threeten.bp.ZonedDateTime
 import java.util.*
 import com.uniolco.weathapp.internal.glide.GlideApp
 import com.uniolco.weathapp.ui.base.SharedViewModel
-import kotlinx.coroutines.Dispatchers
+
+val SNOWSTORM_CODES = listOf<Int>(1117, 1222, 1224)
+val SUNNY_CODES = listOf<Int>(1000)
+val CLOUDY_CODES = listOf<Int>(1003, 1006)
+val OVERCAST_CODES = listOf<Int>(1009)
+val THUNDER_CODES = listOf<Int>(1087,1273,1276,1279,1282)
+val SNOW_CODES = listOf<Int>(1066,1069,1114,1210,1213,1216,1219,1237,1255,1258)
+val MIST_CODES = listOf<Int>(1030,1135,1147)
+val RAIN_CODES = listOf<Int>(1063, 1072, 1153, 1168,1178,1180,1183,1186,1189,1192,1195,1198,1201,1204,1207,1240,1243,1246,1249,1252,1261, 1264)
 
 class CurrentWeatherFragment : ScopeFragment(), KodeinAware {
     override val kodein by closestKodein()
@@ -41,15 +52,14 @@ class CurrentWeatherFragment : ScopeFragment(), KodeinAware {
         savedInstanceState: Bundle?
     ): View? {
         return inflater.inflate(R.layout.current_weather_fragment, container, false)
-
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+        current_group.visibility = View.INVISIBLE
         viewModel = ViewModelProviders.of(this, viewModelFactory).
             get(CurrentWeatherViewModel::class.java)
         bindUI()
-
     }
 
     private fun bindUI() = launch {
@@ -58,6 +68,7 @@ class CurrentWeatherFragment : ScopeFragment(), KodeinAware {
         currentLocation.observe(viewLifecycleOwner, Observer { location ->
             Log.d("TGGG", currentLocation.value?.name.toString())
             progressBar0.visibility = View.GONE
+            current_group.visibility = View.VISIBLE
             updateLocation(location.name)
             updateDate(location.zonedDateTime)
             addToFavorite(Locations(0, location))
@@ -67,10 +78,13 @@ class CurrentWeatherFragment : ScopeFragment(), KodeinAware {
             if(it == null) return@Observer
             progressBar0.visibility = View.GONE
             updateTemperature(it.tempC, it.feelslikeC)
-            updateCondition(it.windKph, it.visKm.toString(), it.humidity, it.pressureMb.toInt())
+            updateCondition(it.windKph, it.visKm.toString(), it.humidity, it.pressureMb.toInt(), it.condition.text)
             GlideApp.with(this@CurrentWeatherFragment)
                 .load("https:${it.condition.icon}")
                 .into(imageView_Weather)
+            GlideApp.with(this@CurrentWeatherFragment).load(background(it.condition.code)).into(imageView)
+            Log.d("CODECODECODECODE", it.condition.code.toString())
+            imageView.imageAlpha = 90
         })
         model.authorized.observe(viewLifecycleOwner, Observer {
             if(it == null) return@Observer
@@ -122,11 +136,12 @@ class CurrentWeatherFragment : ScopeFragment(), KodeinAware {
     }
 
     private fun updateCondition(windSpeed: Double, weatherDescription: String, humidity: Int,
-    pressure: Int){
+    pressure: Int, condition: String){
         textView_maxWind.text = "Wind speed: $windSpeed m/s"
         textView_humidity.text = "Humidity: $humidity%"
         textView_pressure.text = "Pressure: ${pressure*0.75} mmHg"
-        textView_weatherDesc.text = "Visibility: $weatherDescription"
+        textView_weatherDesc.text =
+            "Visibility: $weatherDescription\n\nSeems to be like its ${condition.toLowerCase()} today"
     }
 
     // true = disappear
@@ -138,6 +153,16 @@ class CurrentWeatherFragment : ScopeFragment(), KodeinAware {
         else{
             anim = AnimationUtils.loadAnimation(favorite_button.context, R.anim.appearing_button)
         }
+        animate(anim, clickable)
+        favorite_button.startAnimation(anim)
+//            favorite_button.animate().scaleX(0.0f).scaleY(0.0f).rotation(1080f).setDuration(5000).start()
+    }
+
+    private fun insertUser(user: User) = launch {
+        viewModel.insertOrUpdateUser(user)
+    }
+
+    private fun animate(anim: Animation, clickable: Boolean){
         anim.setAnimationListener(object: Animation.AnimationListener{
             override fun onAnimationStart(animation: Animation?) {
                 favorite_button.isClickable = false
@@ -156,12 +181,22 @@ class CurrentWeatherFragment : ScopeFragment(), KodeinAware {
 
             override fun onAnimationRepeat(animation: Animation?) {}
         })
-        favorite_button.startAnimation(anim)
-//            favorite_button.animate().scaleX(0.0f).scaleY(0.0f).rotation(1080f).setDuration(5000).start()
     }
 
-    private fun insertUser(user: User) = launch {
-        viewModel.insertOrUpdateUser(user)
+    private fun background(code: Int): Int{
+        var drawable: Int = 0
+        when(code){
+            in SNOWSTORM_CODES -> drawable = R.drawable.snowstorm
+            in SUNNY_CODES -> drawable = R.drawable.sunny
+            in CLOUDY_CODES -> drawable = R.drawable.cloudy
+            in OVERCAST_CODES -> drawable = R.drawable.overcast
+            in THUNDER_CODES -> drawable = R.drawable.thunder
+            in SNOW_CODES -> drawable = R.drawable.snow
+            in MIST_CODES -> drawable = R.drawable.mist
+            in RAIN_CODES -> drawable = R.drawable.rain
+            else -> Log.e("ABCDERFEF", "Oh shit, wrong code...")
+        }
+        return drawable
     }
 
 }
