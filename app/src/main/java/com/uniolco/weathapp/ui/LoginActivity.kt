@@ -53,12 +53,10 @@ class LoginActivity : AppCompatActivity() {
     private fun login() {
         if (emailloginEditText.text.isEmpty() || passwordEditText.text.isEmpty()){
             error("Please fill all fields!")
-            return
         }
 
         if(!Patterns.EMAIL_ADDRESS.matcher(emailloginEditText.text.toString()).matches()){
             error("Please enter valid email!")
-            return
         }
 
         auth.signInWithEmailAndPassword(emailloginEditText.text.toString(), passwordEditText.text.toString())

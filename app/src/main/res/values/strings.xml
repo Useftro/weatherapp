@@ -26,4 +26,7 @@
     <string name="originTextView"> Origin: </string>
     <string name="locationTextView"> Last known location: </string>
 
+    <string name="channelName"> BibaChannel </string>
+    <string name="channelDesc"> That\'s channel of Biba </string>
+
 </resources>

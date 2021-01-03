@@ -13,7 +13,7 @@ import com.uniolco.weathapp.data.firebase.User
 @Database(
     entities = [CurrentWeather::class, WeatherLocation::class, FutureWeather::class,
                FavoriteEntry::class, Locations::class, User::class],
-    version = 22,
+    version = 23,
 //    exportSchema = false // check some info about this
 )
 //@TypeConverters(CurrentWeatherConditionConverter::class)

@@ -1,11 +1,10 @@
 package com.uniolco.weathapp.ui.favorite.detail
 
-import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
+import android.widget.LinearLayout
+import android.widget.RelativeLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProviders
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -15,8 +14,10 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.uniolco.weathapp.R
+import com.uniolco.weathapp.internal.background
 import com.uniolco.weathapp.internal.glide.GlideApp
 import com.uniolco.weathapp.ui.base.ScopeFragment
+import kotlinx.android.synthetic.main.current_weather_fragment.*
 import kotlinx.android.synthetic.main.favorite_detail_weather_fragment.*
 import kotlinx.android.synthetic.main.future_detail_weather_fragment.textView_coluds
 import kotlinx.android.synthetic.main.future_detail_weather_fragment.textView_cityName
@@ -67,6 +68,28 @@ class FavoriteDetailWeatherFragment : ScopeFragment(), KodeinAware, OnMapReadyCa
         val loc = safeArgs?.locationName.toString()
         viewModel = ViewModelProviders.of(this, viewModelFactoryInstanceFactory(loc)).get(FavoriteDetailWeatherViewModel::class.java)
         bindUI()
+        var clicked: Boolean = false
+        val mapViewHeight = mapView.layoutParams.height
+        val mapViewWidth = mapView.layoutParams.width
+        val layoutWidth = const_layout.maxWidth
+        val layoutHeight = const_layout.maxHeight
+        mapFullScreen_btn.setOnClickListener {
+            if(!clicked){
+                clicked = true
+                val relPar: RelativeLayout.LayoutParams = RelativeLayout.LayoutParams(layoutHeight, layoutWidth)
+                mapView.rootView.layoutParams = relPar
+//                mapView.layoutParams.height = 2
+//                Log.d("HEHEHE", mapView.layoutParams.height.toString() + "; $layoutHeight")
+//                mapView.layoutParams.width = 2
+            }
+            else{
+                val relPar: RelativeLayout.LayoutParams = RelativeLayout.LayoutParams(mapViewHeight, mapViewWidth)
+                mapView.rootView.layoutParams = relPar
+//                mapView.layoutParams.height = mapViewHeight
+//                mapView.layoutParams.width = mapViewWidth
+                clicked = false
+            }
+        }
     }
 
     private fun bindUI() = launch {
@@ -79,6 +102,10 @@ class FavoriteDetailWeatherFragment : ScopeFragment(), KodeinAware, OnMapReadyCa
         updateHumidity(weather.weather.current.humidity)
         updateClouds(weather.weather.current.cloud)
         GlideApp.with(imageView_cond).load("https://" + weather.weather.current.condition.icon).into(imageView_cond)
+        GlideApp.with(this@FavoriteDetailWeatherFragment).
+            load(background(weather.weather.current.condition.code)).
+            into(favorite_background)
+        favorite_background.imageAlpha = 90
         Log.d("ARGUILS", weather.toString())
     }
 
@@ -124,8 +151,9 @@ class FavoriteDetailWeatherFragment : ScopeFragment(), KodeinAware, OnMapReadyCa
     override fun onMapReady(p0: GoogleMap) {
         launch {
             val pair = getCurrentLocation()
-            p0.moveCamera(CameraUpdateFactory.newLatLngZoom(LatLng(pair.first, pair.second), 5f))
+            p0.moveCamera(CameraUpdateFactory.newLatLngZoom(LatLng(pair.first, pair.second), 12f))
             p0.addMarker(MarkerOptions().position(LatLng(pair.first, pair.second)))
+            p0.uiSettings.isZoomControlsEnabled = true
         }
     }
 

@@ -10,9 +10,17 @@ import androidx.lifecycle.Observer
 import com.uniolco.weathapp.R
 import com.uniolco.weathapp.data.db.converter.LocalDateConverter
 import com.uniolco.weathapp.internal.DateNotFoundException
+import com.uniolco.weathapp.internal.background
 import com.uniolco.weathapp.internal.glide.GlideApp
 import com.uniolco.weathapp.ui.base.ScopeFragment
+import kotlinx.android.synthetic.main.favorite_detail_weather_fragment.*
 import kotlinx.android.synthetic.main.future_detail_weather_fragment.*
+import kotlinx.android.synthetic.main.future_detail_weather_fragment.textView_cityName
+import kotlinx.android.synthetic.main.future_detail_weather_fragment.textView_coluds
+import kotlinx.android.synthetic.main.future_detail_weather_fragment.textView_humitidy
+import kotlinx.android.synthetic.main.future_detail_weather_fragment.textView_maxWind
+import kotlinx.android.synthetic.main.future_detail_weather_fragment.textView_min_max_temperature
+import kotlinx.android.synthetic.main.future_detail_weather_fragment.textView_visibility
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.kodein.di.Kodein
@@ -76,6 +84,11 @@ class FutureDetailWeatherFragment : ScopeFragment(), KodeinAware {
             GlideApp.with(this@FutureDetailWeatherFragment)
                 .load("https:${weather.conditionIcon}")
                 .into(imageView_condition_icon)
+
+            GlideApp.with(this@FutureDetailWeatherFragment).
+            load(background(weather.conditionCode)).
+            into(futureFavorite_background)
+            futureFavorite_background.imageAlpha = 90
         })
 
     }

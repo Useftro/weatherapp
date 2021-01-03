@@ -1,13 +1,23 @@
 package com.uniolco.weathapp.ui
 
 import android.Manifest
+import android.app.AlarmManager
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.app.PendingIntent
+import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.SystemClock
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.core.app.ActivityCompat
+import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
 import androidx.lifecycle.Observer
@@ -18,15 +28,22 @@ import androidx.navigation.ui.setupWithNavController
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationResult
+import com.google.android.gms.tasks.OnCompleteListener
+import com.google.firebase.messaging.FirebaseMessaging
 import com.uniolco.weathapp.R
 import com.uniolco.weathapp.data.firebase.User
+import com.uniolco.weathapp.internal.notification.NotifHelper
+import com.uniolco.weathapp.internal.notification.NotificationUtils
+import com.uniolco.weathapp.internal.notification.ReminderBroadcast
 import com.uniolco.weathapp.ui.base.SharedViewModel
 import kotlinx.android.synthetic.main.activity_main.*
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.closestKodein
 import org.kodein.di.generic.instance
+import java.util.*
 
 private const val MY_PERMISSION_ACCESS_COARSE_LOCATION = 1
+private const val CHANNEL_ID = "BibaBoba"
 
 class MainActivity : AppCompatActivity(), KodeinAware {
 
@@ -42,6 +59,21 @@ class MainActivity : AppCompatActivity(), KodeinAware {
 
     private lateinit var navController: NavController
 
+
+    private fun createNotificationChannel(){
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
+            val name = "ReminderChannel"
+            val desc = "Channel for reminding"
+            val importance = NotificationManager.IMPORTANCE_DEFAULT
+            val channel = NotificationChannel("notify", name, importance)
+            channel.description = desc
+
+            val notificationManager = getSystemService(NotificationManager::class.java)
+            notificationManager.createNotificationChannel(channel)
+        }
+    }
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -49,6 +81,24 @@ class MainActivity : AppCompatActivity(), KodeinAware {
         val logged = intent.getBooleanExtra("Logged", false)
         val registered = intent.getBooleanExtra("registered", false)
         val email = intent.getStringExtra("Email")
+
+
+        NotifHelper.createNotificationChannel(this,
+            NotificationManagerCompat.IMPORTANCE_DEFAULT, false,
+            getString(R.string.app_name), "App notification channel.")
+//        NotifHelper.createSampleDataNotif(this, "Bla", "blabla", "WOW", true)
+
+        createNotificationChannel()
+        val inte: Intent = Intent(this, ReminderBroadcast::class.java)
+        val pendingIntent = PendingIntent.getBroadcast(this, 0, inte, 0)
+
+        val alarmManager = getSystemService(ALARM_SERVICE) as AlarmManager
+
+        val time = System.currentTimeMillis()
+
+        val time10sec: Long = 1000 * 10
+
+        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, time, time10sec, pendingIntent)
 
 
         val user = User(
@@ -76,6 +126,23 @@ class MainActivity : AppCompatActivity(), KodeinAware {
         Log.d("EMAAAAAIl", email.toString())
         Log.d("REGISTEREEEEEEEED", registered.toString())
 
+
+//        FirebaseMessaging.getInstance().token.addOnCompleteListener(OnCompleteListener { task ->
+//            if (!task.isSuccessful) {
+//                Log.w("OLOLO", "Fetching FCM registration token failed", task.exception)
+//                return@OnCompleteListener
+//            }
+//
+//            // Get new FCM registration token
+//            val token = task.result
+//
+//            // Log and toast
+//            Log.d("boyoyoyoyoy", token)
+//            Toast.makeText(baseContext, "Token: $token", Toast.LENGTH_SHORT).show()
+//        })
+
+
+
         observeModel(model)
         NavigationUI.setupActionBarWithNavController(this, navController)
         requestLocationPermission()
@@ -85,6 +152,10 @@ class MainActivity : AppCompatActivity(), KodeinAware {
         else
             requestLocationPermission()
     }
+
+
+
+
 
     private fun observeModel(model: SharedViewModel){
         model.authorized.observe(this, Observer {

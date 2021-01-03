@@ -13,5 +13,6 @@ interface UnitSpecificDetailedFutureWeatherEntry {
     val sunrise: String
     val sunset: String
     val conditionIcon: String
+    val conditionCode: Int
     val maxWindSpeed: Double
 }
