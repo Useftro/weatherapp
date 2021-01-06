@@ -7,6 +7,7 @@ import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
@@ -25,6 +26,7 @@ import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import androidx.navigation.ui.NavigationUI
 import androidx.navigation.ui.setupWithNavController
+import androidx.preference.PreferenceManager
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationResult
@@ -32,8 +34,6 @@ import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.messaging.FirebaseMessaging
 import com.uniolco.weathapp.R
 import com.uniolco.weathapp.data.firebase.User
-import com.uniolco.weathapp.internal.notification.NotifHelper
-import com.uniolco.weathapp.internal.notification.NotificationUtils
 import com.uniolco.weathapp.internal.notification.ReminderBroadcast
 import com.uniolco.weathapp.ui.base.SharedViewModel
 import kotlinx.android.synthetic.main.activity_main.*
@@ -78,15 +78,15 @@ class MainActivity : AppCompatActivity(), KodeinAware {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
+
+
+        val sharedPreferences: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(applicationContext)
+
+
         val logged = intent.getBooleanExtra("Logged", false)
         val registered = intent.getBooleanExtra("registered", false)
         val email = intent.getStringExtra("Email")
 
-
-        NotifHelper.createNotificationChannel(this,
-            NotificationManagerCompat.IMPORTANCE_DEFAULT, false,
-            getString(R.string.app_name), "App notification channel.")
-//        NotifHelper.createSampleDataNotif(this, "Bla", "blabla", "WOW", true)
 
         createNotificationChannel()
         val inte: Intent = Intent(this, ReminderBroadcast::class.java)

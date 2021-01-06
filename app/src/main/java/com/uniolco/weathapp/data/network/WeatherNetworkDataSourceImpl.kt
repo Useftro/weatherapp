@@ -1,6 +1,7 @@
 package com.uniolco.weathapp.data.network
 
 import android.content.Context
+import android.util.AndroidRuntimeException
 import android.util.Log
 import android.widget.Toast
 import androidx.lifecycle.LiveData
@@ -9,6 +10,7 @@ import com.uniolco.weathapp.data.network.response.CurrentWeatherResponse
 import com.uniolco.weathapp.data.network.response.FutureWeatherResponse
 import com.uniolco.weathapp.internal.CityNotFound
 import com.uniolco.weathapp.internal.NoConnectivityException
+import retrofit2.HttpException
 import kotlin.coroutines.coroutineContext
 
 const val NUMBER_OF_DAYS = 7
@@ -31,8 +33,10 @@ class WeatherNetworkDataSourceImpl(
 
     override suspend fun fetchCurrentWeather(location: String) {
         try{
+            Log.d("FDSKFL:SDF", "FETCHING...........")
             val fetchedCurrentWeather = apiWeatherService
                 .getCurrentWeather(location).await()
+            Log.d("FDSKFL:SDF", "FETCHEDDD...........")
             Log.d("FETCHED", fetchedCurrentWeather.toString())
             _downloadedCurrentWeather.postValue(fetchedCurrentWeather)
         }
@@ -40,7 +44,10 @@ class WeatherNetworkDataSourceImpl(
             Log.e("Connectivity", "No internet connection fetchCurrentWeather", e)
         }
         catch (e: retrofit2.HttpException){
-            Log.e("Cityyy", "Oh shit, I'm sorry...")
+            Log.e("Cityyy", "Oh shit, I'm sorry... ${e.message()}")
+            val fetchedCurrentWeather = apiWeatherService
+                .getCurrentWeather("Minsk").await()
+            _downloadedCurrentWeather.postValue(fetchedCurrentWeather)
         }
     }
 
@@ -53,6 +60,11 @@ class WeatherNetworkDataSourceImpl(
         }
         catch (e: NoConnectivityException){
             Log.e("Connectivity", "No internet connection fetchCurrentWeather", e)
+        }
+        catch (e: retrofit2.HttpException){
+            val fetchedFutureWeather = apiWeatherService
+                .getFutureWeather("Minsk", 7).await()
+            _downloadedFutureWeather.postValue(fetchedFutureWeather)
         }
     }
 

@@ -20,6 +20,7 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.threeten.bp.LocalDate
+import retrofit2.HttpException
 
 
 // just doing it easier to change something in future
@@ -61,6 +62,7 @@ class ForecastRepositoryImpl(
     override suspend fun getCurrentWeather(): LiveData<CurrentWeather> { // need to work under metric and imperial
         return withContext(Dispatchers.IO){
             initWeatherData()
+
             return@withContext currentWeatherDao.getWeatherMetric()
             //return@withContext if (metric) currentWeatherDao.getWeatherMetric()
         }

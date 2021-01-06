@@ -1,11 +1,14 @@
 package com.uniolco.weathapp.ui
 
 import android.content.Intent
+import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.AndroidRuntimeException
 import android.util.Log
 import android.util.Patterns
 import android.widget.Toast
+import androidx.preference.PreferenceManager
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
@@ -18,11 +21,12 @@ class LoginActivity : AppCompatActivity() {
 
     private lateinit var auth: FirebaseAuth
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
         auth = Firebase.auth
-
+        val sharedPreferences: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(applicationContext)
 //        if(auth.currentUser != null){
 //            val intent = Intent(this, MainActivity::class.java)
 //            intent.putExtra("Logged", true)
@@ -30,6 +34,11 @@ class LoginActivity : AppCompatActivity() {
 //            startActivity(intent)
 //            finish()
 //        }
+
+        with(sharedPreferences.edit()){
+            putBoolean("Passed", true)
+            apply()
+        }
 
         signupButton.setOnClickListener {
             startActivity(Intent(this, SignUpActivity::class.java))
@@ -52,25 +61,34 @@ class LoginActivity : AppCompatActivity() {
 
     private fun login() {
         if (emailloginEditText.text.isEmpty() || passwordEditText.text.isEmpty()){
-            error("Please fill all fields!")
+            Toast.makeText(this, "Please fill all fields!", Toast.LENGTH_SHORT).show()
         }
 
         if(!Patterns.EMAIL_ADDRESS.matcher(emailloginEditText.text.toString()).matches()){
-            error("Please enter valid email!")
+            Toast.makeText(this, "Please enter valid email!", Toast.LENGTH_SHORT).show()
         }
-
-        auth.signInWithEmailAndPassword(emailloginEditText.text.toString(), passwordEditText.text.toString())
-            .addOnCompleteListener(this) { task ->
-                if (task.isSuccessful) {
-                    val user = auth.currentUser
-                    Log.d("QWERTY", user?.uid.toString())
-                    updateUI(user)
-                } else {
-                    Toast.makeText(baseContext, "Authentication failed.",
-                        Toast.LENGTH_SHORT).show()
-                    updateUI(null)
+        try {
+            auth.signInWithEmailAndPassword(
+                emailloginEditText.text.toString(),
+                passwordEditText.text.toString()
+            )
+                .addOnCompleteListener(this) { task ->
+                    if (task.isSuccessful) {
+                        val user = auth.currentUser
+                        Log.d("QWERTY", user?.uid.toString())
+                        updateUI(user)
+                    } else {
+                        Toast.makeText(
+                            baseContext, "Authentication failed.",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                        updateUI(null)
+                    }
                 }
-            }
+        }
+        catch(e: java.lang.IllegalArgumentException){
+            Toast.makeText(this, "Please fill all fields!", Toast.LENGTH_SHORT).show()
+        }
     }
 
     public override fun onStart() {
