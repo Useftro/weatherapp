@@ -1,4 +1,4 @@
-    package com.uniolco.weathapp.ui.weather.future.detail
+package com.uniolco.weathapp.ui.weather.future.detail
 
 import androidx.lifecycle.ViewModelProviders
 import android.os.Bundle
@@ -36,12 +36,13 @@ class FutureDetailWeatherFragment : ScopeFragment(), KodeinAware {
     override val kodein: Kodein by closestKodein()
     private val viewModelFactoryInstanceFactory:
             ((LocalDate) -> FutureDetailWeatherViewModelFactory) by factory()
+    private lateinit var viewModel: FutureDetailWeatherViewModel
 
     companion object {
         fun newInstance() = FutureDetailWeatherFragment()
     }
 
-    private lateinit var viewModel: FutureDetailWeatherViewModel
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,

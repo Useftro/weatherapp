@@ -6,6 +6,9 @@ import android.util.Log
 import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.uniolco.weathapp.data.db.entity.current.Condition
+import com.uniolco.weathapp.data.db.entity.current.CurrentWeather
+import com.uniolco.weathapp.data.db.entity.current.WeatherLocation
 import com.uniolco.weathapp.data.network.response.CurrentWeatherResponse
 import com.uniolco.weathapp.data.network.response.FutureWeatherResponse
 import com.uniolco.weathapp.internal.CityNotFound
@@ -47,7 +50,10 @@ class WeatherNetworkDataSourceImpl(
             Log.e("Cityyy", "Oh shit, I'm sorry... ${e.message()}")
             val fetchedCurrentWeather = apiWeatherService
                 .getCurrentWeather("Minsk").await()
-            _downloadedCurrentWeather.postValue(fetchedCurrentWeather)
+            val currentResp = CurrentWeatherResponse(CurrentWeather(condition =
+            Condition(code = 1000, icon = "//cdn.weatherapi.com/weather/64x64/day/113.png")),
+                WeatherLocation(name = "Wrong location.", tzId = "Europe/Madrid"))
+            _downloadedCurrentWeather.postValue(currentResp)
         }
     }
 

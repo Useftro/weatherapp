@@ -157,9 +157,9 @@ class ForecastRepositoryImpl(
         }
     }
 
-    override suspend fun getAllLocations(): LiveData<out List<Locations>> {
+    override suspend fun getAllLocations(userEmail: String): LiveData<out List<Locations>> {
         return withContext(Dispatchers.IO){
-            return@withContext favoriteWeatherDao.getAllLocations()
+            return@withContext favoriteWeatherDao.getAllLocations(userEmail)
         }
     }
 

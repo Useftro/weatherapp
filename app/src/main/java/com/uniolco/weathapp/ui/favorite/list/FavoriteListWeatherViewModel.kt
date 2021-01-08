@@ -1,16 +1,20 @@
 package com.uniolco.weathapp.ui.favorite.list
 
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModel
 import com.uniolco.weathapp.data.db.entity.favorite.Locations
 import com.uniolco.weathapp.data.repository.ForecastRepository
 import com.uniolco.weathapp.internal.lazyDeferred
+import com.uniolco.weathapp.ui.base.SharedViewModel
 
 class FavoriteListWeatherViewModel(
-    private val forecastRepository: ForecastRepository
+    private val forecastRepository: ForecastRepository,
+    private val userEmail: String
 ) : ViewModel() {
 
+
     val favorites by lazyDeferred {
-        forecastRepository.getAllLocations()
+        forecastRepository.getAllLocations(userEmail)
     }
 
     suspend fun deleteLocation(locations: Locations){

@@ -20,8 +20,8 @@ interface FavoriteWeatherDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertLocations(weatherLocation: Locations)
 
-    @Query("SELECT * from favorite_locations")
-    fun getAllLocations(): LiveData<List<Locations>>
+    @Query("SELECT * from favorite_locations WHERE userEmail LIKE :userEm")
+    fun getAllLocations(userEm: String): LiveData<List<Locations>>
 
     @Query("DELETE FROM favorite_locations")
     fun deleteAllLocations()

@@ -13,16 +13,16 @@ const val WEATHER_LOCATION_ID = 0
 
 @Entity(tableName = "weather_location")
 data class WeatherLocation(
-    val country: String,
-    val lat: Double,
-    val localtime: String,
+    val country: String = "",
+    val lat: Double = 0.0,
+    val localtime: String = "",
     @SerializedName("localtime_epoch")
-    val localtimeEpoch: Long,
-    val lon: Double,
-    val name: String,
-    val region: String,
+    val localtimeEpoch: Long = 0,
+    val lon: Double = 0.0,
+    val name: String = "",
+    val region: String = "",
     @SerializedName("tz_id")
-    val tzId: String,
+    val tzId: String = "",
 ){
     @PrimaryKey(autoGenerate = false)
     var id_w = WEATHER_LOCATION_ID

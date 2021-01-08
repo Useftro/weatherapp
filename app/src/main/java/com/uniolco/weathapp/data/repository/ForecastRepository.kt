@@ -17,7 +17,7 @@ interface ForecastRepository {
     suspend fun getFutureWeatherByDate(date: LocalDate): LiveData<out UnitSpecificDetailedFutureWeatherEntry>
     suspend fun getFavorites(locations: String): List<FavoriteEntry>
 
-    suspend fun getAllLocations(): LiveData<out List<Locations>>
+    suspend fun getAllLocations(userEmail: String): LiveData<out List<Locations>>
     suspend fun insertLocations(weatherLocation: Locations)
     suspend fun deleteLocation(locations: Locations)
     suspend fun deleteAllLocations()

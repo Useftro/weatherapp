@@ -10,49 +10,49 @@ const val CURRENT_WEATHER_ID = 0
 
 @Entity(tableName = "current_weather")
 data class CurrentWeather(
-    val cloud: Int,
+    val cloud: Int = 0,
     @Embedded(prefix = "condition_")
     val condition: Condition,
     @SerializedName("feelslike_c")
-    val feelslikeC: Double,
+    val feelslikeC: Double = 0.0,
     @SerializedName("feelslike_f")
-    val feelslikeF: Double,
+    val feelslikeF: Double = 0.0,
     @SerializedName("gust_kph")
-    val gustKph: Double,
+    val gustKph: Double = 0.0,
     @SerializedName("gust_mph")
-    val gustMph: Double,
-    val humidity: Int,
+    val gustMph: Double = 0.0,
+    val humidity: Int = 0,
     @SerializedName("is_day")
-    val isDay: Int,
+    val isDay: Int = 0,
     @SerializedName("last_updated")
-    val lastUpdated: String,
+    val lastUpdated: String = "",
     @SerializedName("last_updated_epoch")
-    val lastUpdatedEpoch: Int,
+    val lastUpdatedEpoch: Int = 0,
     @SerializedName("precip_in")
-    val precipIn: Double,
+    val precipIn: Double = 0.0,
     @SerializedName("precip_mm")
-    val precipMm: Double,
+    val precipMm: Double = 0.0,
     @SerializedName("pressure_in")
-    val pressureIn: Double,
+    val pressureIn: Double = 0.0,
     @SerializedName("pressure_mb")
-    val pressureMb: Double,
+    val pressureMb: Double = 0.0,
     @SerializedName("temp_c")
-    val tempC: Double,
+    val tempC: Double = 0.0,
     @SerializedName("temp_f")
-    val tempF: Double,
-    val uv: Double,
+    val tempF: Double = 0.0,
+    val uv: Double = 0.0,
     @SerializedName("vis_km")
-    val visKm: Double,
+    val visKm: Double = 0.0,
     @SerializedName("vis_miles")
-    val visMiles: Double,
+    val visMiles: Double = 0.0,
     @SerializedName("wind_degree")
-    val windDegree: Int,
+    val windDegree: Int = 0,
     @SerializedName("wind_dir")
-    val windDir: String,
+    val windDir: String = "",
     @SerializedName("wind_kph")
-    val windKph: Double,
+    val windKph: Double = 0.0,
     @SerializedName("wind_mph")
-    val windMph: Double
+    val windMph: Double = 0.0
 ) {
     @PrimaryKey(autoGenerate = false)
     var id: Int = CURRENT_WEATHER_ID

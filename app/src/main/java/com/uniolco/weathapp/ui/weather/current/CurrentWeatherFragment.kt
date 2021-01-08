@@ -60,7 +60,7 @@ class CurrentWeatherFragment : ScopeFragment(), KodeinAware {
             progressBar0.visibility = View.GONE
             updateLocation(location.name)
             updateDate(location.zonedDateTime)
-            addToFavorite(Locations(0, location))
+            addToFavorite(Locations(0, location, model.email.value.toString()))
             if (location == null) return@Observer
         })
         currentWeather.observe(viewLifecycleOwner, Observer {
@@ -78,9 +78,11 @@ class CurrentWeatherFragment : ScopeFragment(), KodeinAware {
         model.authorized.observe(viewLifecycleOwner, Observer {
             if(it == null) return@Observer
             if (it == false){
+                favorite_button.isClickable = false
                 buttonDisappearOrAppear(disappear = true, clickable = false)
             }
             else{
+                favorite_button.isClickable = true
                 buttonDisappearOrAppear(disappear = false, clickable = true)
             }
         })
@@ -157,7 +159,6 @@ class CurrentWeatherFragment : ScopeFragment(), KodeinAware {
             }
 
             override fun onAnimationEnd(animation: Animation?) {
-                favorite_button.isClickable = clickable
                 if(clickable){
                     favorite_button.visibility = View.VISIBLE
                 }

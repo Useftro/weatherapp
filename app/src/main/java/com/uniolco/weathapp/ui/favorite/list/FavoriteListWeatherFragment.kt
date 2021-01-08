@@ -8,12 +8,14 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.uniolco.weathapp.R
 import com.uniolco.weathapp.data.db.entity.favorite.Locations
 import com.uniolco.weathapp.ui.base.ScopeFragment
+import com.uniolco.weathapp.ui.base.SharedViewModel
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.ViewHolder
 import kotlinx.android.synthetic.main.favorite_list_weather_fragment.*
@@ -23,13 +25,16 @@ import kotlinx.android.synthetic.main.item_favorite_list_weather.*
 import kotlinx.coroutines.launch
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.x.closestKodein
+import org.kodein.di.generic.factory
 import org.kodein.di.generic.instance
 
 class FavoriteListWeatherFragment : ScopeFragment(), KodeinAware {
 
     override val kodein by closestKodein()
     private lateinit var viewModel: FavoriteListWeatherViewModel
-    private val viewModelFactory: FavoriteListWeatherViewModelFactory by instance()
+    private val viewModelFactoryInstanceFactory:
+            ((String) -> FavoriteListWeatherViewModelFactory) by factory()
+    private val model: SharedViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -40,7 +45,8 @@ class FavoriteListWeatherFragment : ScopeFragment(), KodeinAware {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProvider(this, viewModelFactory).get(FavoriteListWeatherViewModel::class.java)
+        val email = model.email.value.toString()
+        viewModel = ViewModelProvider(this, viewModelFactoryInstanceFactory(email)).get(FavoriteListWeatherViewModel::class.java)
         // TODO: Use the ViewModel
         bindUI()
     }

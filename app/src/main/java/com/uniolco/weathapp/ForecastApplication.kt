@@ -40,8 +40,8 @@ class ForecastApplication: Application(), KodeinAware {
         // doesn't need to be a singleton, then we can straight use provider
         bind() from provider { CurrentWeatherViewModelFactory(instance()) } // each time creating a new instance of Factory
         bind() from provider { FutureListWeatherViewModelFactory(instance()) } // each time creating a new instance of Facto
-        bind() from provider { FavoriteListWeatherViewModelFactory(instance()) }
 //        bind() from provider { FavoriteDetailWeatherViewModelFactory(instance())}
+        bind() from factory { userEmail: String -> FavoriteListWeatherViewModelFactory(instance(), userEmail) }
         bind() from factory { detailDate: LocalDate -> FutureDetailWeatherViewModelFactory(detailDate, instance()) }
         bind() from factory { location: String -> FavoriteDetailWeatherViewModelFactory(location, instance()) }
     }

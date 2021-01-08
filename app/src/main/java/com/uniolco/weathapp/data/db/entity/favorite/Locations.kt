@@ -9,5 +9,6 @@ data class Locations(
     @PrimaryKey(autoGenerate = true)
     val id_loc: Int = 0,
     @Embedded
-    val location: WeatherLocation
+    val location: WeatherLocation,
+    var userEmail: String
 )
