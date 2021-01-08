@@ -22,6 +22,7 @@ class SplashActivity : AppCompatActivity() {
         val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(applicationContext)
 
         val passed = sharedPreferences.getBoolean("Passed", false)
+        val userNotNull = sharedPreferences.getBoolean("UserNotNull", false)
 
         val time = if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
             Calendar.HOUR_OF_DAY
@@ -31,7 +32,7 @@ class SplashActivity : AppCompatActivity() {
 
 
         Handler().postDelayed({
-            if(passed){
+            if(passed && !userNotNull){
                 startActivity(Intent(this, MainActivity::class.java))
                 finish()
             }

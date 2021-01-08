@@ -1,5 +1,6 @@
 package com.uniolco.weathapp.ui
 
+import android.content.BroadcastReceiver
 import android.content.Intent
 import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
@@ -25,7 +26,9 @@ class LoginActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
+
         auth = Firebase.auth
+        Log.d("AFDFDFS", auth.currentUser.toString())
         val sharedPreferences: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(applicationContext)
 //        if(auth.currentUser != null){
 //            val intent = Intent(this, MainActivity::class.java)
@@ -46,6 +49,10 @@ class LoginActivity : AppCompatActivity() {
 
         loginButton.setOnClickListener {
             login()
+            with(sharedPreferences.edit()){
+                putBoolean("UserNotNull", true)
+                apply()
+            }
         }
 
         contWoLogButton.setOnClickListener {
@@ -111,9 +118,15 @@ class LoginActivity : AppCompatActivity() {
             inten.putExtra("address", intent.getStringExtra("address"))
 
 
+
             inten.putExtra("registered", intent.getBooleanExtra("registered", false))
             startActivity(inten)
             finish()
         }
+//        else{
+//            val inten = Intent(this, MainActivity::class.java)
+//            startActivity(inten)
+//            finish()
+//        }
     }
 }

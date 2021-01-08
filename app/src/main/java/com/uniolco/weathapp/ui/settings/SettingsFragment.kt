@@ -1,6 +1,7 @@
 package com.uniolco.weathapp.ui.settings
 
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
@@ -9,6 +10,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
+import androidx.preference.PreferenceManager
 import com.google.firebase.auth.FirebaseAuth
 import com.uniolco.weathapp.R
 import com.uniolco.weathapp.ui.LoginActivity
@@ -22,6 +24,7 @@ class SettingsFragment: PreferenceFragmentCompat() {
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         addPreferencesFromResource(R.xml.preferences)
+
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -29,8 +32,9 @@ class SettingsFragment: PreferenceFragmentCompat() {
         (activity as? AppCompatActivity)?.supportActionBar?.title = "Settings"
         val preferenceButton = findPreference<Preference>(LOG_BUTTON)!!
         var subtitle = " "
+        val sharedPreferences: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(activity)
 
-        model.authorized.observe(viewLifecycleOwner, Observer { item ->
+        model.loggedIn.observe(viewLifecycleOwner, Observer { item ->
             if (item == true){
                 preferenceButton.title = "Log out"
             }
@@ -49,7 +53,11 @@ class SettingsFragment: PreferenceFragmentCompat() {
                     else{
                         try {
                             FirebaseAuth.getInstance().signOut()
-                            model.authorized.postValue(false)
+                            model.loggedIn.postValue(false)
+                            with(sharedPreferences.edit()){
+                                putBoolean("UserNotNull", false)
+                                apply()
+                            }
                             Toast.makeText(preferenceButton.context,"Signed out!", Toast.LENGTH_SHORT).show()
                         }
                         catch (e: Exception){
@@ -60,7 +68,7 @@ class SettingsFragment: PreferenceFragmentCompat() {
                 }
             })
         })
-        if(model.authorized.value == true){
+        if(model.loggedIn.value == true){
             subtitle = "Hello, ${model.email.value}!"
         }
         else{

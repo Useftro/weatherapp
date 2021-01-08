@@ -5,20 +5,16 @@ import android.app.AlarmManager
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
-import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.os.SystemClock
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.core.app.ActivityCompat
-import androidx.core.app.NotificationCompat
-import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
 import androidx.lifecycle.Observer
@@ -30,8 +26,6 @@ import androidx.preference.PreferenceManager
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationResult
-import com.google.android.gms.tasks.OnCompleteListener
-import com.google.firebase.messaging.FirebaseMessaging
 import com.uniolco.weathapp.R
 import com.uniolco.weathapp.data.firebase.User
 import com.uniolco.weathapp.internal.notification.ReminderBroadcast
@@ -40,7 +34,6 @@ import kotlinx.android.synthetic.main.activity_main.*
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.closestKodein
 import org.kodein.di.generic.instance
-import java.util.*
 
 private const val MY_PERMISSION_ACCESS_COARSE_LOCATION = 1
 private const val CHANNEL_ID = "BibaBoba"
@@ -60,6 +53,7 @@ class MainActivity : AppCompatActivity(), KodeinAware {
     private lateinit var navController: NavController
 
 
+    //creating channel for notif (for API >= 22)
     private fun createNotificationChannel(){
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
             val name = "ReminderChannel"
@@ -83,11 +77,13 @@ class MainActivity : AppCompatActivity(), KodeinAware {
         val sharedPreferences: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(applicationContext)
 
 
+        // getting info from login acitivity if logged, if registered and email
         val logged = intent.getBooleanExtra("Logged", false)
         val registered = intent.getBooleanExtra("registered", false)
         val email = intent.getStringExtra("Email")
 
 
+        // notifications
         createNotificationChannel()
         val inte: Intent = Intent(this, ReminderBroadcast::class.java)
         val pendingIntent = PendingIntent.getBroadcast(this, 0, inte, 0)
@@ -99,8 +95,10 @@ class MainActivity : AppCompatActivity(), KodeinAware {
         val time10sec: Long = 1000 * 10
 
         alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, time, time10sec, pendingIntent)
+        // end of notifications
 
 
+        // creating user
         val user = User(
             intent.getStringExtra("login").toString(),
             intent.getStringExtra("email").toString(),
@@ -119,7 +117,7 @@ class MainActivity : AppCompatActivity(), KodeinAware {
         bottom_nav.setupWithNavController(navController) // setting up bottom nav bar
         val model: SharedViewModel by viewModels()
 
-        model.authorized.postValue(logged)
+        model.loggedIn.postValue(logged)
         model.registered.postValue(registered)
         model.personInfo.postValue(user)
         model.email.postValue(email)
@@ -158,7 +156,7 @@ class MainActivity : AppCompatActivity(), KodeinAware {
 
 
     private fun observeModel(model: SharedViewModel){
-        model.authorized.observe(this, Observer {
+        model.loggedIn.observe(this, Observer {
             bottom_nav.menu.getItem(0).isVisible = it != false
         })
     }

@@ -5,13 +5,13 @@ import androidx.lifecycle.ViewModel
 import com.uniolco.weathapp.data.firebase.User
 
 class SharedViewModel : ViewModel() {
-    val authorized = MutableLiveData<Boolean>()
+    val loggedIn = MutableLiveData<Boolean>()
     val personInfo = MutableLiveData<User>()
     val registered = MutableLiveData<Boolean>()
     val email = MutableLiveData<String>()
 
     fun select(item: Boolean) {
-        authorized.value = item
+        loggedIn.value = item
     }
 
     fun selectPersonInfo(item: User){

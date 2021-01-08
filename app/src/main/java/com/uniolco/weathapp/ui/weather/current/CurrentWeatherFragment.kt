@@ -11,7 +11,6 @@ import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.NotificationManagerCompat
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import com.uniolco.weathapp.R
@@ -75,7 +74,7 @@ class CurrentWeatherFragment : ScopeFragment(), KodeinAware {
             Log.d("CODECODECODECODE", it.condition.code.toString())
             imageView.imageAlpha = 90
         })
-        model.authorized.observe(viewLifecycleOwner, Observer {
+        model.loggedIn.observe(viewLifecycleOwner, Observer {
             if(it == null) return@Observer
             if (it == false){
                 favorite_button.isClickable = false
