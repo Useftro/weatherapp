@@ -10,6 +10,8 @@ class SharedViewModel : ViewModel() {
     val registered = MutableLiveData<Boolean>()
     val email = MutableLiveData<String>()
 
+    val ifFromSettings = MutableLiveData<Boolean>()
+
     fun select(item: Boolean) {
         loggedIn.value = item
     }

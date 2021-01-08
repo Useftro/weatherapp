@@ -57,6 +57,7 @@ class LoginActivity : AppCompatActivity() {
 
         contWoLogButton.setOnClickListener {
             val intent = Intent(this, MainActivity::class.java)
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP)
             intent.putExtra("Logged", false)
             intent.putExtra("registered", false)
             startActivity(intent)
@@ -109,6 +110,7 @@ class LoginActivity : AppCompatActivity() {
             val inten = Intent(this, MainActivity::class.java)
             inten.putExtra("Logged", true)
             inten.putExtra("Email", currentUser.email)
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP)
 
             inten.putExtra("login", intent.getStringExtra("login"))
             inten.putExtra("email", intent.getStringExtra("email"))

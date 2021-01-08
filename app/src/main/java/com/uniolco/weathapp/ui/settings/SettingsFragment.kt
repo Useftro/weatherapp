@@ -1,5 +1,6 @@
 package com.uniolco.weathapp.ui.settings
 
+import android.app.Activity
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
@@ -49,6 +50,7 @@ class SettingsFragment: PreferenceFragmentCompat() {
                     if(item == false){
                         val intent = Intent(preferenceButton.context, LoginActivity::class.java)
                         startActivity(intent)
+                        model.ifFromSettings.postValue(true)
                     }
                     else{
                         try {

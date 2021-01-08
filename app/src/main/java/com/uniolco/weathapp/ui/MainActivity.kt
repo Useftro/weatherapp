@@ -1,10 +1,7 @@
 package com.uniolco.weathapp.ui
 
 import android.Manifest
-import android.app.AlarmManager
-import android.app.NotificationChannel
-import android.app.NotificationManager
-import android.app.PendingIntent
+import android.app.*
 import android.content.Intent
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
@@ -142,6 +139,7 @@ class MainActivity : AppCompatActivity(), KodeinAware {
 
 
         observeModel(model)
+        observeIfFromSettings(model)
         NavigationUI.setupActionBarWithNavController(this, navController)
         requestLocationPermission()
         if (hasLocationPermission()){
@@ -158,6 +156,15 @@ class MainActivity : AppCompatActivity(), KodeinAware {
     private fun observeModel(model: SharedViewModel){
         model.loggedIn.observe(this, Observer {
             bottom_nav.menu.getItem(0).isVisible = it != false
+        })
+    }
+
+    private fun observeIfFromSettings(model: SharedViewModel){
+        model.ifFromSettings.observe(this, Observer {
+            if(it == null)
+                return@Observer
+            if(it == true)
+                finish()
         })
     }
 
