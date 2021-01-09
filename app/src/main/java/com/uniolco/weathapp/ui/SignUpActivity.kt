@@ -90,15 +90,4 @@ class SignUpActivity : AppCompatActivity() {
             }
 
     }
-
-//    public override fun onStart() {
-//        super.onStart()
-//        // Check if user is signed in (non-null) and update UI accordingly.
-//        val currentUser = auth.currentUser
-//        updateUI(currentUser)
-//    }
-//
-//    private fun updateUI(currentUser: FirebaseUser?) {
-//        TODO("Not yet implemented")
-//    }
 }

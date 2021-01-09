@@ -11,11 +11,15 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.Navigation
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.uniolco.weathapp.R
 import com.uniolco.weathapp.data.db.entity.favorite.Locations
+import com.uniolco.weathapp.ui.base.RecyclerAdapter
 import com.uniolco.weathapp.ui.base.ScopeFragment
 import com.uniolco.weathapp.ui.base.SharedViewModel
+import com.uniolco.weathapp.ui.base.SwipeToDeleteCallback
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.ViewHolder
 import kotlinx.android.synthetic.main.favorite_list_weather_fragment.*
@@ -56,7 +60,7 @@ class FavoriteListWeatherFragment : ScopeFragment(), KodeinAware {
 
         favorites.observe(viewLifecycleOwner, Observer { favorits ->
             if(favorits == null) return@Observer
-            initRecyclerView(favorits.toItems())
+            initRecyclerView(favorits/*.toItems()*/)
         })
         updateTitle()
         updateSubtitle()
@@ -80,24 +84,41 @@ class FavoriteListWeatherFragment : ScopeFragment(), KodeinAware {
         }
     }
 
-    private fun initRecyclerView(items: List<FavoriteListItem>){
-        val groupAdapter = GroupAdapter<ViewHolder>().apply {
+    private lateinit var adapterRec: RecyclerAdapter
+
+    private fun initRecyclerView(items: List<Locations>){
+/*        val groupAdapter = GroupAdapter<ViewHolder>().apply {
             addAll(items)
-        }
+        }*/
+
+        recyclerView.layoutManager = LinearLayoutManager(this@FavoriteListWeatherFragment.context)
+        adapterRec = RecyclerAdapter(items.toMutableList())
+        recyclerView.adapter = adapterRec
 
 
-        recyclerView.apply {
+/*        recyclerView.apply {
             layoutManager = LinearLayoutManager(this@FavoriteListWeatherFragment.context)
             adapter = groupAdapter
+        }*/
+
+        val swipeHandler = object: SwipeToDeleteCallback(layoutInflater.context){
+            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                val adapter = recyclerView.adapter as RecyclerAdapter
+                val loc = adapter.removeAt(viewHolder.adapterPosition)
+                deleteLocation(loc)
+                Log.d("ADADADADADDADAD", viewHolder.adapterPosition.toString())
+            }
         }
 
-        groupAdapter.setOnItemClickListener { item, view ->
+        val itemTouchHelper = ItemTouchHelper(swipeHandler)
+        itemTouchHelper.attachToRecyclerView(recyclerView)
+
+/*        groupAdapter.setOnItemClickListener { item, view ->
             (item as? FavoriteListItem)?.let {
                 navigateToFavoriteDetail(it.locations.location.name, view)
             }
             Log.d("ITEM", item.id.toString() + "||")
-        }
-
+        }*/
     }
 
 

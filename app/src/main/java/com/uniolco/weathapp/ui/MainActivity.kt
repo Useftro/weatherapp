@@ -163,8 +163,10 @@ class MainActivity : AppCompatActivity(), KodeinAware {
         model.ifFromSettings.observe(this, Observer {
             if(it == null)
                 return@Observer
-            if(it == true)
+            if(it == true){
                 finish()
+                model.ifFromSettings.postValue(false)
+            }
         })
     }
 

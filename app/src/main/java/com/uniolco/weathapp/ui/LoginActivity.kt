@@ -1,11 +1,9 @@
 package com.uniolco.weathapp.ui
 
-import android.content.BroadcastReceiver
 import android.content.Intent
 import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.AndroidRuntimeException
 import android.util.Log
 import android.util.Patterns
 import android.widget.Toast
@@ -38,6 +36,7 @@ class LoginActivity : AppCompatActivity() {
 //            finish()
 //        }
 
+
         with(sharedPreferences.edit()){
             putBoolean("Passed", true)
             apply()
@@ -54,6 +53,7 @@ class LoginActivity : AppCompatActivity() {
                 apply()
             }
         }
+
 
         contWoLogButton.setOnClickListener {
             val intent = Intent(this, MainActivity::class.java)
@@ -98,12 +98,12 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
-    public override fun onStart() {
+/*    public override fun onStart() {
         super.onStart()
         // Check if user is signed in (non-null) and update UI accordingly.
         val currentUser = auth.currentUser
         updateUI(currentUser)
-    }
+    }*/
 
     private fun updateUI(currentUser: FirebaseUser?) {
         if(currentUser != null){
