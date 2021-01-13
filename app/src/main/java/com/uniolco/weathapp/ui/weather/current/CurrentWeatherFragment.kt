@@ -13,6 +13,10 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 import com.uniolco.weathapp.R
 import com.uniolco.weathapp.data.db.entity.favorite.Locations
 import com.uniolco.weathapp.data.firebase.User
@@ -26,6 +30,7 @@ import org.threeten.bp.ZonedDateTime
 import java.util.*
 import com.uniolco.weathapp.internal.glide.GlideApp
 import com.uniolco.weathapp.ui.base.SharedViewModel
+import com.google.firebase.firestore.FirebaseFirestore
 
 class CurrentWeatherFragment : ScopeFragment(), KodeinAware {
     override val kodein by closestKodein()
@@ -47,7 +52,9 @@ class CurrentWeatherFragment : ScopeFragment(), KodeinAware {
         current_group.visibility = View.INVISIBLE
         viewModel = ViewModelProviders.of(this, viewModelFactory).
             get(CurrentWeatherViewModel::class.java)
+        getUser(model.email.value.toString())
         bindUI()
+
     }
 
     private fun bindUI() = launch {
@@ -169,5 +176,36 @@ class CurrentWeatherFragment : ScopeFragment(), KodeinAware {
 
             override fun onAnimationRepeat(animation: Animation?) {}
         })
+    }
+
+    private fun getUser(userEmail: String){ // getting info from firebase database about user
+        // getting reference of FirebaseDatabase
+        val rootRef = FirebaseDatabase.getInstance().reference
+        rootRef.keepSynced(true)
+        // going to Users where searching for email of user if it is then return data about user
+        val ordersRef = rootRef.child("Users").orderByChild("email").equalTo(userEmail)
+
+        val valueEventListener = object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                for (ds in dataSnapshot.children) {
+                    Log.d("SNAPSHOOOOOT", ds.value.toString())
+                    val name = ds.child("name").getValue(String::class.java)
+                    val login = ds.child("login").getValue(String::class.java)
+                    val surname = ds.child("surname").getValue(String::class.java)
+                    val phoneNumber = ds.child("phoneNumber").getValue(String::class.java)
+                    val address = ds.child("address").getValue(String::class.java)
+                    val email = ds.child("email").getValue(String::class.java)
+                    if (login != null) {
+                        model.user.postValue(User(login, email!!, phoneNumber!!, name!!, surname!!, address!!))
+                    }
+                    Log.d("LALALALLLAL", name.toString() + login.toString() + surname.toString())
+                }
+            }
+
+            override fun onCancelled(databaseError: DatabaseError) {
+                Log.d("ERRORINDATABASEFIREBASE", databaseError.message)
+            }
+        }
+        ordersRef.addListenerForSingleValueEvent(valueEventListener)
     }
 }

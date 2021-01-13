@@ -1,7 +1,10 @@
 package com.uniolco.weathapp.ui.base
 
+import android.content.Context
+import android.content.Intent
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.RecyclerView
 import com.uniolco.weathapp.R
@@ -27,14 +30,14 @@ class RecyclerAdapter(private val favorites: MutableList<Locations>):
     }
 
 
-
-    class ItemLocationHolder(v: View): RecyclerView.ViewHolder(v), View.OnClickListener {
+    inner class ItemLocationHolder(v: View): RecyclerView.ViewHolder(v), View.OnClickListener, View.OnLongClickListener {
 
         private var view: View = v
         private var favorite: Locations? = null
 
         init {
             v.setOnClickListener(this)
+            v.setOnLongClickListener(this)
         }
 
         override fun onClick(v: View?) {
@@ -50,6 +53,19 @@ class RecyclerAdapter(private val favorites: MutableList<Locations>):
             this.favorite = favorite
             view.textView_cityName.text = "${favorite.location.country}\n${favorite.location.name}"
         }
+
+        override fun onLongClick(v: View?): Boolean {
+            val sendIntent: Intent = Intent().apply {
+                action = Intent.ACTION_SEND
+                putExtra(Intent.EXTRA_TEXT, "Biba")
+                type = "text/plain"
+            }
+            val shareIntent = Intent.createChooser(sendIntent, null)
+            ContextCompat.startActivity(view.context, shareIntent, null)
+            return true
+        }
+
+
     }
 
     fun removeAt(position: Int): Locations{

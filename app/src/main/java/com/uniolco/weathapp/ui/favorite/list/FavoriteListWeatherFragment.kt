@@ -20,8 +20,6 @@ import com.uniolco.weathapp.ui.base.RecyclerAdapter
 import com.uniolco.weathapp.ui.base.ScopeFragment
 import com.uniolco.weathapp.ui.base.SharedViewModel
 import com.uniolco.weathapp.ui.base.SwipeToDeleteCallback
-import com.xwray.groupie.GroupAdapter
-import com.xwray.groupie.ViewHolder
 import kotlinx.android.synthetic.main.favorite_list_weather_fragment.*
 import kotlinx.android.synthetic.main.favorite_list_weather_fragment.recyclerView
 import kotlinx.android.synthetic.main.future_list_weather_fragment.*
@@ -30,7 +28,6 @@ import kotlinx.coroutines.launch
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.x.closestKodein
 import org.kodein.di.generic.factory
-import org.kodein.di.generic.instance
 
 class FavoriteListWeatherFragment : ScopeFragment(), KodeinAware {
 

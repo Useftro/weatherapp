@@ -23,6 +23,10 @@ import androidx.preference.PreferenceManager
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationResult
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 import com.uniolco.weathapp.R
 import com.uniolco.weathapp.data.firebase.User
 import com.uniolco.weathapp.internal.notification.ReminderBroadcast
@@ -48,6 +52,8 @@ class MainActivity : AppCompatActivity(), KodeinAware {
     }
 
     private lateinit var navController: NavController
+
+    val model: SharedViewModel by viewModels()
 
 
     //creating channel for notif (for API >= 22)
@@ -83,7 +89,7 @@ class MainActivity : AppCompatActivity(), KodeinAware {
         // notifications
         createNotificationChannel()
         val inte: Intent = Intent(this, ReminderBroadcast::class.java)
-        val pendingIntent = PendingIntent.getBroadcast(this, 0, inte, 0)
+        val pendingIntent = PendingIntent.getBroadcast(this, 0, inte, PendingIntent.FLAG_UPDATE_CURRENT)
 
         val alarmManager = getSystemService(ALARM_SERVICE) as AlarmManager
 
@@ -91,7 +97,12 @@ class MainActivity : AppCompatActivity(), KodeinAware {
 
         val time10sec: Long = 1000 * 10
 
-        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, time, time10sec, pendingIntent)
+        if(sharedPreferences.getBoolean("USE_NOTIFICATION", true)) {
+            alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, time, time10sec, pendingIntent)
+        }
+        else{
+            alarmManager.cancel(pendingIntent)
+        }
         // end of notifications
 
 
@@ -107,12 +118,12 @@ class MainActivity : AppCompatActivity(), KodeinAware {
         Log.d("DATA", logged.toString())
         Log.d("MAINUSER", user.toString())
 
+
         navController = Navigation.findNavController(this, R.id.nav_host_fragment)
         navController.setGraph(R.navigation.mobile_navigation, bundleOf(Pair("Logged", logged)))
         // setting up navigation controller
         Log.d("RTYUI", navController.currentDestination.toString())
         bottom_nav.setupWithNavController(navController) // setting up bottom nav bar
-        val model: SharedViewModel by viewModels()
 
         model.loggedIn.postValue(logged)
         model.registered.postValue(registered)

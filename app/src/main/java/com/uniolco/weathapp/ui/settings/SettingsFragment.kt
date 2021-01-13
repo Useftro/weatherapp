@@ -13,7 +13,12 @@ import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.PreferenceManager
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 import com.uniolco.weathapp.R
+import com.uniolco.weathapp.data.firebase.User
 import com.uniolco.weathapp.ui.LoginActivity
 import com.uniolco.weathapp.ui.base.SharedViewModel
 
@@ -25,7 +30,6 @@ class SettingsFragment: PreferenceFragmentCompat() {
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         addPreferencesFromResource(R.xml.preferences)
-
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -77,5 +81,14 @@ class SettingsFragment: PreferenceFragmentCompat() {
             subtitle = "Not authorised."
         }
         (activity as? AppCompatActivity)?.supportActionBar?.subtitle = subtitle
+
+        val infoPref: Preference? = findPreference("Info")
+        model.user.observe(viewLifecycleOwner, Observer {
+            if (it == null)
+                return@Observer
+            infoPref?.summary = "${it.name}, ${it.email}, ${it.login}"
+
+        })
+
     }
 }
