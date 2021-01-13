@@ -3,7 +3,6 @@ package com.uniolco.weathapp.ui.favorite.detail
 import android.os.Bundle
 import android.util.Log
 import android.view.*
-import android.widget.LinearLayout
 import android.widget.RelativeLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProviders
@@ -57,7 +56,6 @@ class FavoriteDetailWeatherFragment : ScopeFragment(), KodeinAware, OnMapReadyCa
         mMap?.onCreate(savedInstanceState)
         mMap?.getMapAsync(this)
         return view
-        //inflater.inflate(R.layout.favorite_detail_weather_fragment, container, false)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -68,7 +66,7 @@ class FavoriteDetailWeatherFragment : ScopeFragment(), KodeinAware, OnMapReadyCa
         val loc = safeArgs?.locationName.toString()
         viewModel = ViewModelProviders.of(this, viewModelFactoryInstanceFactory(loc)).get(FavoriteDetailWeatherViewModel::class.java)
         bindUI()
-        var clicked: Boolean = false
+        var clicked = false
         val mapViewHeight = mapView.layoutParams.height
         val mapViewWidth = mapView.layoutParams.width
         val layoutWidth = const_layout.maxWidth

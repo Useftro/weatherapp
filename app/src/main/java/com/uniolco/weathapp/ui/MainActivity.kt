@@ -1,16 +1,17 @@
 package com.uniolco.weathapp.ui
 
 import android.Manifest
+import android.R.attr.fragment
 import android.app.*
 import android.content.Intent
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.os.Build
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
@@ -23,10 +24,6 @@ import androidx.preference.PreferenceManager
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationResult
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ValueEventListener
 import com.uniolco.weathapp.R
 import com.uniolco.weathapp.data.firebase.User
 import com.uniolco.weathapp.internal.notification.ReminderBroadcast
@@ -36,6 +33,7 @@ import org.kodein.di.KodeinAware
 import org.kodein.di.android.closestKodein
 import org.kodein.di.generic.instance
 
+
 private const val MY_PERMISSION_ACCESS_COARSE_LOCATION = 1
 private const val CHANNEL_ID = "BibaBoba"
 
@@ -43,17 +41,17 @@ class MainActivity : AppCompatActivity(), KodeinAware {
 
     override val kodein by closestKodein()
     private val fusedLocationProviderClient: FusedLocationProviderClient by instance()
+    private val model: SharedViewModel by viewModels()
 
     private val locationCallback = object : LocationCallback() {
         override fun onLocationResult(p0: LocationResult?) {
             Log.d("LOCATI,", p0.toString())
+            model.dataReady.postValue(true)
             super.onLocationResult(p0)
         }
     }
 
     private lateinit var navController: NavController
-
-    val model: SharedViewModel by viewModels()
 
 
     //creating channel for notif (for API >= 22)
@@ -77,7 +75,9 @@ class MainActivity : AppCompatActivity(), KodeinAware {
         setSupportActionBar(toolbar)
 
 
-        val sharedPreferences: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(applicationContext)
+        val sharedPreferences: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(
+            applicationContext
+        )
 
 
         // getting info from login acitivity if logged, if registered and email
@@ -89,7 +89,12 @@ class MainActivity : AppCompatActivity(), KodeinAware {
         // notifications
         createNotificationChannel()
         val inte: Intent = Intent(this, ReminderBroadcast::class.java)
-        val pendingIntent = PendingIntent.getBroadcast(this, 0, inte, PendingIntent.FLAG_UPDATE_CURRENT)
+        val pendingIntent = PendingIntent.getBroadcast(
+            this,
+            0,
+            inte,
+            PendingIntent.FLAG_UPDATE_CURRENT
+        )
 
         val alarmManager = getSystemService(ALARM_SERVICE) as AlarmManager
 
@@ -113,7 +118,8 @@ class MainActivity : AppCompatActivity(), KodeinAware {
             intent.getStringExtra("phone").toString(),
             intent.getStringExtra("name").toString(),
             intent.getStringExtra("surname").toString(),
-            intent.getStringExtra("address").toString())
+            intent.getStringExtra("address").toString()
+        )
 
         Log.d("DATA", logged.toString())
         Log.d("MAINUSER", user.toString())
@@ -158,6 +164,7 @@ class MainActivity : AppCompatActivity(), KodeinAware {
         }
         else
             requestLocationPermission()
+        observeDataReady(model)
     }
 
 
@@ -172,18 +179,34 @@ class MainActivity : AppCompatActivity(), KodeinAware {
 
     private fun observeIfFromSettings(model: SharedViewModel){
         model.ifFromSettings.observe(this, Observer {
-            if(it == null)
+            if (it == null)
                 return@Observer
-            if(it == true){
+            if (it == true) {
                 finish()
                 model.ifFromSettings.postValue(false)
             }
         })
     }
 
+    private fun observeDataReady(model: SharedViewModel){
+        model.dataReady.observe(this, Observer {
+            if (it == null)
+                return@Observer
+            if (it == true) {
+                val fragment = supportFragmentManager.findFragmentByTag("CurrentWeatherFragment")
+                if (fragment != null) {
+                    supportFragmentManager.beginTransaction().detach(fragment).attach(fragment)
+                        .commit()
+                }
+            }
+        })
+    }
+
     private fun hasLocationPermission(): Boolean {
-        return ContextCompat.checkSelfPermission(this,
-            Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED
+        return ContextCompat.checkSelfPermission(
+            this,
+            Manifest.permission.ACCESS_COARSE_LOCATION
+        ) == PackageManager.PERMISSION_GRANTED
     }
 
     override fun onSupportNavigateUp(): Boolean {

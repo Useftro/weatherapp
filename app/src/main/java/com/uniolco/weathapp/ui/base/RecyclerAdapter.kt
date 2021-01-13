@@ -4,6 +4,8 @@ import android.content.Context
 import android.content.Intent
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Filter
+import android.widget.Filterable
 import androidx.core.content.ContextCompat
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.RecyclerView
@@ -12,21 +14,29 @@ import com.uniolco.weathapp.data.db.entity.favorite.Locations
 import com.uniolco.weathapp.internal.inflate
 import com.uniolco.weathapp.ui.favorite.list.FavoriteListWeatherFragmentDirections
 import kotlinx.android.synthetic.main.item_future_weather.view.textView_cityName
+import java.util.*
 
 class RecyclerAdapter(private val favorites: MutableList<Locations>):
-    RecyclerView.Adapter<RecyclerAdapter.ItemLocationHolder>() {
+    RecyclerView.Adapter<RecyclerAdapter.ItemLocationHolder>(), Filterable {
+
+    var locationFilterList = mutableListOf<Locations>()
+
+    init {
+        locationFilterList = favorites
+    }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerAdapter.ItemLocationHolder {
         val inflatedView = parent.inflate(R.layout.item_favorite_list_weather, false)
         return ItemLocationHolder(inflatedView)
     }
 
     override fun onBindViewHolder(holder: RecyclerAdapter.ItemLocationHolder, position: Int) {
-        val itemFavorite = favorites[position]
+        val itemFavorite = locationFilterList[position]
         holder.bindFavorite(itemFavorite)
     }
 
     override fun getItemCount(): Int {
-        return favorites.size
+        return locationFilterList.size
     }
 
 
@@ -57,7 +67,7 @@ class RecyclerAdapter(private val favorites: MutableList<Locations>):
         override fun onLongClick(v: View?): Boolean {
             val sendIntent: Intent = Intent().apply {
                 action = Intent.ACTION_SEND
-                putExtra(Intent.EXTRA_TEXT, "Biba")
+                putExtra(Intent.EXTRA_TEXT, "Today in ${favorite?.location?.name.toString()}")
                 type = "text/plain"
             }
             val shareIntent = Intent.createChooser(sendIntent, null)
@@ -73,6 +83,36 @@ class RecyclerAdapter(private val favorites: MutableList<Locations>):
         favorites.removeAt(position)
         notifyItemRemoved(position)
         return ret
+    }
+
+    override fun getFilter(): Filter {
+        return object : Filter() {
+            override fun performFiltering(constraint: CharSequence?): FilterResults {
+                val charSearch = constraint.toString()
+                if(charSearch.isEmpty()){
+                    locationFilterList = favorites
+                }
+                else{
+                    val resList = mutableListOf<Locations>()
+                    for (item in favorites){
+                        if(item.location.name.toLowerCase(Locale.ROOT).contains(charSearch.toLowerCase(Locale.ROOT))){
+                            resList.add(item)
+                        }
+                    }
+                    locationFilterList = resList
+                }
+                val filterRes = FilterResults()
+                filterRes.values = locationFilterList
+                return filterRes
+            }
+            @Suppress("UNCHECKED_CAST")
+            override fun publishResults(constraint: CharSequence?, results: FilterResults?) {
+                locationFilterList = results?.values as MutableList<Locations>
+                notifyDataSetChanged()
+            }
+
+
+        }
     }
 
 }

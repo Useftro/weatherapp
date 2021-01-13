@@ -1,5 +1,6 @@
 package com.uniolco.weathapp.ui.weather.current
 
+import android.os.Build
 import androidx.lifecycle.ViewModelProviders
 import android.os.Bundle
 import com.uniolco.weathapp.internal.background
@@ -11,6 +12,7 @@ import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import com.google.firebase.database.DataSnapshot
@@ -60,6 +62,28 @@ class CurrentWeatherFragment : ScopeFragment(), KodeinAware {
     private fun bindUI() = launch {
         val currentLocation = viewModel.weatherLocation.await()
         val currentWeather = viewModel.weather.await()
+        var updatedOnStart = false
+
+/*        model.dataReady.observe(viewLifecycleOwner, Observer {
+            if(it == null)
+                return@Observer
+            if(!updatedOnStart){
+                if(it == true){
+                    updatedOnStart = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                        val transaction = fragmentManager?.beginTransaction()
+                        transaction?.setAllowOptimization(false)
+                        transaction?.detach(this@CurrentWeatherFragment)?.attach(this@CurrentWeatherFragment)?.commitAllowingStateLoss()
+                        true
+                    } else {
+                        fragmentManager?.beginTransaction()?.detach(this@CurrentWeatherFragment)
+                            ?.attach(this@CurrentWeatherFragment)
+                            ?.commit()
+                        true
+                    }
+                }
+            }
+        })*/
+
         currentLocation.observe(viewLifecycleOwner, Observer { location ->
             Log.d("TGGG", currentLocation.value?.name.toString())
             current_group.visibility = View.VISIBLE

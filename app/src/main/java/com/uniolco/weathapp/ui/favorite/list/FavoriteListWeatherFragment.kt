@@ -6,6 +6,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.SearchView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.activityViewModels
@@ -57,7 +58,18 @@ class FavoriteListWeatherFragment : ScopeFragment(), KodeinAware {
 
         favorites.observe(viewLifecycleOwner, Observer { favorits ->
             if(favorits == null) return@Observer
-            initRecyclerView(favorits/*.toItems()*/)
+            initRecyclerView(favorits)
+        })
+        search.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                return false
+            }
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+                adapterRec.filter.filter(newText)
+                return false
+            }
+
         })
         updateTitle()
         updateSubtitle()
@@ -84,38 +96,21 @@ class FavoriteListWeatherFragment : ScopeFragment(), KodeinAware {
     private lateinit var adapterRec: RecyclerAdapter
 
     private fun initRecyclerView(items: List<Locations>){
-/*        val groupAdapter = GroupAdapter<ViewHolder>().apply {
-            addAll(items)
-        }*/
 
         recyclerView.layoutManager = LinearLayoutManager(this@FavoriteListWeatherFragment.context)
         adapterRec = RecyclerAdapter(items.toMutableList())
         recyclerView.adapter = adapterRec
-
-
-/*        recyclerView.apply {
-            layoutManager = LinearLayoutManager(this@FavoriteListWeatherFragment.context)
-            adapter = groupAdapter
-        }*/
 
         val swipeHandler = object: SwipeToDeleteCallback(layoutInflater.context){
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
                 val adapter = recyclerView.adapter as RecyclerAdapter
                 val loc = adapter.removeAt(viewHolder.adapterPosition)
                 deleteLocation(loc)
-                Log.d("ADADADADADDADAD", viewHolder.adapterPosition.toString())
             }
         }
 
         val itemTouchHelper = ItemTouchHelper(swipeHandler)
         itemTouchHelper.attachToRecyclerView(recyclerView)
-
-/*        groupAdapter.setOnItemClickListener { item, view ->
-            (item as? FavoriteListItem)?.let {
-                navigateToFavoriteDetail(it.locations.location.name, view)
-            }
-            Log.d("ITEM", item.id.toString() + "||")
-        }*/
     }
 
 
@@ -130,10 +125,4 @@ class FavoriteListWeatherFragment : ScopeFragment(), KodeinAware {
             viewModel.deleteLocation(locations)
         }
     }
-
-    private fun navigateToFavoriteDetail(locationName: String, view: View){
-        val actionDetail = FavoriteListWeatherFragmentDirections.actionFavoriteListWeatherFragmentToFavoriteDetailWeatherFragment(locationName)
-        Navigation.findNavController(view).navigate(actionDetail)
-    }
-
 }
