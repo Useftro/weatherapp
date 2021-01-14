@@ -2,7 +2,6 @@ package com.uniolco.weathapp.ui.favorite.list
 
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,13 +10,12 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
-import androidx.navigation.Navigation
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.uniolco.weathapp.R
 import com.uniolco.weathapp.data.db.entity.favorite.Locations
-import com.uniolco.weathapp.ui.base.RecyclerAdapter
+import com.uniolco.weathapp.ui.base.RecyclerAdapterFavoriteList
 import com.uniolco.weathapp.ui.base.ScopeFragment
 import com.uniolco.weathapp.ui.base.SharedViewModel
 import com.uniolco.weathapp.ui.base.SwipeToDeleteCallback
@@ -49,7 +47,6 @@ class FavoriteListWeatherFragment : ScopeFragment(), KodeinAware {
         super.onActivityCreated(savedInstanceState)
         val email = model.email.value.toString()
         viewModel = ViewModelProvider(this, viewModelFactoryInstanceFactory(email)).get(FavoriteListWeatherViewModel::class.java)
-        // TODO: Use the ViewModel
         bindUI()
     }
 
@@ -77,7 +74,7 @@ class FavoriteListWeatherFragment : ScopeFragment(), KodeinAware {
     }
 
     private fun updateTitle(){
-        (activity as? AppCompatActivity)?.supportActionBar?.title = "Favorite"
+        (activity as? AppCompatActivity)?.supportActionBar?.title = getString(R.string.favorite)
     }
 
     private fun updateSubtitle(){
@@ -89,21 +86,22 @@ class FavoriteListWeatherFragment : ScopeFragment(), KodeinAware {
             launch {
                 viewModel.deleteAllLocations()
             }
-            Toast.makeText(clearAll_button.context, "Deleted all favorite places", Toast.LENGTH_LONG).show()
+            Toast.makeText(clearAll_button.context, getString(R.string.toastDeletedAllFavorite),
+                Toast.LENGTH_LONG).show()
         }
     }
 
-    private lateinit var adapterRec: RecyclerAdapter
+    private lateinit var adapterRec: RecyclerAdapterFavoriteList
 
     private fun initRecyclerView(items: List<Locations>){
 
         recyclerView.layoutManager = LinearLayoutManager(this@FavoriteListWeatherFragment.context)
-        adapterRec = RecyclerAdapter(items.toMutableList())
+        adapterRec = RecyclerAdapterFavoriteList(items.toMutableList())
         recyclerView.adapter = adapterRec
 
         val swipeHandler = object: SwipeToDeleteCallback(layoutInflater.context){
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-                val adapter = recyclerView.adapter as RecyclerAdapter
+                val adapter = recyclerView.adapter as RecyclerAdapterFavoriteList
                 val loc = adapter.removeAt(viewHolder.adapterPosition)
                 deleteLocation(loc)
             }

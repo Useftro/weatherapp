@@ -121,29 +121,29 @@ class FavoriteDetailWeatherFragment : ScopeFragment(), KodeinAware, OnMapReadyCa
     }
 
     private fun updateTemperatures(temp: Double, temp_feelsLike: Double){
-        textView_min_max_temperature.text = "Feels like: ${temp_feelsLike}°C"
-        textView_cityName.text = "$temp°C"
+        textView_min_max_temperature.text = getString(R.string.feelsLikeTemperature, temp_feelsLike.toString())
+        textView_cityName.text = getString(R.string.temperature, temp.toString())
     }
 
     private fun updateWindSpeed(windSpeed: Double){
-        textView_maxWind.text = "Wind speed: \n $windSpeed km/h"
+        textView_maxWind.text = getString(R.string.windSpeed, windSpeed)
     }
 
     private fun updateClouds(clouds: Int){
-        textView_coluds.text = "Clouds: $clouds"
+        textView_coluds.text = getString(R.string.clouds, clouds)
     }
 
     private fun updateSunsetAndSunrise(sunset: String, sunrise: String){
-        textView_sunset.text = "Sunset: $sunset"
-        textView_sunrise.text = "Sunrise: $sunrise"
+        textView_sunset.text = getString(R.string.sunset, sunset)
+        textView_sunrise.text = getString(R.string.sunrise, sunrise)
     }
 
     private fun updateVisibility(visibility: Double){
-        textView_visibility.text = "Visibility: $visibility km"
+        textView_visibility.text = getString(R.string.visibility, visibility)
     }
 
     private fun updateHumidity(humidity: Int){
-        textView_humitidy.text = "Humidity: $humidity"
+        textView_humitidy.text = getString(R.string.humidity, humidity.toString())
     }
 
     override fun onMapReady(p0: GoogleMap) {

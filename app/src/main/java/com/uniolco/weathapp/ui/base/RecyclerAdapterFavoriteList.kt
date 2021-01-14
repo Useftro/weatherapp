@@ -1,6 +1,5 @@
 package com.uniolco.weathapp.ui.base
 
-import android.content.Context
 import android.content.Intent
 import android.view.View
 import android.view.ViewGroup
@@ -16,8 +15,8 @@ import com.uniolco.weathapp.ui.favorite.list.FavoriteListWeatherFragmentDirectio
 import kotlinx.android.synthetic.main.item_future_weather.view.textView_cityName
 import java.util.*
 
-class RecyclerAdapter(private val favorites: MutableList<Locations>):
-    RecyclerView.Adapter<RecyclerAdapter.ItemLocationHolder>(), Filterable {
+class RecyclerAdapterFavoriteList(private val favorites: MutableList<Locations>):
+    RecyclerView.Adapter<RecyclerAdapterFavoriteList.ItemLocationHolder>(), Filterable {
 
     var locationFilterList = mutableListOf<Locations>()
 
@@ -25,12 +24,12 @@ class RecyclerAdapter(private val favorites: MutableList<Locations>):
         locationFilterList = favorites
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerAdapter.ItemLocationHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerAdapterFavoriteList.ItemLocationHolder {
         val inflatedView = parent.inflate(R.layout.item_favorite_list_weather, false)
         return ItemLocationHolder(inflatedView)
     }
 
-    override fun onBindViewHolder(holder: RecyclerAdapter.ItemLocationHolder, position: Int) {
+    override fun onBindViewHolder(holder: RecyclerAdapterFavoriteList.ItemLocationHolder, position: Int) {
         val itemFavorite = locationFilterList[position]
         holder.bindFavorite(itemFavorite)
     }

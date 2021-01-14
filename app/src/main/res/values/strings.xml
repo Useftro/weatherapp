@@ -19,14 +19,27 @@
     <string name="surnameText">Enter your surname</string>
     <string name="addressText">Enter your address</string>
 
-    <string name="nameTextView"> Name: </string>
-    <string name="statusTextView"> Status: </string>
-    <string name="speciesTextView"> Species: </string>
-    <string name="genderTextView"> Gender: </string>
-    <string name="originTextView"> Origin: </string>
-    <string name="locationTextView"> Last known location: </string>
-
     <string name="channelName"> BibaChannel </string>
     <string name="channelDesc"> That\'s channel of Biba </string>
+
+    <string name="feelsLikeTemperature">Feels like: %s°C</string>
+    <string name="temperature">%s°C</string>
+
+    <string name="windSpeed">Wind speed: %.2f km/h</string>
+    <string name="humidity">Humidity: %s%%</string>
+    <string name="pressure">Pressure: %d mmHg</string>
+    <string name="weatherDescription">Visibility: %s km \n \n Seems to be like its %s today</string>
+    <string name="clouds">Clouds: %d</string>
+    <string name="sunset">Sunset: %s</string>
+    <string name="sunrise">Sunrise: %s</string>
+    <string name="visibility">Visibility: %.0f km</string>
+    <string name="minTemp">Min: %.2f°C,</string>
+    <string name="maxTemp">Max: %.2f°C</string>
+    <string name="rainChance">Chance of rain: %s%%</string>
+
+    <string name="toastAdded">Added</string>
+    <string name="toastDeletedAllFavorite">Deleted all favorite places</string>
+
+    <string name="favorite">Favorite</string>
 
 </resources>

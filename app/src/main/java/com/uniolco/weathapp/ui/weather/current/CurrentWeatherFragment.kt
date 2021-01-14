@@ -139,7 +139,7 @@ class CurrentWeatherFragment : ScopeFragment(), KodeinAware {
             launch {
                 viewModel.insertIntoFavorite(favoriteLocation)
             }
-            Toast.makeText(favorite_button.context, "ADDED", Toast.LENGTH_LONG).show()
+            Toast.makeText(favorite_button.context, getString(R.string.toastAdded), Toast.LENGTH_LONG).show()
         }
     }
 
@@ -152,17 +152,17 @@ class CurrentWeatherFragment : ScopeFragment(), KodeinAware {
     }
 
     private fun updateTemperature(temperature: Double, temperatureFeelsLike: Double){
-        textView_cityName.text = "${temperature}°C"
-        textView_feels_like_temperature.text = String.format("Feels like: ${temperatureFeelsLike}°C")
+        textView_cityName.text = getString(R.string.temperature, temperature.toString())
+        textView_feels_like_temperature.text = getString(R.string.feelsLikeTemperature, temperatureFeelsLike.toString())
     }
 
     private fun updateCondition(windSpeed: Double, weatherDescription: String, humidity: Int,
     pressure: Int, condition: String){
-        textView_maxWind.text = "Wind speed: $windSpeed m/s"
-        textView_humidity.text = "Humidity: $humidity%"
-        textView_pressure.text = "Pressure: ${pressure*0.75} mmHg"
-        textView_weatherDesc.text =
-            "Visibility: $weatherDescription\n\nSeems to be like its ${condition.toLowerCase()} today"
+        textView_maxWind.text = getString(R.string.windSpeed, windSpeed)
+        textView_humidity.text = getString(R.string.humidity, humidity.toString())
+        textView_pressure.text = getString(R.string.pressure, pressure)
+        textView_weatherDesc.text = getString(R.string.weatherDescription, weatherDescription, condition)
+//            "Visibility: $weatherDescription\n\nSeems to be like its ${condition.toLowerCase()} today"
     }
 
     // true = disappear

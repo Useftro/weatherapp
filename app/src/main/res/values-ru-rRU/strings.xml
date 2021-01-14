@@ -1,0 +1,44 @@
+<resources>
+    <string name="app_name">weatherapp</string>
+    <string name="hello_blank_fragment"> </string>
+
+
+    <string name="loginText">Введите логин</string>
+    <string name="passwordText">Введите пароль > 6 симв</string>
+
+    <string name="loginButton">Логин</string>
+    <string name="lognButn">Логин</string>
+    <string name="signupButton">Регистрация</string>
+    <string name="noLoggingButton">Продолжить без логина</string>
+
+    <string name="signup">Зарегистрироваться</string>
+    <string name="phoneText">Введите номер телефона</string>
+    <string name="emailText">Введите почту</string>
+    <string name="nameText">Введите имя</string>
+    <string name="surnameText">Введите фамилию</string>
+    <string name="addressText">Введите адрес</string>
+
+    <string name="channelName"> BibaChannel </string>
+    <string name="channelDesc"> That\'s channel of Biba </string>
+
+    <string name="feelsLikeTemperature">Чувствуется как: %s°C</string>
+    <string name="temperature">%s°C</string>
+
+    <string name="windSpeed">Скорость ветра: %.2f км/ч</string>
+    <string name="humidity">Влажность: %s%%</string>
+    <string name="pressure">Давление: %d mmHg</string>
+    <string name="weatherDescription">Видимость: %s km \n \n Сегодня на улице %s</string>
+    <string name="clouds">Облачность: %d</string>
+    <string name="sunset">Закат: %s</string>
+    <string name="sunrise">Восход: %s</string>
+    <string name="visibility">Видимость: %.0f km</string>
+    <string name="minTemp">Минимально: %.2f°C,</string>
+    <string name="maxTemp">Максимально: %.2f°C</string>
+    <string name="rainChance">Вероятность дождя: %s%%</string>
+
+    <string name="toastAdded">Добавлено</string>
+    <string name="toastDeletedAllFavorite">Удалены все любимые локации</string>
+
+    <string name="favorite">Любимое</string>
+
+</resources>

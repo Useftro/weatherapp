@@ -13,10 +13,14 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.uniolco.weathapp.R
 import com.uniolco.weathapp.data.db.converter.LocalDateConverter
 import com.uniolco.weathapp.data.db.unitlocalized.future.list.UnitSpecificSimpleFutureWeatherEntry
+import com.uniolco.weathapp.ui.base.RecyclerAdapterFavoriteList
+import com.uniolco.weathapp.ui.base.RecyclerAdapterFutureList
 import com.uniolco.weathapp.ui.base.ScopeFragment
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.ViewHolder
+import kotlinx.android.synthetic.main.favorite_list_weather_fragment.*
 import kotlinx.android.synthetic.main.future_list_weather_fragment.*
+import kotlinx.android.synthetic.main.future_list_weather_fragment.recyclerView
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.kodein.di.KodeinAware
@@ -59,7 +63,7 @@ class FutureListWeatherFragment : ScopeFragment(), KodeinAware {
             if (weatherEntries == null) return@Observer
             group_loading.visibility = View.GONE
             updateDate(weatherEntries[0].date, weatherEntries[weatherEntries.lastIndex].date)
-            initRecyclerView(weatherEntries.toItems())
+            initRecyclerView(weatherEntries)
 
         })
     }
@@ -73,13 +77,19 @@ class FutureListWeatherFragment : ScopeFragment(), KodeinAware {
             "${startDate.dayOfMonth}.${startDate.month} - ${endDate.dayOfMonth}.${endDate.month}"
     }
 
-    private fun initRecyclerView(items: List<FutureWeatherItem>){
-        val groupAdapter = GroupAdapter<ViewHolder>().apply {
+    private lateinit var adapterRec: RecyclerAdapterFutureList
+
+    private fun initRecyclerView(items: List<UnitSpecificSimpleFutureWeatherEntry>){
+/*        val groupAdapter = GroupAdapter<ViewHolder>().apply {
             addAll(items)
-        }
+        }*/
+
+        recyclerView.layoutManager = LinearLayoutManager(this@FutureListWeatherFragment.context)
+        adapterRec = RecyclerAdapterFutureList(items.toMutableList())
+        recyclerView.adapter = adapterRec
 
 
-        recyclerView.apply {
+/*        recyclerView.apply {
             layoutManager = LinearLayoutManager(this@FutureListWeatherFragment.context)
             adapter = groupAdapter
         }
@@ -88,7 +98,7 @@ class FutureListWeatherFragment : ScopeFragment(), KodeinAware {
             (item as? FutureWeatherItem)?.let {
                 navigateToWeatherDetail(it.weatherEntry.date, view)
             }
-        }
+        }*/
     }
 
     private fun List<UnitSpecificSimpleFutureWeatherEntry>.toItems(): List<FutureWeatherItem>{

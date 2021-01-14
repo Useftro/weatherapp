@@ -105,29 +105,29 @@ class FutureDetailWeatherFragment : ScopeFragment(), KodeinAware {
     }
 
     private fun updateTemperatures(temp: Double, temp_max: Double, temp_min: Double){
-        textView_min_max_temperature.text = "Min: ${temp_min}°C, Max: ${temp_max}°C"
-        textView_cityName.text = "$temp°C"
+        textView_min_max_temperature.text = getString(R.string.minTemp, temp_min) + getString(R.string.maxTemp, temp_max)
+        textView_cityName.text = getString(R.string.temperature, temp.toString())
     }
 
     private fun updateWindSpeed(windSpeed: Double){
-        textView_maxWind.text = "Max wind speed: \n $windSpeed m/s"
+        textView_maxWind.text = getString(R.string.windSpeed, windSpeed)
     }
 
     private fun updateChanceOfRain(chanceOfRain: String){
-        textView_coluds.text = "Chance of rain: $chanceOfRain"
+        textView_coluds.text = getString(R.string.rainChance, chanceOfRain)
     }
 
     private fun updateSunsetAndSunrise(sunset: String, sunrise: String){
-        textView_sunset.text = "Sunset: $sunset"
-        textView_sunrise.text = "Sunrise: $sunrise"
+        textView_sunset.text = getString(R.string.sunset, sunset)
+        textView_sunrise.text = getString(R.string.sunrise, sunrise)
     }
 
     private fun updateVisibility(visibility: Double){
-        textView_visibility.text = "Visibility: $visibility"
+        textView_visibility.text = getString(R.string.visibility, visibility)
     }
 
     private fun updateHumidity(humidity: Double){
-        textView_humitidy.text = "Humidity: $humidity"
+        textView_humitidy.text = getString(R.string.humidity, humidity.toString())
     }
 
 }
