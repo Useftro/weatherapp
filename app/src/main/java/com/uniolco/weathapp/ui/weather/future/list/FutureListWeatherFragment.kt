@@ -2,6 +2,7 @@ package com.uniolco.weathapp.ui.weather.future.list
 
 import androidx.lifecycle.ViewModelProviders
 import android.os.Bundle
+import android.provider.ContactsContract
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,6 +11,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.jjoe64.graphview.series.DataPoint
+import com.jjoe64.graphview.series.LineGraphSeries
 import com.uniolco.weathapp.R
 import com.uniolco.weathapp.data.db.converter.LocalDateConverter
 import com.uniolco.weathapp.data.db.unitlocalized.future.list.UnitSpecificSimpleFutureWeatherEntry
@@ -64,6 +67,7 @@ class FutureListWeatherFragment : ScopeFragment(), KodeinAware {
             group_loading.visibility = View.GONE
             updateDate(weatherEntries[0].date, weatherEntries[weatherEntries.lastIndex].date)
             initRecyclerView(weatherEntries)
+            updateGraph(weatherEntries)
 
         })
     }
@@ -80,36 +84,20 @@ class FutureListWeatherFragment : ScopeFragment(), KodeinAware {
     private lateinit var adapterRec: RecyclerAdapterFutureList
 
     private fun initRecyclerView(items: List<UnitSpecificSimpleFutureWeatherEntry>){
-/*        val groupAdapter = GroupAdapter<ViewHolder>().apply {
-            addAll(items)
-        }*/
-
         recyclerView.layoutManager = LinearLayoutManager(this@FutureListWeatherFragment.context)
         adapterRec = RecyclerAdapterFutureList(items.toMutableList())
         recyclerView.adapter = adapterRec
+    }
 
-
-/*        recyclerView.apply {
-            layoutManager = LinearLayoutManager(this@FutureListWeatherFragment.context)
-            adapter = groupAdapter
+    private fun updateGraph(list: List<UnitSpecificSimpleFutureWeatherEntry>){
+        val line = mutableListOf<DataPoint>()
+        list.forEach {
+            line += DataPoint(it.date.dayOfMonth.toDouble(), it.averageTemp)
         }
-
-        groupAdapter.setOnItemClickListener { item, view ->
-            (item as? FutureWeatherItem)?.let {
-                navigateToWeatherDetail(it.weatherEntry.date, view)
-            }
-        }*/
+        val series = LineGraphSeries<DataPoint>(line.toTypedArray())
+        graphView.addSeries(series)
+        graphView.title = getString(R.string.legendForChart, list.size.toString(), list[0].date.month.name)
     }
 
-    private fun List<UnitSpecificSimpleFutureWeatherEntry>.toItems(): List<FutureWeatherItem>{
-        return this.map {
-            FutureWeatherItem(it)
-        }
-    }
 
-    private fun navigateToWeatherDetail(date: LocalDate, view: View){
-        val dateString = LocalDateConverter.dateToString(date)!!
-        val actionDetail = FutureListWeatherFragmentDirections.actionDetailed(dateString)
-        Navigation.findNavController(view).navigate(actionDetail)
-    }
 }

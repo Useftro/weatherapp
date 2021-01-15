@@ -41,4 +41,6 @@
 
     <string name="favorite">Любимое</string>
 
+    <string name="legendForChart">График температуры для следующих %s дней %s</string>
+
 </resources>

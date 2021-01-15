@@ -57,9 +57,9 @@ class RecyclerAdapterFutureList(private val futureWeatherList: MutableList<UnitS
         fun bindFavorite(weatherEntry: UnitSpecificSimpleFutureWeatherEntry){
             this.future = weatherEntry
             view.textView_date.text = weatherEntry.date.toString()
-            view.textView_cityName.text = weatherEntry.averageTemp.toString() + "°C"
-            view.textView_Humidity.text = "Humidity: " + weatherEntry.avgHumidity.toString()
-            view.textView_wind.text = "Wind: " + weatherEntry.maxWindSpeed + " km/h"
+            view.textView_cityName.text = view.context.getString(R.string.temperature, future!!.averageTemp.toString())
+            view.textView_Humidity.text = view.context.getString(R.string.humidity, future!!.avgHumidity.toString())
+            view.textView_wind.text = view.context.getString(R.string.windSpeed, future!!.maxWindSpeed)
             GlideApp.with(this.itemView).load("https:" + weatherEntry.conditionIcon).into(view.imageView_condition_icon)
 
         }

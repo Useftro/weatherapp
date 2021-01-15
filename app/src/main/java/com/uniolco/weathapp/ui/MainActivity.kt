@@ -97,11 +97,10 @@ class MainActivity : AppCompatActivity(), KodeinAware {
         )
 
         val alarmManager = getSystemService(ALARM_SERVICE) as AlarmManager
-
         val time = System.currentTimeMillis()
-
         val time10sec: Long = 1000 * 10
 
+        Log.d("USENOTIFCDDASD", sharedPreferences.getBoolean("USE_NOTIFICATION", false).toString())
         if(sharedPreferences.getBoolean("USE_NOTIFICATION", true)) {
             alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, time, time10sec, pendingIntent)
         }

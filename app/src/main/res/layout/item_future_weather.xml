@@ -11,7 +11,7 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:minHeight="?listPreferredItemHeightLarge">
 
         <TextView
@@ -63,7 +63,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="1.0"
-            tools:text="Humidity" />
+            tools:text="Влажность" />
 
         <ImageView
             android:id="@+id/imageView_condition_icon"
@@ -87,14 +87,15 @@
             android:id="@+id/textView_wind"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Wind"
+            android:layout_marginBottom="2dp"
+            android:text="Скорость ветра:"
             android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.858"
+            app:layout_constraintHorizontal_bias="0.613"
             app:layout_constraintStart_toEndOf="@+id/textView_Humidity"
             app:layout_constraintTop_toBottomOf="@+id/textView_date"
-            app:layout_constraintVertical_bias="0.428" />
+            app:layout_constraintVertical_bias="0.25" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

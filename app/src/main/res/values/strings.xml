@@ -42,4 +42,6 @@
 
     <string name="favorite">Favorite</string>
 
+    <string name="legendForChart">Temperature chart for next %s days of %s</string>
+
 </resources>
