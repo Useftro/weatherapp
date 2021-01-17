@@ -1,6 +1,5 @@
 package com.uniolco.weathapp.ui.weather.current
 
-import android.os.Build
 import androidx.lifecycle.ViewModelProviders
 import android.os.Bundle
 import com.uniolco.weathapp.internal.background
@@ -12,7 +11,6 @@ import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import com.google.firebase.database.DataSnapshot
@@ -32,7 +30,6 @@ import org.threeten.bp.ZonedDateTime
 import java.util.*
 import com.uniolco.weathapp.internal.glide.GlideApp
 import com.uniolco.weathapp.ui.base.SharedViewModel
-import com.google.firebase.firestore.FirebaseFirestore
 
 class CurrentWeatherFragment : ScopeFragment(), KodeinAware {
     override val kodein by closestKodein()
@@ -56,36 +53,14 @@ class CurrentWeatherFragment : ScopeFragment(), KodeinAware {
             get(CurrentWeatherViewModel::class.java)
         getUser(model.email.value.toString())
         bindUI()
-
+        ifMapReady()
     }
 
     private fun bindUI() = launch {
         val currentLocation = viewModel.weatherLocation.await()
         val currentWeather = viewModel.weather.await()
-        var updatedOnStart = false
-
-/*        model.dataReady.observe(viewLifecycleOwner, Observer {
-            if(it == null)
-                return@Observer
-            if(!updatedOnStart){
-                if(it == true){
-                    updatedOnStart = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                        val transaction = fragmentManager?.beginTransaction()
-                        transaction?.setAllowOptimization(false)
-                        transaction?.detach(this@CurrentWeatherFragment)?.attach(this@CurrentWeatherFragment)?.commitAllowingStateLoss()
-                        true
-                    } else {
-                        fragmentManager?.beginTransaction()?.detach(this@CurrentWeatherFragment)
-                            ?.attach(this@CurrentWeatherFragment)
-                            ?.commit()
-                        true
-                    }
-                }
-            }
-        })*/
 
         currentLocation.observe(viewLifecycleOwner, Observer { location ->
-            Log.d("TGGG", currentLocation.value?.name.toString())
             current_group.visibility = View.VISIBLE
             progressBar0.visibility = View.GONE
             updateLocation(location.name)
@@ -102,7 +77,6 @@ class CurrentWeatherFragment : ScopeFragment(), KodeinAware {
                 .load("https:${it.condition.icon}")
                 .into(imageView_Weather)
             GlideApp.with(this@CurrentWeatherFragment).load(background(it.condition.code)).into(imageView)
-            Log.d("CODECODECODECODE", it.condition.code.toString())
             imageView.imageAlpha = 90
         })
         model.loggedIn.observe(viewLifecycleOwner, Observer {
@@ -120,7 +94,6 @@ class CurrentWeatherFragment : ScopeFragment(), KodeinAware {
             if(it == null) return@Observer
             if(it == true){
                 val user = model.personInfo.value
-                Log.d("ININININ", user.toString())
                 if (user != null) {
                     insertUser(user)
                     model.registered.postValue(false)
@@ -128,10 +101,8 @@ class CurrentWeatherFragment : ScopeFragment(), KodeinAware {
             }
             else{
                 model.personInfo.postValue(viewModel.getUser(model.email.value.toString()).value)
-                Log.d("IPIPIPIP", model.personInfo.value.toString() + "; EMAIL: " + model.email.value.toString())
             }
         })
-        Log.d("USSSSSSR", model.personInfo.value.toString())
     }
 
     private fun addToFavorite(favoriteLocation: Locations){
@@ -212,7 +183,6 @@ class CurrentWeatherFragment : ScopeFragment(), KodeinAware {
         val valueEventListener = object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 for (ds in dataSnapshot.children) {
-                    Log.d("SNAPSHOOOOOT", ds.value.toString())
                     val name = ds.child("name").getValue(String::class.java)
                     val login = ds.child("login").getValue(String::class.java)
                     val surname = ds.child("surname").getValue(String::class.java)
@@ -222,7 +192,6 @@ class CurrentWeatherFragment : ScopeFragment(), KodeinAware {
                     if (login != null) {
                         model.user.postValue(User(login, email!!, phoneNumber!!, name!!, surname!!, address!!))
                     }
-                    Log.d("LALALALLLAL", name.toString() + login.toString() + surname.toString())
                 }
             }
 
@@ -231,5 +200,19 @@ class CurrentWeatherFragment : ScopeFragment(), KodeinAware {
             }
         }
         ordersRef.addListenerForSingleValueEvent(valueEventListener)
+    }
+
+    private fun ifMapReady(){
+        var updated = false
+        model.dataReady.observe(viewLifecycleOwner, Observer {
+            if (it == true) {
+                Log.d("FWEWEWEW", it.toString())
+                if (!updated) {
+                    Log.d("FWEWEWEW", updated.toString())
+                    updated = true
+                    Log.d("FWEWEWEW", updated.toString())
+                }
+            }
+        })
     }
 }

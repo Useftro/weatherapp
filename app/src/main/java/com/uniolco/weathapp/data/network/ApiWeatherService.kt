@@ -42,11 +42,7 @@ interface ApiWeatherService {
                     .newBuilder()
                     .addQueryParameter("key", API_KEY)
                     .build()
-                Log.d("URL", url.toString())
                 val request = chain.request().newBuilder().url(url).build()
-
-                Log.d("Request", request.toString())
-
                 return@Interceptor chain.proceed(request)
 
             }

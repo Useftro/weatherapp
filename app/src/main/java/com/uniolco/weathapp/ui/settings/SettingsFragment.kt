@@ -46,7 +46,6 @@ class SettingsFragment: PreferenceFragmentCompat() {
             else{
                 preferenceButton.title = "Log in"
             }
-            Log.d("FGFGFG", item.toString())
             if(item == null)
                 return@Observer
             preferenceButton.setOnPreferenceClickListener(object: Preference.OnPreferenceClickListener{

@@ -92,7 +92,6 @@ class FavoriteDetailWeatherFragment : ScopeFragment(), KodeinAware, OnMapReadyCa
 
     private fun bindUI() = launch {
         val weather = viewModel.exactWeather.await()
-        Log.d("WEWEWEWe", weather.toString())
         updateLocation(weather.weather.location.name.toString())
         updateTemperatures(weather.weather.current.tempC, weather.weather.current.feelslikeC)
         updateVisibility(weather.weather.current.visKm)
@@ -104,7 +103,6 @@ class FavoriteDetailWeatherFragment : ScopeFragment(), KodeinAware, OnMapReadyCa
             load(background(weather.weather.current.condition.code)).
             into(favorite_background)
         favorite_background.imageAlpha = 90
-        Log.d("ARGUILS", weather.toString())
     }
 
     private suspend fun getCurrentLocation(): Pair<Double, Double>{

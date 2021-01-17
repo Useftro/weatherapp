@@ -11,12 +11,8 @@ import com.uniolco.weathapp.ui.base.WeatherViewModel
 class CurrentWeatherViewModel(
     private val forecastRepository: ForecastRepository
 ) : WeatherViewModel(forecastRepository) {
-    private val unitSystem = UnitSystem.METRIC
 
-    val isMetric: Boolean
-        get() = unitSystem == UnitSystem.METRIC
-
-    // lazy so we call it only when view needs new data
+    // lazy so we call it only when we need that data
     val weather by lazyDeferred {
         forecastRepository.getCurrentWeather()
     }

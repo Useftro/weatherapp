@@ -55,9 +55,7 @@ class SignUpActivity : AppCompatActivity() {
                     nameEditText.text.toString(),
                     surnameEditText.text.toString(),
                     addressEditText.text.toString())
-                    Log.d("SIGNUOPPPPP", user.toString())
                     registered = true
-                    Log.d("REGEGEGEG", registered.toString())
 
                     FirebaseDatabase.getInstance().getReference("Users").child(
                         FirebaseAuth.getInstance().currentUser?.uid.toString()

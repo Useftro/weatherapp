@@ -18,6 +18,7 @@ import androidx.core.os.bundleOf
 import androidx.lifecycle.Observer
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
+import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.NavigationUI
 import androidx.navigation.ui.setupWithNavController
 import androidx.preference.PreferenceManager
@@ -28,6 +29,7 @@ import com.uniolco.weathapp.R
 import com.uniolco.weathapp.data.firebase.User
 import com.uniolco.weathapp.internal.notification.ReminderBroadcast
 import com.uniolco.weathapp.ui.base.SharedViewModel
+import com.uniolco.weathapp.ui.weather.current.CurrentWeatherFragment
 import kotlinx.android.synthetic.main.activity_main.*
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.closestKodein
@@ -35,7 +37,6 @@ import org.kodein.di.generic.instance
 
 
 private const val MY_PERMISSION_ACCESS_COARSE_LOCATION = 1
-private const val CHANNEL_ID = "BibaBoba"
 
 class MainActivity : AppCompatActivity(), KodeinAware {
 
@@ -45,8 +46,10 @@ class MainActivity : AppCompatActivity(), KodeinAware {
 
     private val locationCallback = object : LocationCallback() {
         override fun onLocationResult(p0: LocationResult?) {
-            Log.d("LOCATI,", p0.toString())
+            Log.d("FDFdfdf", model.dataReady.value.toString())
             model.dataReady.postValue(true)
+            model.dataReady.value = true
+            Log.d("FDFdfdf", model.dataReady.value.toString() + model.dataReady.hasActiveObservers().toString())
             super.onLocationResult(p0)
         }
     }
@@ -81,9 +84,9 @@ class MainActivity : AppCompatActivity(), KodeinAware {
 
 
         // getting info from login acitivity if logged, if registered and email
-        val logged = intent.getBooleanExtra("Logged", false)
-        val registered = intent.getBooleanExtra("registered", false)
-        val email = intent.getStringExtra("Email")
+        val logged = sharedPreferences.getBoolean("Logged", false)
+        val registered = sharedPreferences.getBoolean("registered", false)
+        val email = sharedPreferences.getString("Email", "")
 
 
         // notifications
@@ -96,11 +99,11 @@ class MainActivity : AppCompatActivity(), KodeinAware {
             PendingIntent.FLAG_UPDATE_CURRENT
         )
 
+        // alarm manager for creating notofications every 60 seconds
         val alarmManager = getSystemService(ALARM_SERVICE) as AlarmManager
         val time = System.currentTimeMillis()
         val time10sec: Long = 1000 * 10
 
-        Log.d("USENOTIFCDDASD", sharedPreferences.getBoolean("USE_NOTIFICATION", false).toString())
         if(sharedPreferences.getBoolean("USE_NOTIFICATION", true)) {
             alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, time, time10sec, pendingIntent)
         }
@@ -111,59 +114,44 @@ class MainActivity : AppCompatActivity(), KodeinAware {
 
 
         // creating user
-        val user = User(
+/*        val user = User(
             intent.getStringExtra("login").toString(),
             intent.getStringExtra("email").toString(),
             intent.getStringExtra("phone").toString(),
             intent.getStringExtra("name").toString(),
             intent.getStringExtra("surname").toString(),
             intent.getStringExtra("address").toString()
-        )
+        )*/
+        val navHostFragment = nav_host_fragment as NavHostFragment
+        val graphInflater = navHostFragment.navController.navInflater
+        val navGraph = graphInflater.inflate(R.navigation.mobile_navigation)
+        navController = navHostFragment.navController
+        val dest = R.id.currentWeatherFragment
+        navGraph.startDestination = dest
+        navController.setGraph(navGraph, bundleOf(Pair("Logged", logged)))
+        // use destination fragment
+/*        navController = Navigation.findNavController(this, R.id.nav_host_fragment)
 
-        Log.d("DATA", logged.toString())
-        Log.d("MAINUSER", user.toString())
-
-
-        navController = Navigation.findNavController(this, R.id.nav_host_fragment)
-        navController.setGraph(R.navigation.mobile_navigation, bundleOf(Pair("Logged", logged)))
-        // setting up navigation controller
-        Log.d("RTYUI", navController.currentDestination.toString())
+        navController.setGraph(R.navigation.mobile_navigation, bundleOf(Pair("Logged", logged)))*/
         bottom_nav.setupWithNavController(navController) // setting up bottom nav bar
+        NavigationUI.setupActionBarWithNavController(this, navController)
+
+        // setting up navigation controller
 
         model.loggedIn.postValue(logged)
         model.registered.postValue(registered)
-        model.personInfo.postValue(user)
+//        model.personInfo.postValue(user)
         model.email.postValue(email)
-        Log.d("EMAAAAAIl", email.toString())
-        Log.d("REGISTEREEEEEEEED", registered.toString())
-
-
-//        FirebaseMessaging.getInstance().token.addOnCompleteListener(OnCompleteListener { task ->
-//            if (!task.isSuccessful) {
-//                Log.w("OLOLO", "Fetching FCM registration token failed", task.exception)
-//                return@OnCompleteListener
-//            }
-//
-//            // Get new FCM registration token
-//            val token = task.result
-//
-//            // Log and toast
-//            Log.d("boyoyoyoyoy", token)
-//            Toast.makeText(baseContext, "Token: $token", Toast.LENGTH_SHORT).show()
-//        })
-
-
 
         observeModel(model)
         observeIfFromSettings(model)
-        NavigationUI.setupActionBarWithNavController(this, navController)
-        requestLocationPermission()
+//        requestLocationPermission()
         if (hasLocationPermission()){
             bindLocationManager()
         }
         else
             requestLocationPermission()
-        observeDataReady(model)
+//        observeDataReady(model)
     }
 
 
@@ -187,19 +175,15 @@ class MainActivity : AppCompatActivity(), KodeinAware {
         })
     }
 
-    private fun observeDataReady(model: SharedViewModel){
+/*    private fun observeDataReady(model: SharedViewModel){
         model.dataReady.observe(this, Observer {
             if (it == null)
                 return@Observer
             if (it == true) {
-                val fragment = supportFragmentManager.findFragmentByTag("CurrentWeatherFragment")
-                if (fragment != null) {
-                    supportFragmentManager.beginTransaction().detach(fragment).attach(fragment)
-                        .commit()
-                }
+                val navGraph = graphInflater.inflate(R.navigation.mobile_navigation)
             }
         })
-    }
+    }*/
 
     private fun hasLocationPermission(): Boolean {
         return ContextCompat.checkSelfPermission(

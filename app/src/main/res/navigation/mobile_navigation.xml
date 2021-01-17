@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mobile_navigation"
-    app:startDestination="@id/currentWeatherFragment">
+    app:startDestination="@id/settingsFragment">
     <fragment
         android:id="@+id/currentWeatherFragment"
         android:name="com.uniolco.weathapp.ui.weather.current.CurrentWeatherFragment"

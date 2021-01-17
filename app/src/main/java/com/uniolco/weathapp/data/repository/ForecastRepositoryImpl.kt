@@ -64,7 +64,6 @@ class ForecastRepositoryImpl(
             initWeatherData()
 
             return@withContext currentWeatherDao.getWeatherMetric()
-            //return@withContext if (metric) currentWeatherDao.getWeatherMetric()
         }
     }
 
@@ -76,7 +75,6 @@ class ForecastRepositoryImpl(
 
     override suspend fun getExactFavorite(location: String): FavoriteEntry{
         return withContext(Dispatchers.IO){
-            Log.d("LOCALOCALOCALOCA", location)
             fetchFavoriteWeather(location)
             return@withContext favoriteWeatherDao.getExactFavorite(location)
         }
@@ -92,15 +90,15 @@ class ForecastRepositoryImpl(
 
 
     private suspend fun initWeatherData(){
-        val lastWeatherLocation = weatherLocationDao.getLocationNonLive()
+        val lastWeatherLocation = weatherLocationDao.getLocation()
 
-        if (lastWeatherLocation == null || locationProvider.hasLocationChanged(lastWeatherLocation)){
+        if (lastWeatherLocation.value == null || locationProvider.hasLocationChanged(lastWeatherLocation.value!!)){
             fetchCurrentWeather()
             fetchFutureWeather()
             return
         }
 
-        if (isFetchCurrentNeeded(lastWeatherLocation.zonedDateTime))
+        if (isFetchCurrentNeeded(lastWeatherLocation.value!!.zonedDateTime))
             fetchCurrentWeather()
 
         if(isFetchFutureNeeded())

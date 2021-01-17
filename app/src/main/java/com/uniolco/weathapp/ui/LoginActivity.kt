@@ -26,16 +26,7 @@ class LoginActivity : AppCompatActivity() {
         setContentView(R.layout.activity_login)
 
         auth = Firebase.auth
-        Log.d("AFDFDFS", auth.currentUser.toString())
-        val sharedPreferences: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(applicationContext)
-//        if(auth.currentUser != null){
-//            val intent = Intent(this, MainActivity::class.java)
-//            intent.putExtra("Logged", true)
-//            intent.putExtra("registered", false)
-//            startActivity(intent)
-//            finish()
-//        }
-
+        val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(applicationContext)
 
         with(sharedPreferences.edit()){
             putBoolean("Passed", true)
@@ -56,12 +47,20 @@ class LoginActivity : AppCompatActivity() {
 
 
         contWoLogButton.setOnClickListener {
-            val intent = Intent(this, MainActivity::class.java)
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP)
-            intent.putExtra("Logged", false)
-            intent.putExtra("registered", false)
-            startActivity(intent)
-            finish()
+            if(!sharedPreferences.getBoolean("askedPermissions", false)){
+                startActivity(Intent(this, WaitingActivity::class.java))
+            }
+            else {
+                val intent = Intent(this, MainActivity::class.java)
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                with(sharedPreferences.edit()){
+                    putBoolean("Logged", false)
+                    putBoolean("registered", false)
+                    apply()
+                }
+                startActivity(intent)
+                finish()
+            }
         }
 
     }
@@ -82,7 +81,6 @@ class LoginActivity : AppCompatActivity() {
                 .addOnCompleteListener(this) { task ->
                     if (task.isSuccessful) {
                         val user = auth.currentUser
-                        Log.d("QWERTY", user?.uid.toString())
                         updateUI(user)
                     } else {
                         Toast.makeText(
@@ -98,21 +96,25 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
-/*    public override fun onStart() {
-        super.onStart()
-        // Check if user is signed in (non-null) and update UI accordingly.
-        val currentUser = auth.currentUser
-        updateUI(currentUser)
-    }*/
-
     private fun updateUI(currentUser: FirebaseUser?) {
+        val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(applicationContext)
         if(currentUser != null){
-            val inten = Intent(this, MainActivity::class.java)
-            inten.putExtra("Logged", true)
-            inten.putExtra("Email", currentUser.email)
+            lateinit var inten: Intent
+            if(!sharedPreferences.getBoolean("askedPermissions", false)) {
+                inten = Intent(this, WaitingActivity::class.java)
+            }
+            else{
+                inten = Intent(this, MainActivity::class.java)
+            }
+            with(sharedPreferences.edit()){
+                putBoolean("Logged", true)
+                putBoolean("registered", intent.getBooleanExtra("registered", false))
+                putString("Email", currentUser.email)
+                apply()
+            }
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP)
 
-            inten.putExtra("login", intent.getStringExtra("login"))
+/*            inten.putExtra("login", intent.getStringExtra("login"))
             inten.putExtra("email", intent.getStringExtra("email"))
             inten.putExtra("phone", intent.getStringExtra("phone"))
             inten.putExtra("name", intent.getStringExtra("name"))
@@ -121,14 +123,9 @@ class LoginActivity : AppCompatActivity() {
 
 
 
-            inten.putExtra("registered", intent.getBooleanExtra("registered", false))
+            inten.putExtra("registered", intent.getBooleanExtra("registered", false))*/
             startActivity(inten)
             finish()
         }
-//        else{
-//            val inten = Intent(this, MainActivity::class.java)
-//            startActivity(inten)
-//            finish()
-//        }
     }
 }

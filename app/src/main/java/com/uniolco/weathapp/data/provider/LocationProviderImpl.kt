@@ -59,7 +59,6 @@ class LocationProviderImpl(
         val deviceLocation = getLastDeviceLocation().await()
             ?: return false
 
-        // Comparing doubles cannot be done with "=="
         val comparisonThreshold = 0.03
         return Math.abs(deviceLocation.latitude - lastWeatherLocation.lat) > comparisonThreshold &&
                 Math.abs(deviceLocation.longitude - lastWeatherLocation.lon) > comparisonThreshold
