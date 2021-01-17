@@ -90,6 +90,7 @@ class FutureListWeatherFragment : ScopeFragment(), KodeinAware {
     }
 
     private fun updateGraph(list: List<UnitSpecificSimpleFutureWeatherEntry>){
+        graphView.removeAllSeries()
         val line = mutableListOf<DataPoint>()
         list.forEach {
             line += DataPoint(it.date.dayOfMonth.toDouble(), it.averageTemp)

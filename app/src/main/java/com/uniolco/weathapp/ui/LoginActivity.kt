@@ -66,6 +66,7 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun login() {
+        val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(applicationContext)
         if (emailloginEditText.text.isEmpty() || passwordEditText.text.isEmpty()){
             Toast.makeText(this, "Please fill all fields!", Toast.LENGTH_SHORT).show()
         }
@@ -81,6 +82,7 @@ class LoginActivity : AppCompatActivity() {
                 .addOnCompleteListener(this) { task ->
                     if (task.isSuccessful) {
                         val user = auth.currentUser
+                        Log.d("UIDUIDUID", user?.uid.toString())
                         updateUI(user)
                     } else {
                         Toast.makeText(
@@ -110,6 +112,8 @@ class LoginActivity : AppCompatActivity() {
                 putBoolean("Logged", true)
                 putBoolean("registered", intent.getBooleanExtra("registered", false))
                 putString("Email", currentUser.email)
+                Log.d("currentusseruid", currentUser.uid)
+                putString("currentuseruid", currentUser.uid)
                 apply()
             }
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP)
@@ -124,6 +128,7 @@ class LoginActivity : AppCompatActivity() {
 
 
             inten.putExtra("registered", intent.getBooleanExtra("registered", false))*/
+            inten.putExtra("uid", currentUser.uid)
             startActivity(inten)
             finish()
         }

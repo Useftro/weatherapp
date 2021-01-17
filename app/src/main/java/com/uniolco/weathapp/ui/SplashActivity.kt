@@ -1,12 +1,16 @@
 package com.uniolco.weathapp.ui
 
+import android.Manifest
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.icu.util.Calendar
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
 import android.text.format.Time
 import android.util.Log
+import android.widget.Toast
+import androidx.core.app.ActivityCompat
 import androidx.core.os.HandlerCompat
 import androidx.core.os.HandlerCompat.postDelayed
 import androidx.preference.PreferenceManager
@@ -25,6 +29,8 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
+private const val MY_PERMISSION_ACCESS_COARSE_LOCATION = 1
+
 class SplashActivity : AppCompatActivity() {
 
     private lateinit var auth: FirebaseAuth
@@ -32,11 +38,6 @@ class SplashActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_splash)
-        val time = if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
-            Calendar.HOUR_OF_DAY
-        } else {
-            Time.HOUR
-        }
     }
 
 
@@ -84,6 +85,4 @@ class SplashActivity : AppCompatActivity() {
                 startActivity(Intent(this, MainActivity::class.java))
         }
     }
-
-
 }

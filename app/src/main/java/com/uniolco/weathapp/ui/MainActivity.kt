@@ -2,6 +2,7 @@ package com.uniolco.weathapp.ui
 
 import android.Manifest
 import android.R.attr.fragment
+import android.R.attr.useDefaultMargins
 import android.app.*
 import android.content.Intent
 import android.content.SharedPreferences
@@ -25,6 +26,10 @@ import androidx.preference.PreferenceManager
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationResult
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 import com.uniolco.weathapp.R
 import com.uniolco.weathapp.data.firebase.User
 import com.uniolco.weathapp.internal.notification.ReminderBroadcast
@@ -46,10 +51,6 @@ class MainActivity : AppCompatActivity(), KodeinAware {
 
     private val locationCallback = object : LocationCallback() {
         override fun onLocationResult(p0: LocationResult?) {
-            Log.d("FDFdfdf", model.dataReady.value.toString())
-            model.dataReady.postValue(true)
-            model.dataReady.value = true
-            Log.d("FDFdfdf", model.dataReady.value.toString() + model.dataReady.hasActiveObservers().toString())
             super.onLocationResult(p0)
         }
     }
@@ -87,7 +88,13 @@ class MainActivity : AppCompatActivity(), KodeinAware {
         val logged = sharedPreferences.getBoolean("Logged", false)
         val registered = sharedPreferences.getBoolean("registered", false)
         val email = sharedPreferences.getString("Email", "")
-
+        val uid = sharedPreferences.getString("currentuseruid", "")
+        model.uid.postValue(uid)
+        Log.d("cucucucuc", uid.toString())
+        val b = uid
+        Log.d("FDFDFD", b.toString())
+        model.uid.value = b
+        Log.d("FQWEQEQEEQ", model.uid.value.toString())
 
         // notifications
         createNotificationChannel()
@@ -142,20 +149,22 @@ class MainActivity : AppCompatActivity(), KodeinAware {
         model.registered.postValue(registered)
 //        model.personInfo.postValue(user)
         model.email.postValue(email)
+        Log.d("EMAAAAAAIL", email.toString())
+        Log.d("lolololo", intent.getStringExtra("uid").toString())
+        Log.d("modelmodelmodel", model.uid.value.toString())
+        with(sharedPreferences.edit()){
+            putString("UID", model.uid.value)
+            apply()
+        }
 
         observeModel(model)
         observeIfFromSettings(model)
-//        requestLocationPermission()
         if (hasLocationPermission()){
             bindLocationManager()
         }
         else
             requestLocationPermission()
-//        observeDataReady(model)
     }
-
-
-
 
 
     private fun observeModel(model: SharedViewModel){
@@ -174,16 +183,6 @@ class MainActivity : AppCompatActivity(), KodeinAware {
             }
         })
     }
-
-/*    private fun observeDataReady(model: SharedViewModel){
-        model.dataReady.observe(this, Observer {
-            if (it == null)
-                return@Observer
-            if (it == true) {
-                val navGraph = graphInflater.inflate(R.navigation.mobile_navigation)
-            }
-        })
-    }*/
 
     private fun hasLocationPermission(): Boolean {
         return ContextCompat.checkSelfPermission(
@@ -224,6 +223,4 @@ class MainActivity : AppCompatActivity(), KodeinAware {
             locationCallback
         )
     }
-
-
 }

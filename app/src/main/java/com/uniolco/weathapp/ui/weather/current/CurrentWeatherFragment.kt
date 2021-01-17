@@ -13,6 +13,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
+import androidx.preference.PreferenceManager
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
@@ -29,7 +30,9 @@ import org.kodein.di.generic.instance
 import org.threeten.bp.ZonedDateTime
 import java.util.*
 import com.uniolco.weathapp.internal.glide.GlideApp
+import com.uniolco.weathapp.ui.base.MyCallback
 import com.uniolco.weathapp.ui.base.SharedViewModel
+import kotlin.collections.ArrayList
 
 class CurrentWeatherFragment : ScopeFragment(), KodeinAware {
     override val kodein by closestKodein()
@@ -51,9 +54,14 @@ class CurrentWeatherFragment : ScopeFragment(), KodeinAware {
         current_group.visibility = View.INVISIBLE
         viewModel = ViewModelProviders.of(this, viewModelFactory).
             get(CurrentWeatherViewModel::class.java)
-        getUser(model.email.value.toString())
+//        getUser(model.email.value.toString())
+        readData(model.uid.value.toString(), object : MyCallback{
+            override fun onCallback(value: String?) {
+                Log.d("KBLBDJG:D", value.toString())
+            }
+
+        })
         bindUI()
-        ifMapReady()
     }
 
     private fun bindUI() = launch {
@@ -173,7 +181,89 @@ class CurrentWeatherFragment : ScopeFragment(), KodeinAware {
         })
     }
 
-    private fun getUser(userEmail: String){ // getting info from firebase database about user
+
+    private fun readData(uid: String, callback: MyCallback) {
+        val firebaseDatabase = FirebaseDatabase.getInstance()
+        val firebaseRootRef = firebaseDatabase.reference
+        val usersRef = firebaseRootRef.child("Users")
+        val namesList = ArrayList<String>()
+
+        val valueEventListener = object: ValueEventListener{
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                for(ds in dataSnapshot.children){
+//                    Log.d("dsdsdsdsdsds", ds.value.toString() + "|||||" + ds.toString())
+                    Log.d("dfdfdfdfdfdf", ds.key.toString() + "||||" + uid)
+                    if(ds.key?.equals(uid) == true){
+                        val name = ds.child("name").getValue(String::class.java)
+                        val login = ds.child("login").getValue(String::class.java)
+                        val surname = ds.child("surname").getValue(String::class.java)
+                        val phoneNumber = ds.child("phoneNumber").getValue(String::class.java)
+                        val address = ds.child("address").getValue(String::class.java)
+                        val email = ds.child("email").getValue(String::class.java)
+                        if (name != null) {
+                            namesList.add(name)
+                            namesList.add(login!!)
+                            namesList.add(surname!!)
+                            namesList.add(phoneNumber!!)
+                            namesList.add(address!!)
+                            namesList.add(email!!)
+                            model.firebaseUser.value = User(login, email,
+                                phoneNumber, name, surname, address)
+                        }
+                        Log.d("DSFDFDFD", namesList.toString())
+                        Log.d("USEEEEEEEEEE", model.firebaseUser.value.toString())
+
+                    }
+                }
+
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                Log.d("ERRORINDATABASEFIREBASE", error.message)
+            }
+
+        }
+
+        usersRef.addListenerForSingleValueEvent(valueEventListener)
+    }
+
+
+    /*private fun getUser(userEmail: String){ // getting info from firebase database about user
+        // getting reference of FirebaseDatabase
+        val rootRef = FirebaseDatabase.getInstance().reference
+        rootRef.keepSynced(true)
+        // going to Users where searching for email of user if it is then return data about user
+        val ordersRef = rootRef.child("Users").orderByChild("email").equalTo(userEmail)
+        val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(activity)
+
+        val valueEventListener = object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                for (ds in dataSnapshot.children) {
+                    val name = ds.child("name").getValue(String::class.java)
+                    val login = ds.child("login").getValue(String::class.java)
+                    val surname = ds.child("surname").getValue(String::class.java)
+                    val phoneNumber = ds.child("phoneNumber").getValue(String::class.java)
+                    val address = ds.child("address").getValue(String::class.java)
+                    val email = ds.child("email").getValue(String::class.java)
+                    if (login != null) {
+                        with(sharedPreferences.edit()){
+                            putStringSet("userSet", setOf(name, login, surname, phoneNumber, address, email))
+                            Log.d("IUIUIUI", setOf(name, login, surname, phoneNumber, address, email).toString())
+                            apply()
+                        }
+                        model.user.postValue(User(login, email!!, phoneNumber!!, name!!, surname!!, address!!))
+                    }
+                }
+            }
+
+            override fun onCancelled(databaseError: DatabaseError) {
+                Log.d("ERRORINDATABASEFIREBASE", databaseError.message)
+            }
+        }
+        ordersRef.addListenerForSingleValueEvent(valueEventListener)
+    }*/
+
+/*    private fun getUser(userEmail: String){ // getting info from firebase database about user
         // getting reference of FirebaseDatabase
         val rootRef = FirebaseDatabase.getInstance().reference
         rootRef.keepSynced(true)
@@ -200,19 +290,5 @@ class CurrentWeatherFragment : ScopeFragment(), KodeinAware {
             }
         }
         ordersRef.addListenerForSingleValueEvent(valueEventListener)
-    }
-
-    private fun ifMapReady(){
-        var updated = false
-        model.dataReady.observe(viewLifecycleOwner, Observer {
-            if (it == true) {
-                Log.d("FWEWEWEW", it.toString())
-                if (!updated) {
-                    Log.d("FWEWEWEW", updated.toString())
-                    updated = true
-                    Log.d("FWEWEWEW", updated.toString())
-                }
-            }
-        })
-    }
+    }*/
 }

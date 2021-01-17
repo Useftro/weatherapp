@@ -10,7 +10,8 @@ class SharedViewModel : ViewModel() {
     val registered = MutableLiveData<Boolean>()
     val email = MutableLiveData<String>()
     val user = MutableLiveData<User>()
-    val dataReady = MutableLiveData<Boolean>(false)
+    val firebaseUser = MutableLiveData<User>()
+    val uid = MutableLiveData<String>()
 
     val ifFromSettings = MutableLiveData<Boolean>()
 

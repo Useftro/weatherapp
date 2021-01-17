@@ -82,7 +82,15 @@ class SettingsFragment: PreferenceFragmentCompat() {
         (activity as? AppCompatActivity)?.supportActionBar?.subtitle = subtitle
 
         val infoPref: Preference? = findPreference("Info")
-        model.user.observe(viewLifecycleOwner, Observer {
+/*        val setO = sharedPreferences.getStringSet("userSet", setOf())
+        if (!setO.isNullOrEmpty()){
+            infoPref?.summary = "${setO?.elementAt(1)}, ${setO?.elementAt(2)}, ${setO?.elementAt(3)}"
+        }
+        else{
+            Log.d("FDDFDFDPDSFJKDGFS{GKR", "EMPTY")
+        }*/
+
+        model.firebaseUser.observe(viewLifecycleOwner, Observer {
             if (it == null)
                 return@Observer
             infoPref?.summary = "${it.name}, ${it.email}, ${it.login}"

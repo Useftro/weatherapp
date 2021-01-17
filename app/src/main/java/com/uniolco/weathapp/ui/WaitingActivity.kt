@@ -42,7 +42,8 @@ class WaitingActivity : AppCompatActivity() {
             }
             else
                 Toast.makeText(this, "Set weatherLocation manually in settings", Toast.LENGTH_LONG).show()
-            startActivity(Intent(this, MainActivity::class.java))
+            val uid = intent.getStringExtra("uid")
+            startActivity(Intent(this, MainActivity::class.java).putExtra("uid", uid))
             finish()
         }
     }
