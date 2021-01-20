@@ -55,6 +55,8 @@ class FutureListWeatherFragment : ScopeFragment(), KodeinAware {
         val futureWeatherEntries = viewModel.weatherEntries.await()
         val weatherLocation = viewModel.weatherLocation.await()
 
+        graphView.visibility = View.INVISIBLE
+
         weatherLocation.observe(viewLifecycleOwner, Observer { location ->
             if (location == null){
                 return@Observer
@@ -63,7 +65,8 @@ class FutureListWeatherFragment : ScopeFragment(), KodeinAware {
         })
 
         futureWeatherEntries.observe(viewLifecycleOwner, Observer { weatherEntries ->
-            if (weatherEntries == null) return@Observer
+            if (weatherEntries == null)
+                return@Observer
             group_loading.visibility = View.GONE
             updateDate(weatherEntries[0].date, weatherEntries[weatherEntries.lastIndex].date)
             initRecyclerView(weatherEntries)
@@ -91,6 +94,7 @@ class FutureListWeatherFragment : ScopeFragment(), KodeinAware {
 
     private fun updateGraph(list: List<UnitSpecificSimpleFutureWeatherEntry>){
         graphView.removeAllSeries()
+        graphView.visibility = View.VISIBLE
         val line = mutableListOf<DataPoint>()
         list.forEach {
             line += DataPoint(it.date.dayOfMonth.toDouble(), it.averageTemp)

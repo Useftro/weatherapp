@@ -1,7 +1,6 @@
 package com.uniolco.weathapp.ui
 
 import android.content.Intent
-import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -66,7 +65,6 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun login() {
-        val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(applicationContext)
         if (emailloginEditText.text.isEmpty() || passwordEditText.text.isEmpty()){
             Toast.makeText(this, "Please fill all fields!", Toast.LENGTH_SHORT).show()
         }
@@ -82,7 +80,6 @@ class LoginActivity : AppCompatActivity() {
                 .addOnCompleteListener(this) { task ->
                     if (task.isSuccessful) {
                         val user = auth.currentUser
-                        Log.d("UIDUIDUID", user?.uid.toString())
                         updateUI(user)
                     } else {
                         Toast.makeText(
@@ -101,33 +98,19 @@ class LoginActivity : AppCompatActivity() {
     private fun updateUI(currentUser: FirebaseUser?) {
         val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(applicationContext)
         if(currentUser != null){
-            lateinit var inten: Intent
-            if(!sharedPreferences.getBoolean("askedPermissions", false)) {
-                inten = Intent(this, WaitingActivity::class.java)
-            }
-            else{
-                inten = Intent(this, MainActivity::class.java)
+            var inten: Intent = if(!sharedPreferences.getBoolean("askedPermissions", false)) {
+                Intent(this, WaitingActivity::class.java)
+            } else{
+                Intent(this, MainActivity::class.java)
             }
             with(sharedPreferences.edit()){
                 putBoolean("Logged", true)
                 putBoolean("registered", intent.getBooleanExtra("registered", false))
                 putString("Email", currentUser.email)
-                Log.d("currentusseruid", currentUser.uid)
                 putString("currentuseruid", currentUser.uid)
                 apply()
             }
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP)
-
-/*            inten.putExtra("login", intent.getStringExtra("login"))
-            inten.putExtra("email", intent.getStringExtra("email"))
-            inten.putExtra("phone", intent.getStringExtra("phone"))
-            inten.putExtra("name", intent.getStringExtra("name"))
-            inten.putExtra("surname", intent.getStringExtra("surname"))
-            inten.putExtra("address", intent.getStringExtra("address"))
-
-
-
-            inten.putExtra("registered", intent.getBooleanExtra("registered", false))*/
             inten.putExtra("uid", currentUser.uid)
             startActivity(inten)
             finish()
