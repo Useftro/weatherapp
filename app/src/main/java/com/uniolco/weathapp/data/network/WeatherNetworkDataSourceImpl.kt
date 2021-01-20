@@ -46,8 +46,8 @@ class WeatherNetworkDataSourceImpl(
         }
         catch (e: retrofit2.HttpException){
             Log.e("Cityyy", "Oh shit, I'm sorry... ${e.message()}")
-            val fetchedCurrentWeather = apiWeatherService
-                .getCurrentWeather("Minsk").await()
+//            val fetchedCurrentWeather = apiWeatherService
+//                .getCurrentWeather("Minsk").await()
             val currentResp = CurrentWeatherResponse(CurrentWeather(condition =
             Condition(code = 1000, icon = "//cdn.weatherapi.com/weather/64x64/day/113.png")),
                 WeatherLocation(name = "Wrong location.", tzId = "Europe/Madrid"))

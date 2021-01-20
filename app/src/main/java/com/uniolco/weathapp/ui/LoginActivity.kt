@@ -49,6 +49,7 @@ class LoginActivity : AppCompatActivity() {
         contWoLogButton.setOnClickListener {
             if(!sharedPreferences.getBoolean("askedPermissions", false)){
                 startActivity(Intent(this, WaitingActivity::class.java))
+                finish()
             }
             else {
                 val intent = Intent(this, MainActivity::class.java)

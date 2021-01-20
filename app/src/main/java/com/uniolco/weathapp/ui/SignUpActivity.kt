@@ -34,11 +34,11 @@ class SignUpActivity : AppCompatActivity() {
         if (loginEditText.text.isEmpty() || emailEditText.text.isEmpty() || phoneEditText.text.isEmpty()
             || passwordEditText.text.isEmpty() || nameEditText.text.isEmpty() || surnameEditText.text.isEmpty()
             || addressEditText.text.isEmpty()){
-            error("Please fill all fields!")
+            Toast.makeText(this, "Please fill all fields!", Toast.LENGTH_SHORT).show()
         }
 
         if(!Patterns.EMAIL_ADDRESS.matcher(emailEditText.text.toString()).matches()){
-            error("Please enter valid email!")
+            Toast.makeText(this, "Please enter valid email!", Toast.LENGTH_SHORT).show()
         }
         var registered = false
         auth.createUserWithEmailAndPassword(emailEditText.text.toString(), passwordEditText.text.toString())
@@ -46,8 +46,6 @@ class SignUpActivity : AppCompatActivity() {
 
                 if (task.isSuccessful) {
                     // Sign in success, update UI with the signed-in user's information
-                    Log.d("TAG", "createUserWithEmail:success")
-
                     val user = User(
                     loginEditText.text.toString(),
                     emailEditText.text.toString(),
@@ -80,7 +78,7 @@ class SignUpActivity : AppCompatActivity() {
                     finish()
                 } else {
                     // If sign in fails, display a message to the user.
-                    Log.w("TAG", "createUserWithEmail:failure", task.exception)
+                    Log.d("TAG", "createUserWithEmail:failure", task.exception)
                     Toast.makeText(baseContext, "Sign up failed.",
                         Toast.LENGTH_SHORT).show()
 

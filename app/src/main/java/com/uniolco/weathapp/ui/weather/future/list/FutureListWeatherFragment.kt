@@ -48,6 +48,7 @@ class FutureListWeatherFragment : ScopeFragment(), KodeinAware {
         super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProviders.of(this, viewModelFactory)
             .get(FutureListWeatherViewModel::class.java)
+        graphView.visibility = View.INVISIBLE
         bindUI()
     }
 
@@ -91,6 +92,7 @@ class FutureListWeatherFragment : ScopeFragment(), KodeinAware {
 
     private fun updateGraph(list: List<UnitSpecificSimpleFutureWeatherEntry>){
         graphView.removeAllSeries()
+        graphView.visibility = View.VISIBLE
         val line = mutableListOf<DataPoint>()
         list.forEach {
             line += DataPoint(it.date.dayOfMonth.toDouble(), it.averageTemp)

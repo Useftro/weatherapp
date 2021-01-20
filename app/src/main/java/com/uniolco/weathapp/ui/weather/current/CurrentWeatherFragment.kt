@@ -115,10 +115,16 @@ class CurrentWeatherFragment : ScopeFragment(), KodeinAware {
 
     private fun addToFavorite(favoriteLocation: Locations){
         favorite_button.setOnClickListener {
-            launch {
-                viewModel.insertIntoFavorite(favoriteLocation)
+            if (model.loggedIn.value == true) {
+                launch {
+                    viewModel.insertIntoFavorite(favoriteLocation)
+                }
+                Toast.makeText(
+                    favorite_button.context,
+                    getString(R.string.toastAdded),
+                    Toast.LENGTH_LONG
+                ).show()
             }
-            Toast.makeText(favorite_button.context, getString(R.string.toastAdded), Toast.LENGTH_LONG).show()
         }
     }
 
