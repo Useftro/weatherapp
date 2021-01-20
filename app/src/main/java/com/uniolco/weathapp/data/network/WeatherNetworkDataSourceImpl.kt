@@ -1,9 +1,8 @@
 package com.uniolco.weathapp.data.network
 
-import android.content.Context
-import android.util.AndroidRuntimeException
+
+import android.content.res.Resources
 import android.util.Log
-import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.uniolco.weathapp.data.db.entity.current.Condition
@@ -11,12 +10,16 @@ import com.uniolco.weathapp.data.db.entity.current.CurrentWeather
 import com.uniolco.weathapp.data.db.entity.current.WeatherLocation
 import com.uniolco.weathapp.data.network.response.CurrentWeatherResponse
 import com.uniolco.weathapp.data.network.response.FutureWeatherResponse
-import com.uniolco.weathapp.internal.CityNotFound
 import com.uniolco.weathapp.internal.NoConnectivityException
-import retrofit2.HttpException
-import kotlin.coroutines.coroutineContext
+import java.util.*
 
 const val NUMBER_OF_DAYS = 7
+
+val language = if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+    Resources.getSystem().configuration.locales[0].language
+} else {
+    Resources.getSystem().configuration.locale.language
+}
 
 class WeatherNetworkDataSourceImpl(
     private val apiWeatherService: ApiWeatherService
@@ -37,17 +40,13 @@ class WeatherNetworkDataSourceImpl(
     override suspend fun fetchCurrentWeather(location: String) {
         try{
             val fetchedCurrentWeather = apiWeatherService
-                .getCurrentWeather(location).await()
-            Log.d("FETCHED", fetchedCurrentWeather.toString())
+                .getCurrentWeather(location, language).await()
             _downloadedCurrentWeather.postValue(fetchedCurrentWeather)
         }
         catch (e: NoConnectivityException){
             Log.e("Connectivity", "No internet connection fetchCurrentWeather", e)
         }
         catch (e: retrofit2.HttpException){
-            Log.e("Cityyy", "Oh shit, I'm sorry... ${e.message()}")
-//            val fetchedCurrentWeather = apiWeatherService
-//                .getCurrentWeather("Minsk").await()
             val currentResp = CurrentWeatherResponse(CurrentWeather(condition =
             Condition(code = 1000, icon = "//cdn.weatherapi.com/weather/64x64/day/113.png")),
                 WeatherLocation(name = "Wrong location.", tzId = "Europe/Madrid"))
@@ -58,16 +57,15 @@ class WeatherNetworkDataSourceImpl(
     override suspend fun fetchFutureWeather(location: String) {
         try{
             val fetchedFutureWeather = apiWeatherService
-                .getFutureWeather(location, NUMBER_OF_DAYS).await()
+                .getFutureWeather(location, NUMBER_OF_DAYS, language).await()
             _downloadedFutureWeather.postValue(fetchedFutureWeather)
-            Log.d("VALUES", fetchedFutureWeather.futureWeatherEntries.forecastdays.size.toString())
         }
         catch (e: NoConnectivityException){
             Log.e("Connectivity", "No internet connection fetchCurrentWeather", e)
         }
         catch (e: retrofit2.HttpException){
             val fetchedFutureWeather = apiWeatherService
-                .getFutureWeather("Minsk", 7).await()
+                .getFutureWeather("Minsk", 7, language).await()
             _downloadedFutureWeather.postValue(fetchedFutureWeather)
         }
     }
@@ -75,7 +73,7 @@ class WeatherNetworkDataSourceImpl(
     override suspend fun fetchFavoriteWeather(location: String) {
         try{
             val fetchedFavoriteWeather = apiWeatherService
-                .getCurrentWeather(location).await()
+                .getCurrentWeather(location, language).await()
             _downloadedFavoriteWeather.postValue(fetchedFavoriteWeather)
         }
         catch (e: NoConnectivityException){

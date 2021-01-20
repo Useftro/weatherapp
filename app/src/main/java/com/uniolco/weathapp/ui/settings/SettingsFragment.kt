@@ -48,14 +48,13 @@ class SettingsFragment: PreferenceFragmentCompat() {
             }
             if(item == null)
                 return@Observer
-            preferenceButton.setOnPreferenceClickListener(object: Preference.OnPreferenceClickListener{
+            preferenceButton.onPreferenceClickListener = object: Preference.OnPreferenceClickListener{
                 override fun onPreferenceClick(preference: Preference?): Boolean {
                     if(item == false){
                         val intent = Intent(preferenceButton.context, LoginActivity::class.java)
                         startActivity(intent)
                         model.ifFromSettings.postValue(true)
-                    }
-                    else{
+                    } else{
                         try {
                             FirebaseAuth.getInstance().signOut()
                             model.loggedIn.postValue(false)
@@ -64,14 +63,13 @@ class SettingsFragment: PreferenceFragmentCompat() {
                                 apply()
                             }
                             Toast.makeText(preferenceButton.context,"Signed out!", Toast.LENGTH_SHORT).show()
-                        }
-                        catch (e: Exception){
+                        } catch (e: Exception){
                             Log.e("ERROR", "ERROR WITH LOGGING OUT: ${e}")
                         }
                     }
                     return true
                 }
-            })
+            }
         })
         if(model.loggedIn.value == true){
             subtitle = "Hello, ${model.email.value}!"

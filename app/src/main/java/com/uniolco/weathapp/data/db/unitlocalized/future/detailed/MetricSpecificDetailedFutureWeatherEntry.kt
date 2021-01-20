@@ -28,5 +28,4 @@ data class MetricSpecificDetailedFutureWeatherEntry(
     override val maxWindSpeed: Double,
     @ColumnInfo(name = "condition_code")
     override val conditionCode: Int
-) : UnitSpecificDetailedFutureWeatherEntry {
-}
+) : UnitSpecificDetailedFutureWeatherEntry

@@ -7,6 +7,7 @@ import android.app.*
 import android.content.Intent
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
+import android.content.res.Resources
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -30,6 +31,7 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
+import com.google.rpc.context.AttributeContext
 import com.uniolco.weathapp.R
 import com.uniolco.weathapp.data.firebase.User
 import com.uniolco.weathapp.internal.notification.ReminderBroadcast
@@ -39,6 +41,7 @@ import kotlinx.android.synthetic.main.activity_main.*
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.closestKodein
 import org.kodein.di.generic.instance
+import java.util.*
 
 
 private const val MY_PERMISSION_ACCESS_COARSE_LOCATION = 1
@@ -50,9 +53,6 @@ class MainActivity : AppCompatActivity(), KodeinAware {
     private val model: SharedViewModel by viewModels()
 
     private val locationCallback = object : LocationCallback() {
-        override fun onLocationResult(p0: LocationResult?) {
-            super.onLocationResult(p0)
-        }
     }
 
     private lateinit var navController: NavController
@@ -79,10 +79,10 @@ class MainActivity : AppCompatActivity(), KodeinAware {
         setSupportActionBar(toolbar)
 
 
+
         val sharedPreferences: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(
             applicationContext
         )
-
 
         // getting info from login acitivity if logged, if registered and email
         val logged = sharedPreferences.getBoolean("Logged", false)

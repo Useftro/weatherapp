@@ -22,13 +22,15 @@ interface ApiWeatherService {
 
     @GET(value = "current.json")
     fun getCurrentWeather(
-        @Query("q") location: String
+        @Query("q") location: String,
+        @Query("lang") language: String
     ): Deferred<CurrentWeatherResponse>
 
     @GET(value = "forecast.json")
     fun getFutureWeather(
         @Query("q") location: String,
-        @Query("days") days: Int
+        @Query("days") days: Int,
+        @Query("language") language: String
     ): Deferred<FutureWeatherResponse>
 
 

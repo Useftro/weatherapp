@@ -55,12 +55,9 @@ class CurrentWeatherFragment : ScopeFragment(), KodeinAware {
         viewModel = ViewModelProviders.of(this, viewModelFactory).
             get(CurrentWeatherViewModel::class.java)
 //        getUser(model.email.value.toString())
-        readData(model.uid.value.toString(), object : MyCallback{
-            override fun onCallback(value: String?) {
-                Log.d("KBLBDJG:D", value.toString())
-            }
-
-        })
+        if(model.loggedIn.value == true) {
+            readData(model.uid.value.toString())
+        }
         bindUI()
     }
 
@@ -146,7 +143,7 @@ class CurrentWeatherFragment : ScopeFragment(), KodeinAware {
         textView_maxWind.text = getString(R.string.windSpeed, windSpeed)
         textView_humidity.text = getString(R.string.humidity, humidity.toString())
         textView_pressure.text = getString(R.string.pressure, pressure)
-        textView_weatherDesc.text = getString(R.string.weatherDescription, weatherDescription, condition)
+        textView_weatherDesc.text = getString(R.string.weatherDescription, weatherDescription.toLowerCase(), condition.toLowerCase())
 //            "Visibility: $weatherDescription\n\nSeems to be like its ${condition.toLowerCase()} today"
     }
 
@@ -188,7 +185,7 @@ class CurrentWeatherFragment : ScopeFragment(), KodeinAware {
     }
 
 
-    private fun readData(uid: String, callback: MyCallback) {
+    private fun readData(uid: String) { // that process is asynchronous by itself so no need more async
         val firebaseDatabase = FirebaseDatabase.getInstance()
         val firebaseRootRef = firebaseDatabase.reference
         val usersRef = firebaseRootRef.child("Users")
@@ -197,8 +194,6 @@ class CurrentWeatherFragment : ScopeFragment(), KodeinAware {
         val valueEventListener = object: ValueEventListener{
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 for(ds in dataSnapshot.children){
-//                    Log.d("dsdsdsdsdsds", ds.value.toString() + "|||||" + ds.toString())
-                    Log.d("dfdfdfdfdfdf", ds.key.toString() + "||||" + uid)
                     if(ds.key?.equals(uid) == true){
                         val name = ds.child("name").getValue(String::class.java)
                         val login = ds.child("login").getValue(String::class.java)
@@ -216,9 +211,6 @@ class CurrentWeatherFragment : ScopeFragment(), KodeinAware {
                             model.firebaseUser.value = User(login, email,
                                 phoneNumber, name, surname, address)
                         }
-                        Log.d("DSFDFDFD", namesList.toString())
-                        Log.d("USEEEEEEEEEE", model.firebaseUser.value.toString())
-
                     }
                 }
 
