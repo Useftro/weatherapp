@@ -7,6 +7,7 @@ import android.content.pm.PackageManager
 import android.location.Location
 import android.util.Log
 import androidx.core.content.ContextCompat
+import androidx.preference.PreferenceManager
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.uniolco.weathapp.data.db.entity.current.WeatherLocation
 import com.uniolco.weathapp.internal.LocationPermissionNotGrantedException
@@ -19,9 +20,10 @@ const val CUSTOM_LOCATION = "CUSTOM_LOCATION"
 class LocationProviderImpl(
     private val fusedLocationProviderClient: FusedLocationProviderClient,
     context: Context
-): PreferenceProvider(context), LocationProvider {
+): LocationProvider {
 
     private val appContext = context.applicationContext
+    val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(appContext)
 
     override suspend fun hasLocationChanged(lastWeatherLocation: WeatherLocation): Boolean {
         val deviceLocationChanged = try {
@@ -32,11 +34,6 @@ class LocationProviderImpl(
 
         return deviceLocationChanged || hasCustomLocationChanged(lastWeatherLocation)
     }
-
-/*    private fun hasLocationPermission(): Boolean {
-        return ContextCompat.checkSelfPermission(this,
-            Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED
-    }*/
 
     override suspend fun getPreferredLocationString(): String {
         if (isUsingDeviceLocation()) {
@@ -73,11 +70,11 @@ class LocationProviderImpl(
     }
 
     private fun isUsingDeviceLocation(): Boolean {
-        return preferences.getBoolean(USE_DEVICE_LOCATION, true)
+        return sharedPreferences.getBoolean(USE_DEVICE_LOCATION, true)
     }
 
     private fun getCustomLocationName(): String? {
-        return preferences.getString(CUSTOM_LOCATION, null)
+        return sharedPreferences.getString(CUSTOM_LOCATION, null)
     }
 
     @SuppressLint("MissingPermission")

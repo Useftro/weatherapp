@@ -111,13 +111,6 @@ class FavoriteListWeatherFragment : ScopeFragment(), KodeinAware {
         itemTouchHelper.attachToRecyclerView(recyclerView)
     }
 
-
-    private fun List<Locations>.toItems(): List<FavoriteListItem>{
-        return this.map {
-            FavoriteListItem(it)
-        }
-    }
-
     private fun deleteLocation(locations: Locations){
         launch {
             viewModel.deleteLocation(locations)

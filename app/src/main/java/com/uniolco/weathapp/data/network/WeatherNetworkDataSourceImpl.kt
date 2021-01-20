@@ -45,12 +45,10 @@ class WeatherNetworkDataSourceImpl(
             Log.e("Connectivity", "No internet connection fetchCurrentWeather", e)
         }
         catch (e: retrofit2.HttpException){
-            Log.e("Cityyy", "Oh shit, I'm sorry... ${e.message()}")
-            val fetchedCurrentWeather = apiWeatherService
-                .getCurrentWeather("Minsk").await()
+            Log.e("Cityyy", "Oh, I'm sorry... ${e.message()}")
             val currentResp = CurrentWeatherResponse(CurrentWeather(condition =
             Condition(code = 1000, icon = "//cdn.weatherapi.com/weather/64x64/day/113.png")),
-                WeatherLocation(name = "Wrong location.", tzId = "Europe/Madrid"))
+                WeatherLocation(tzId = "Europe/Madrid"))
             _downloadedCurrentWeather.postValue(currentResp)
         }
     }
@@ -67,7 +65,7 @@ class WeatherNetworkDataSourceImpl(
         }
         catch (e: retrofit2.HttpException){
             val fetchedFutureWeather = apiWeatherService
-                .getFutureWeather("Minsk", 7).await()
+                .getFutureWeather("Minsk", NUMBER_OF_DAYS).await()
             _downloadedFutureWeather.postValue(fetchedFutureWeather)
         }
     }

@@ -13,7 +13,6 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
-import androidx.preference.PreferenceManager
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
@@ -30,7 +29,6 @@ import org.kodein.di.generic.instance
 import org.threeten.bp.ZonedDateTime
 import java.util.*
 import com.uniolco.weathapp.internal.glide.GlideApp
-import com.uniolco.weathapp.ui.base.MyCallback
 import com.uniolco.weathapp.ui.base.SharedViewModel
 import kotlin.collections.ArrayList
 
@@ -54,13 +52,7 @@ class CurrentWeatherFragment : ScopeFragment(), KodeinAware {
         current_group.visibility = View.INVISIBLE
         viewModel = ViewModelProviders.of(this, viewModelFactory).
             get(CurrentWeatherViewModel::class.java)
-//        getUser(model.email.value.toString())
-        readData(model.uid.value.toString(), object : MyCallback{
-            override fun onCallback(value: String?) {
-                Log.d("KBLBDJG:D", value.toString())
-            }
-
-        })
+        readData(model.uid.value.toString())
         bindUI()
     }
 
@@ -115,10 +107,16 @@ class CurrentWeatherFragment : ScopeFragment(), KodeinAware {
 
     private fun addToFavorite(favoriteLocation: Locations){
         favorite_button.setOnClickListener {
-            launch {
-                viewModel.insertIntoFavorite(favoriteLocation)
+            if (model.loggedIn.value == true) {
+                launch {
+                    viewModel.insertIntoFavorite(favoriteLocation)
+                }
+                Toast.makeText(
+                    favorite_button.context,
+                    getString(R.string.toastAdded),
+                    Toast.LENGTH_LONG
+                ).show()
             }
-            Toast.makeText(favorite_button.context, getString(R.string.toastAdded), Toast.LENGTH_LONG).show()
         }
     }
 
@@ -182,7 +180,7 @@ class CurrentWeatherFragment : ScopeFragment(), KodeinAware {
     }
 
 
-    private fun readData(uid: String, callback: MyCallback) {
+    private fun readData(uid: String) {
         val firebaseDatabase = FirebaseDatabase.getInstance()
         val firebaseRootRef = firebaseDatabase.reference
         val usersRef = firebaseRootRef.child("Users")
@@ -191,8 +189,6 @@ class CurrentWeatherFragment : ScopeFragment(), KodeinAware {
         val valueEventListener = object: ValueEventListener{
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 for(ds in dataSnapshot.children){
-//                    Log.d("dsdsdsdsdsds", ds.value.toString() + "|||||" + ds.toString())
-                    Log.d("dfdfdfdfdfdf", ds.key.toString() + "||||" + uid)
                     if(ds.key?.equals(uid) == true){
                         val name = ds.child("name").getValue(String::class.java)
                         val login = ds.child("login").getValue(String::class.java)
@@ -210,8 +206,6 @@ class CurrentWeatherFragment : ScopeFragment(), KodeinAware {
                             model.firebaseUser.value = User(login, email,
                                 phoneNumber, name, surname, address)
                         }
-                        Log.d("DSFDFDFD", namesList.toString())
-                        Log.d("USEEEEEEEEEE", model.firebaseUser.value.toString())
 
                     }
                 }
@@ -226,69 +220,4 @@ class CurrentWeatherFragment : ScopeFragment(), KodeinAware {
 
         usersRef.addListenerForSingleValueEvent(valueEventListener)
     }
-
-
-    /*private fun getUser(userEmail: String){ // getting info from firebase database about user
-        // getting reference of FirebaseDatabase
-        val rootRef = FirebaseDatabase.getInstance().reference
-        rootRef.keepSynced(true)
-        // going to Users where searching for email of user if it is then return data about user
-        val ordersRef = rootRef.child("Users").orderByChild("email").equalTo(userEmail)
-        val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(activity)
-
-        val valueEventListener = object : ValueEventListener {
-            override fun onDataChange(dataSnapshot: DataSnapshot) {
-                for (ds in dataSnapshot.children) {
-                    val name = ds.child("name").getValue(String::class.java)
-                    val login = ds.child("login").getValue(String::class.java)
-                    val surname = ds.child("surname").getValue(String::class.java)
-                    val phoneNumber = ds.child("phoneNumber").getValue(String::class.java)
-                    val address = ds.child("address").getValue(String::class.java)
-                    val email = ds.child("email").getValue(String::class.java)
-                    if (login != null) {
-                        with(sharedPreferences.edit()){
-                            putStringSet("userSet", setOf(name, login, surname, phoneNumber, address, email))
-                            Log.d("IUIUIUI", setOf(name, login, surname, phoneNumber, address, email).toString())
-                            apply()
-                        }
-                        model.user.postValue(User(login, email!!, phoneNumber!!, name!!, surname!!, address!!))
-                    }
-                }
-            }
-
-            override fun onCancelled(databaseError: DatabaseError) {
-                Log.d("ERRORINDATABASEFIREBASE", databaseError.message)
-            }
-        }
-        ordersRef.addListenerForSingleValueEvent(valueEventListener)
-    }*/
-
-/*    private fun getUser(userEmail: String){ // getting info from firebase database about user
-        // getting reference of FirebaseDatabase
-        val rootRef = FirebaseDatabase.getInstance().reference
-        rootRef.keepSynced(true)
-        // going to Users where searching for email of user if it is then return data about user
-        val ordersRef = rootRef.child("Users").orderByChild("email").equalTo(userEmail)
-
-        val valueEventListener = object : ValueEventListener {
-            override fun onDataChange(dataSnapshot: DataSnapshot) {
-                for (ds in dataSnapshot.children) {
-                    val name = ds.child("name").getValue(String::class.java)
-                    val login = ds.child("login").getValue(String::class.java)
-                    val surname = ds.child("surname").getValue(String::class.java)
-                    val phoneNumber = ds.child("phoneNumber").getValue(String::class.java)
-                    val address = ds.child("address").getValue(String::class.java)
-                    val email = ds.child("email").getValue(String::class.java)
-                    if (login != null) {
-                        model.user.postValue(User(login, email!!, phoneNumber!!, name!!, surname!!, address!!))
-                    }
-                }
-            }
-
-            override fun onCancelled(databaseError: DatabaseError) {
-                Log.d("ERRORINDATABASEFIREBASE", databaseError.message)
-            }
-        }
-        ordersRef.addListenerForSingleValueEvent(valueEventListener)
-    }*/
 }

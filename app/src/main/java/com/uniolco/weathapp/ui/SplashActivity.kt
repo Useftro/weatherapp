@@ -48,7 +48,7 @@ class SplashActivity : AppCompatActivity() {
         Handler().postDelayed({
             updateUI(currentUser)
             finish()
-        }, 2000)
+        }, 3000)
 
     }
 
@@ -59,10 +59,6 @@ class SplashActivity : AppCompatActivity() {
             inten.putExtra("Logged", true)
             inten.putExtra("Email", currentUser.email)
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP)
-
-/*            with(sharedPreferences.edit()){
-                putString("Login", currentUser.)
-            }*/
 
             inten.putExtra("login", intent.getStringExtra("login"))
             inten.putExtra("email", intent.getStringExtra("email"))

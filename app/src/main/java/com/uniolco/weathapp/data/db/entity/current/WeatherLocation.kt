@@ -19,7 +19,7 @@ data class WeatherLocation(
     @SerializedName("localtime_epoch")
     val localtimeEpoch: Long = 0,
     val lon: Double = 0.0,
-    val name: String = "",
+    val name: String = "Wrong location",
     val region: String = "",
     @SerializedName("tz_id")
     val tzId: String = "",
