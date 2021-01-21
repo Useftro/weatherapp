@@ -69,11 +69,11 @@ class LoginActivity : AppCompatActivity() {
     private fun login() {
         val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(applicationContext)
         if (emailloginEditText.text.isEmpty() || passwordEditText.text.isEmpty()){
-            Toast.makeText(this, "Please fill all fields!", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, getString(R.string.toastFillAllFields), Toast.LENGTH_SHORT).show()
         }
 
         if(!Patterns.EMAIL_ADDRESS.matcher(emailloginEditText.text.toString()).matches()){
-            Toast.makeText(this, "Please enter valid email!", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, getString(R.string.toastEnterValidEmail), Toast.LENGTH_SHORT).show()
         }
         try {
             auth.signInWithEmailAndPassword(
@@ -87,7 +87,7 @@ class LoginActivity : AppCompatActivity() {
                         updateUI(user)
                     } else {
                         Toast.makeText(
-                            baseContext, "Authentication failed.",
+                            baseContext, getString(R.string.toastAuthFailed),
                             Toast.LENGTH_SHORT
                         ).show()
                         updateUI(null)
@@ -95,7 +95,7 @@ class LoginActivity : AppCompatActivity() {
                 }
         }
         catch(e: java.lang.IllegalArgumentException){
-            Toast.makeText(this, "Please fill all fields!", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, getString(R.string.toastFillAllFields), Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -118,17 +118,6 @@ class LoginActivity : AppCompatActivity() {
                 apply()
             }
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP)
-
-/*            inten.putExtra("login", intent.getStringExtra("login"))
-            inten.putExtra("email", intent.getStringExtra("email"))
-            inten.putExtra("phone", intent.getStringExtra("phone"))
-            inten.putExtra("name", intent.getStringExtra("name"))
-            inten.putExtra("surname", intent.getStringExtra("surname"))
-            inten.putExtra("address", intent.getStringExtra("address"))
-
-
-
-            inten.putExtra("registered", intent.getBooleanExtra("registered", false))*/
             inten.putExtra("uid", currentUser.uid)
             startActivity(inten)
             finish()

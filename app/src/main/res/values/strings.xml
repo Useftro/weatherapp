@@ -37,8 +37,37 @@
     <string name="maxTemp">Max: %.2f°C</string>
     <string name="rainChance">Chance of rain: %s%%</string>
 
+    <!-- TOAST  -->
+
     <string name="toastAdded">Added</string>
     <string name="toastDeletedAllFavorite">Deleted all favorite places</string>
+    <string name="toastFillAllFields">Please fill all fields!</string>
+    <string name="toastEnterValidEmail">Please enter valid email!</string>
+    <string name="toastSignUpSucceed">Registration succeed</string>
+    <string name="toastSignUpFailed">Registration failed</string>
+    <string name="toastAuthFailed">Authentication failed.</string>
+
+    <!-- SETTINGS  -->
+    <string name="settingsLogIn">Log in</string>
+    <string name="settingsLogOut">Log out</string>
+    <string name="settingsToastSignedOut">Signed out!</string>
+    <string name="settingsGreeting">Hello, %s!</string>
+    <string name="settingsNotAuthorised">Not authorised.</string>
+    <string name="settingsTitle">Settings</string>
+
+    <!-- PREFERENCES  -->
+    <string name="preferencesTurnNotif">Turn notifications</string>
+    <string name="preferencesTurnNotifSummary">Switch to disallow sending notifications</string>
+    <string name="preferencesTurnSound">Turn off sound</string>
+    <string name="preferencesTurnSoundSummary">Switch to turn off sound</string>
+    <string name="preferencesLogButtonSummary">Press this area to login or to log out</string>
+    <string name="preferencesUserButton">User</string>
+    <string name="preferencesUserSummary">Information about user</string>
+    <string name="preferencesCustomLocationSummary">Location for which weather is displayed</string>
+    <string name="preferencesDeviceLocationSummary">Switch to allow using your location</string>
+    <string name="preferencesCustomLocation">Location</string>
+    <string name="preferencesDeviceLocation">Device location</string>
+    <string name="preferenceSoundAndNotif">Sound and notifications</string>
 
     <string name="favorite">Favorite</string>
 

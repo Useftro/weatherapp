@@ -24,7 +24,7 @@
     <string name="feelsLikeTemperature">Чувствуется как: %s°C</string>
     <string name="temperature">%s°C</string>
 
-    <string name="windSpeed">Скорость ветра: %.2f км/ч</string>
+    <string name="windSpeed">Ветер: %.2f км/ч</string>
     <string name="humidity">Влажность: %s%%</string>
     <string name="pressure">Давление: %d mmHg</string>
     <string name="weatherDescription">Видимость: %s km \n \n Сегодня на улице %s</string>
@@ -36,8 +36,37 @@
     <string name="maxTemp">Максимально: %.2f°C</string>
     <string name="rainChance">Вероятность дождя: %s%%</string>
 
+    <!-- TOAST  -->
+
     <string name="toastAdded">Добавлено</string>
     <string name="toastDeletedAllFavorite">Удалены все любимые локации</string>
+    <string name="toastFillAllFields">Заполните все поля!</string>
+    <string name="toastEnterValidEmail">Введите правильный email</string>
+    <string name="toastSignUpSucceed">Регистрация удалась!</string>
+    <string name="toastSignUpFailed">Ошибка регистрации</string>
+    <string name="toastAuthFailed">Ошибка входа.</string>
+
+    <!-- SETTINGS  -->
+    <string name="settingsLogIn">Войти</string>
+    <string name="settingsLogOut">Выйти</string>
+    <string name="settingsToastSignedOut">Удачно разлогинено!</string>
+    <string name="settingsGreeting">Привет, %s!</string>
+    <string name="settingsNotAuthorised">Не авторизовано.</string>
+    <string name="settingsTitle">Настройки</string>
+
+    <!-- PREFERENCES  -->
+    <string name="preferencesTurnNotif">Уведомления</string>
+    <string name="preferencesTurnNotifSummary">Переключите для запрета уведомлений</string>
+    <string name="preferencesTurnSound">Выключить звук</string>
+    <string name="preferencesTurnSoundSummary">Переключите для выключения звука</string>
+    <string name="preferencesLogButtonSummary">Нажмите здесь для входа или выхода</string>
+    <string name="preferencesUserButton">Пользователь</string>
+    <string name="preferencesUserSummary">Информация о пользователе</string>
+    <string name="preferencesCustomLocationSummary">Место прогноза погоды</string>
+    <string name="preferencesDeviceLocationSummary">Переключите для использования Вашего местоположения</string>
+    <string name="preferencesCustomLocation">Местоположение</string>
+    <string name="preferencesDeviceLocation">Местоположение устройства</string>
+    <string name="preferenceSoundAndNotif">Звук и уведомления</string>
 
     <string name="favorite">Любимое</string>
 

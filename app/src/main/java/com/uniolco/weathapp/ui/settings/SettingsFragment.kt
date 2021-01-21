@@ -1,6 +1,5 @@
 package com.uniolco.weathapp.ui.settings
 
-import android.app.Activity
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
@@ -13,12 +12,7 @@ import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.PreferenceManager
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ValueEventListener
 import com.uniolco.weathapp.R
-import com.uniolco.weathapp.data.firebase.User
 import com.uniolco.weathapp.ui.LoginActivity
 import com.uniolco.weathapp.ui.base.SharedViewModel
 
@@ -34,17 +28,17 @@ class SettingsFragment: PreferenceFragmentCompat() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        (activity as? AppCompatActivity)?.supportActionBar?.title = "Settings"
+        (activity as? AppCompatActivity)?.supportActionBar?.title = getString(R.string.settingsTitle)
         val preferenceButton = findPreference<Preference>(LOG_BUTTON)!!
         var subtitle = " "
         val sharedPreferences: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(activity)
 
         model.loggedIn.observe(viewLifecycleOwner, Observer { item ->
             if (item == true){
-                preferenceButton.title = "Log out"
+                preferenceButton.title = getString(R.string.settingsLogIn)
             }
             else{
-                preferenceButton.title = "Log in"
+                preferenceButton.title = getString(R.string.settingsLogOut)
             }
             if(item == null)
                 return@Observer
@@ -62,7 +56,7 @@ class SettingsFragment: PreferenceFragmentCompat() {
                                 putBoolean("UserNotNull", false)
                                 apply()
                             }
-                            Toast.makeText(preferenceButton.context,"Signed out!", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(preferenceButton.context,getString(R.string.settingsToastSignedOut), Toast.LENGTH_SHORT).show()
                         } catch (e: Exception){
                             Log.e("ERROR", "ERROR WITH LOGGING OUT: ${e}")
                         }
@@ -72,10 +66,10 @@ class SettingsFragment: PreferenceFragmentCompat() {
             }
         })
         if(model.loggedIn.value == true){
-            subtitle = "Hello, ${model.email.value}!"
+            subtitle = getString(R.string.settingsGreeting, model.email.value)
         }
         else{
-            subtitle = "Not authorised."
+            subtitle = getString(R.string.settingsNotAuthorised)
         }
         (activity as? AppCompatActivity)?.supportActionBar?.subtitle = subtitle
 

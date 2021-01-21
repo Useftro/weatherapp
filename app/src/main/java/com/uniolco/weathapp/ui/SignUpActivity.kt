@@ -34,56 +34,58 @@ class SignUpActivity : AppCompatActivity() {
         if (loginEditText.text.isEmpty() || emailEditText.text.isEmpty() || phoneEditText.text.isEmpty()
             || passwordEditText.text.isEmpty() || nameEditText.text.isEmpty() || surnameEditText.text.isEmpty()
             || addressEditText.text.isEmpty()){
-            Toast.makeText(this, "Please fill all fields!", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, getString(R.string.toastFillAllFields), Toast.LENGTH_SHORT).show()
         }
-
-        if(!Patterns.EMAIL_ADDRESS.matcher(emailEditText.text.toString()).matches()){
-            Toast.makeText(this, "Please enter valid email!", Toast.LENGTH_SHORT).show()
+        else if(!Patterns.EMAIL_ADDRESS.matcher(emailEditText.text.toString()).matches()){
+            Toast.makeText(this, getString(R.string.toastEnterValidEmail), Toast.LENGTH_SHORT).show()
         }
-        var registered = false
-        auth.createUserWithEmailAndPassword(emailEditText.text.toString(), passwordEditText.text.toString())
-            .addOnCompleteListener(this) { task ->
+        else{
+            var registered: Boolean
+            auth.createUserWithEmailAndPassword(emailEditText.text.toString(), passwordEditText.text.toString())
+                .addOnCompleteListener(this) { task ->
 
-                if (task.isSuccessful) {
-                    // Sign in success, update UI with the signed-in user's information
-                    val user = User(
-                    loginEditText.text.toString(),
-                    emailEditText.text.toString(),
-                    phoneEditText.text.toString(),
-                    nameEditText.text.toString(),
-                    surnameEditText.text.toString(),
-                    addressEditText.text.toString())
-                    registered = true
+                    if (task.isSuccessful) {
+                        // Sign in success, update UI with the signed-in user's information
+                        val user = User(
+                            loginEditText.text.toString(),
+                            emailEditText.text.toString(),
+                            phoneEditText.text.toString(),
+                            nameEditText.text.toString(),
+                            surnameEditText.text.toString(),
+                            addressEditText.text.toString())
+                        registered = true
 
-                    FirebaseDatabase.getInstance().getReference("Users").child(
-                        FirebaseAuth.getInstance().currentUser?.uid.toString()
-                    ).setValue(user).addOnCompleteListener {
-                        if(task.isSuccessful){
-                            Toast.makeText(this, "Registration succeed", Toast.LENGTH_SHORT).show()
+                        FirebaseDatabase.getInstance().getReference("Users").child(
+                            FirebaseAuth.getInstance().currentUser?.uid.toString()
+                        ).setValue(user).addOnCompleteListener {
+                            if(task.isSuccessful){
+                                Toast.makeText(this, getString(R.string.toastSignUpSucceed), Toast.LENGTH_SHORT).show()
+                            }
+                            else{
+                                Toast.makeText(this, getString(R.string.toastSignUpFailed), Toast.LENGTH_SHORT).show()
+                            }
                         }
-                        else{
-                            Toast.makeText(this, "Registration failed", Toast.LENGTH_SHORT).show()
-                        }
+                        val intent = Intent(this, LoginActivity::class.java)
+                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                        intent.putExtra("login", user.login)
+                        intent.putExtra("email", user.email)
+                        intent.putExtra("phone", user.phoneNumber)
+                        intent.putExtra("name", user.name)
+                        intent.putExtra("surname", user.surname)
+                        intent.putExtra("address", user.address)
+                        intent.putExtra("registered", registered)
+                        startActivity(intent)
+                        finish()
+                    } else {
+                        // If sign in fails, display a message to the user.
+                        Log.d("TAG", "createUserWithEmail:failure", task.exception)
+                        Toast.makeText(this, "Sign up failed.",
+                            Toast.LENGTH_SHORT).show()
+
                     }
-                    val intent = Intent(this, LoginActivity::class.java)
-                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP)
-                    intent.putExtra("login", user.login)
-                    intent.putExtra("email", user.email)
-                    intent.putExtra("phone", user.phoneNumber)
-                    intent.putExtra("name", user.name)
-                    intent.putExtra("surname", user.surname)
-                    intent.putExtra("address", user.address)
-                    intent.putExtra("registered", registered)
-                    startActivity(intent)
-                    finish()
-                } else {
-                    // If sign in fails, display a message to the user.
-                    Log.d("TAG", "createUserWithEmail:failure", task.exception)
-                    Toast.makeText(baseContext, "Sign up failed.",
-                        Toast.LENGTH_SHORT).show()
-
                 }
-            }
+        }
+
 
     }
 }

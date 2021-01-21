@@ -2,51 +2,51 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <PreferenceCategory
-        android:title="Location">
+        android:title="@string/preferencesCustomLocation">
         <SwitchPreference
             android:key="USE_DEVICE_LOCATION"
-            android:title="Device location"
-            android:summary="Switch to allow using your location"
+            android:title="@string/preferencesDeviceLocation"
+            android:summary="@string/preferencesDeviceLocationSummary"
             android:defaultValue="true"
             app:disableDependentsState="true"/>
 
         <EditTextPreference
             android:key="CUSTOM_LOCATION"
-            android:title="Location"
-            android:summary="Location for which weather is displayed"
-            android:defaultValue="Nulles"
+            android:title="@string/preferencesCustomLocation"
+            android:summary="@string/preferencesCustomLocationSummary"
+            android:defaultValue="New York"
             android:dependency="USE_DEVICE_LOCATION"/>
     </PreferenceCategory>
 
 
     <PreferenceCategory
-        android:title="Sound and notifications">
+        android:title="@string/preferenceSoundAndNotif">
         <SwitchPreference
             android:key="USE_NOTIFICATION"
-            android:title="Turn notifications"
-            android:summary="Switch to disallow sending notifications"
+            android:title="@string/preferencesTurnNotif"
+            android:summary="@string/preferencesTurnNotifSummary"
             android:defaultValue="true"/>
         <SwitchPreference
             android:key="USE_SOUND"
-            android:title="Turn off sound"
-            android:summary="Switch to turn off sound"
+            android:title="@string/preferencesTurnSound"
+            android:summary="@string/preferencesTurnSoundSummary"
             android:defaultValue="true"/>
     </PreferenceCategory>
 
 
     <PreferenceCategory
-        android:title="Login">
+        android:title="@string/loginButton">
         <Preference
-            android:title="Login"
+            android:title="@string/loginButton"
             android:key="LOG_BUTTON"
-            android:summary="Press this area to login or to log out"
+            android:summary="@string/preferencesLogButtonSummary"
             />
     </PreferenceCategory>
 
     <PreferenceCategory
-        android:title="User">
+        android:title="@string/preferencesUserButton">
         <Preference
-            android:title="Information about user"
+            android:title="@string/preferencesUserSummary"
             android:key="Info"
             android:summary=""
             />

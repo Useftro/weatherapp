@@ -79,7 +79,7 @@ class FutureListWeatherFragment : ScopeFragment(), KodeinAware {
 
     private fun updateDate(startDate: LocalDate, endDate: LocalDate){
         (activity as? AppCompatActivity)?.supportActionBar?.subtitle =
-            "${startDate.dayOfMonth}.${startDate.month} - ${endDate.dayOfMonth}.${endDate.month}"
+            "${startDate.dayOfMonth} ${startDate.month} - ${endDate.dayOfMonth} ${endDate.month}"
     }
 
     private lateinit var adapterRec: RecyclerAdapterFutureList
