@@ -1,26 +1,19 @@
 package com.uniolco.weathapp.ui.weather.future.list
 
-import androidx.lifecycle.ViewModelProviders
 import android.os.Bundle
-import android.provider.ContactsContract
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
-import androidx.navigation.Navigation
+import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.jjoe64.graphview.series.DataPoint
 import com.jjoe64.graphview.series.LineGraphSeries
 import com.uniolco.weathapp.R
-import com.uniolco.weathapp.data.db.converter.LocalDateConverter
 import com.uniolco.weathapp.data.db.unitlocalized.future.list.UnitSpecificSimpleFutureWeatherEntry
-import com.uniolco.weathapp.ui.base.RecyclerAdapterFavoriteList
 import com.uniolco.weathapp.ui.base.RecyclerAdapterFutureList
 import com.uniolco.weathapp.ui.base.ScopeFragment
-import com.xwray.groupie.GroupAdapter
-import com.xwray.groupie.ViewHolder
 import kotlinx.android.synthetic.main.favorite_list_weather_fragment.*
 import kotlinx.android.synthetic.main.future_list_weather_fragment.*
 import kotlinx.android.synthetic.main.future_list_weather_fragment.recyclerView

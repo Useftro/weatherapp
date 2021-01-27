@@ -4,7 +4,6 @@ import androidx.lifecycle.LiveData
 import com.uniolco.weathapp.data.db.entity.favorite.Locations
 import com.uniolco.weathapp.data.firebase.User
 import com.uniolco.weathapp.data.repository.ForecastRepository
-import com.uniolco.weathapp.internal.UnitSystem
 import com.uniolco.weathapp.internal.lazyDeferred
 import com.uniolco.weathapp.ui.base.WeatherViewModel
 

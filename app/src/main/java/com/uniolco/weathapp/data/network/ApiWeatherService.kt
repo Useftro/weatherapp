@@ -39,13 +39,12 @@ interface ApiWeatherService {
             connectivityInterceptor: ConnectivityInterceptor
         ): ApiWeatherService { // we can use our service as if were a function
             val requestInterceptor = Interceptor{chain ->
-                val url = chain.request()
+                val url = chain.request() // building request url adding key to it
                     .url()
                     .newBuilder()
                     .addQueryParameter("key", API_KEY)
                     .build()
                 val request = chain.request().newBuilder().url(url).build()
-                Log.d("REQUERERE", request.toString())
                 return@Interceptor chain.proceed(request)
 
             }

@@ -5,7 +5,6 @@ import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.Index
 import androidx.room.PrimaryKey
-import com.google.gson.annotations.SerializedName
 
 @Entity(tableName = "future_weather", indices = [Index(value = ["date"], unique = true)])
 // When we want to have only one future weather, not many of them

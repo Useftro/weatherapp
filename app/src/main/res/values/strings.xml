@@ -1,14 +1,11 @@
 <resources>
-    <string name="app_name">weatherapp</string>
     <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 
     <string name="loginText">Enter your login</string>
     <string name="passwordText">Enter your password</string>
 
     <string name="loginButton">Login</string>
-    <string name="lognButn">Login</string>
     <string name="signupButton">Sign Up</string>
     <string name="noLoggingButton">Continue without logging</string>
 
@@ -18,9 +15,6 @@
     <string name="nameText">Enter your name</string>
     <string name="surnameText">Enter your surname</string>
     <string name="addressText">Enter your address</string>
-
-    <string name="channelName"> BibaChannel </string>
-    <string name="channelDesc"> That\'s channel of Biba </string>
 
     <string name="feelsLikeTemperature">Feels like: %s°C</string>
     <string name="temperature">%s°C</string>
@@ -69,8 +63,19 @@
     <string name="preferencesDeviceLocation">Device location</string>
     <string name="preferenceSoundAndNotif">Sound and notifications</string>
 
+    <!-- Bottom navigation -->
+
     <string name="favorite">Favorite</string>
+    <string name="today">Today</string>
+    <string name="Forecast">Forecast</string>
+    <string name="Settings">Settings</string>
+
+    <!-- BUTTONS -->
+    <string name="addToFavoriteBtn">Add to favorite</string>
+    <string name="clearAllBtn">Clear all</string>
 
     <string name="legendForChart">Temperature chart for next %s days of %s</string>
+
+    <string name="loading">Loading</string>
 
 </resources>

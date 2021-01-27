@@ -1,12 +1,11 @@
 package com.uniolco.weathapp.ui
 
 import android.content.Intent
-import android.content.SharedPreferences
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.util.Patterns
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.preference.PreferenceManager
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
@@ -14,7 +13,6 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.uniolco.weathapp.R
 import kotlinx.android.synthetic.main.activity_login.*
-import kotlinx.android.synthetic.main.activity_login.passwordEditText
 
 class LoginActivity : AppCompatActivity() {
 
@@ -83,7 +81,6 @@ class LoginActivity : AppCompatActivity() {
                 .addOnCompleteListener(this) { task ->
                     if (task.isSuccessful) {
                         val user = auth.currentUser
-                        Log.d("UIDUIDUID", user?.uid.toString())
                         updateUI(user)
                     } else {
                         Toast.makeText(
@@ -113,7 +110,6 @@ class LoginActivity : AppCompatActivity() {
                 putBoolean("Logged", true)
                 putBoolean("registered", intent.getBooleanExtra("registered", false))
                 putString("Email", currentUser.email)
-                Log.d("currentusseruid", currentUser.uid)
                 putString("currentuseruid", currentUser.uid)
                 apply()
             }

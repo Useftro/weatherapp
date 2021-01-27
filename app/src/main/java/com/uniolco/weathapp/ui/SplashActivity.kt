@@ -1,33 +1,15 @@
 package com.uniolco.weathapp.ui
 
-import android.Manifest
 import android.content.Intent
-import android.content.pm.PackageManager
-import android.icu.util.Calendar
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
-import android.text.format.Time
-import android.util.Log
-import android.widget.Toast
-import androidx.core.app.ActivityCompat
-import androidx.core.os.HandlerCompat
-import androidx.core.os.HandlerCompat.postDelayed
+import androidx.appcompat.app.AppCompatActivity
 import androidx.preference.PreferenceManager
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ValueEventListener
-import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import com.uniolco.weathapp.R
-import com.uniolco.weathapp.data.firebase.User
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 
 private const val MY_PERMISSION_ACCESS_COARSE_LOCATION = 1
 

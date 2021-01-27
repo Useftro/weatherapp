@@ -1,13 +1,10 @@
 <resources>
-    <string name="app_name">weatherapp</string>
-    <string name="hello_blank_fragment"> </string>
 
 
     <string name="loginText">Введите логин</string>
     <string name="passwordText">Введите пароль > 6 симв</string>
 
     <string name="loginButton">Логин</string>
-    <string name="lognButn">Логин</string>
     <string name="signupButton">Регистрация</string>
     <string name="noLoggingButton">Продолжить без логина</string>
 
@@ -17,9 +14,6 @@
     <string name="nameText">Введите имя</string>
     <string name="surnameText">Введите фамилию</string>
     <string name="addressText">Введите адрес</string>
-
-    <string name="channelName"> BibaChannel </string>
-    <string name="channelDesc"> That\'s channel of Biba </string>
 
     <string name="feelsLikeTemperature">Чувствуется как: %s°C</string>
     <string name="temperature">%s°C</string>
@@ -69,7 +63,16 @@
     <string name="preferenceSoundAndNotif">Звук и уведомления</string>
 
     <string name="favorite">Любимое</string>
+    <string name="today">Сегодня</string>
+    <string name="Forecast">Прогноз</string>
+    <string name="Settings">Настройки</string>
+
+    <!-- BUTTONS -->
+    <string name="addToFavoriteBtn">Добавить в любимое</string>
+    <string name="clearAllBtn">Очистить всё</string>
 
     <string name="legendForChart">График температуры для следующих %s дней %s</string>
+
+    <string name="loading">Загрузка</string>
 
 </resources>

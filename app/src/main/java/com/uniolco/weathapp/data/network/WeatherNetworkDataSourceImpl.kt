@@ -11,7 +11,6 @@ import com.uniolco.weathapp.data.db.entity.current.WeatherLocation
 import com.uniolco.weathapp.data.network.response.CurrentWeatherResponse
 import com.uniolco.weathapp.data.network.response.FutureWeatherResponse
 import com.uniolco.weathapp.internal.NoConnectivityException
-import java.util.*
 
 const val NUMBER_OF_DAYS = 7
 

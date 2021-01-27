@@ -1,6 +1,5 @@
 package com.uniolco.weathapp.data.repository
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import com.uniolco.weathapp.data.db.*
 import com.uniolco.weathapp.data.db.entity.current.CurrentWeather
@@ -20,7 +19,6 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.threeten.bp.LocalDate
-import retrofit2.HttpException
 
 
 // just doing it easier to change something in future

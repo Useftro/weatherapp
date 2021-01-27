@@ -1,10 +1,11 @@
 package com.uniolco.weathapp.data.db
 
 import androidx.lifecycle.LiveData
-import androidx.room.*
+import androidx.room.Dao
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
+import androidx.room.Query
 import com.uniolco.weathapp.data.db.entity.current.CurrentWeather
-import com.uniolco.weathapp.data.db.entity.current.WeatherLocation
-import com.uniolco.weathapp.data.network.response.CurrentWeatherResponse
 
 
 @Dao

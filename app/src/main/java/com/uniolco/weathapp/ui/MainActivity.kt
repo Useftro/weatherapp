@@ -1,13 +1,10 @@
 package com.uniolco.weathapp.ui
 
 import android.Manifest
-import android.R.attr.fragment
-import android.R.attr.useDefaultMargins
 import android.app.*
 import android.content.Intent
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
-import android.content.res.Resources
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -19,24 +16,15 @@ import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
 import androidx.lifecycle.Observer
 import androidx.navigation.NavController
-import androidx.navigation.Navigation
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.NavigationUI
 import androidx.navigation.ui.setupWithNavController
 import androidx.preference.PreferenceManager
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
-import com.google.android.gms.location.LocationResult
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ValueEventListener
-import com.google.rpc.context.AttributeContext
 import com.uniolco.weathapp.R
-import com.uniolco.weathapp.data.firebase.User
 import com.uniolco.weathapp.internal.notification.ReminderBroadcast
 import com.uniolco.weathapp.ui.base.SharedViewModel
-import com.uniolco.weathapp.ui.weather.current.CurrentWeatherFragment
 import kotlinx.android.synthetic.main.activity_main.*
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.closestKodein
@@ -90,11 +78,7 @@ class MainActivity : AppCompatActivity(), KodeinAware {
         val email = sharedPreferences.getString("Email", "")
         val uid = sharedPreferences.getString("currentuseruid", "")
         model.uid.postValue(uid)
-        Log.d("cucucucuc", uid.toString())
-        val b = uid
-        Log.d("FDFDFD", b.toString())
-        model.uid.value = b
-        Log.d("FQWEQEQEEQ", model.uid.value.toString())
+        model.uid.value = uid
 
         // notifications
         createNotificationChannel()
@@ -109,7 +93,7 @@ class MainActivity : AppCompatActivity(), KodeinAware {
         // alarm manager for creating notofications every 60 seconds
         val alarmManager = getSystemService(ALARM_SERVICE) as AlarmManager
         val time = System.currentTimeMillis()
-        val time10sec: Long = 1000 * 10
+        val time10sec: Long = 1000 * 3600 * 12
 
         if(sharedPreferences.getBoolean("USE_NOTIFICATION", true)) {
             alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, time, time10sec, pendingIntent)
@@ -149,9 +133,6 @@ class MainActivity : AppCompatActivity(), KodeinAware {
         model.registered.postValue(registered)
 //        model.personInfo.postValue(user)
         model.email.postValue(email)
-        Log.d("EMAAAAAAIL", email.toString())
-        Log.d("lolololo", intent.getStringExtra("uid").toString())
-        Log.d("modelmodelmodel", model.uid.value.toString())
         with(sharedPreferences.edit()){
             putString("UID", model.uid.value)
             apply()
@@ -168,7 +149,7 @@ class MainActivity : AppCompatActivity(), KodeinAware {
 
 
     private fun observeModel(model: SharedViewModel){
-        model.loggedIn.observe(this, Observer {
+        model.loggedIn.observe(this, {
             bottom_nav.menu.getItem(0).isVisible = it != false
         })
     }

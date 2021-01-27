@@ -1,8 +1,6 @@
 package com.uniolco.weathapp.ui.weather.current
 
-import androidx.lifecycle.ViewModelProviders
 import android.os.Bundle
-import com.uniolco.weathapp.internal.background
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -13,7 +11,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
-import androidx.preference.PreferenceManager
+import androidx.lifecycle.ViewModelProviders
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
@@ -21,7 +19,10 @@ import com.google.firebase.database.ValueEventListener
 import com.uniolco.weathapp.R
 import com.uniolco.weathapp.data.db.entity.favorite.Locations
 import com.uniolco.weathapp.data.firebase.User
+import com.uniolco.weathapp.internal.background
+import com.uniolco.weathapp.internal.glide.GlideApp
 import com.uniolco.weathapp.ui.base.ScopeFragment
+import com.uniolco.weathapp.ui.base.SharedViewModel
 import kotlinx.android.synthetic.main.current_weather_fragment.*
 import kotlinx.coroutines.launch
 import org.kodein.di.KodeinAware
@@ -29,9 +30,6 @@ import org.kodein.di.android.x.closestKodein
 import org.kodein.di.generic.instance
 import org.threeten.bp.ZonedDateTime
 import java.util.*
-import com.uniolco.weathapp.internal.glide.GlideApp
-import com.uniolco.weathapp.ui.base.MyCallback
-import com.uniolco.weathapp.ui.base.SharedViewModel
 import kotlin.collections.ArrayList
 
 class CurrentWeatherFragment : ScopeFragment(), KodeinAware {

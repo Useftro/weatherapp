@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
-        android:title="Favorite"
+        android:title="@string/favorite"
         android:id="@+id/favoriteListWeatherFragment"
         android:icon="@drawable/ic_baseline_list" />
     <item
         android:id="@+id/currentWeatherFragment"
         android:icon="@drawable/ic_today"
-        android:title="Today"/>
+        android:title="@string/today"/>
     <item
         android:id="@+id/futureListWeatherFragment"
         android:icon="@drawable/ic_calendar_week"
-        android:title="7 days"/>
+        android:title="@string/Forecast"/>
     <item
         android:id="@+id/settingsFragment"
         android:icon="@drawable/ic_settings"
-        android:title="Settings" />
+        android:title="@string/Settings" />
 </menu>
