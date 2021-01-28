@@ -14,6 +14,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
+import androidx.fragment.app.findFragment
 import androidx.lifecycle.Observer
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
@@ -25,6 +26,7 @@ import com.google.android.gms.location.LocationCallback
 import com.uniolco.weathapp.R
 import com.uniolco.weathapp.internal.notification.ReminderBroadcast
 import com.uniolco.weathapp.ui.base.SharedViewModel
+import com.uniolco.weathapp.ui.weather.current.CurrentWeatherFragment
 import kotlinx.android.synthetic.main.activity_main.*
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.closestKodein
@@ -104,15 +106,6 @@ class MainActivity : AppCompatActivity(), KodeinAware {
         // end of notifications
 
 
-        // creating user
-/*        val user = User(
-            intent.getStringExtra("login").toString(),
-            intent.getStringExtra("email").toString(),
-            intent.getStringExtra("phone").toString(),
-            intent.getStringExtra("name").toString(),
-            intent.getStringExtra("surname").toString(),
-            intent.getStringExtra("address").toString()
-        )*/
         val navHostFragment = nav_host_fragment as NavHostFragment
         val graphInflater = navHostFragment.navController.navInflater
         val navGraph = graphInflater.inflate(R.navigation.mobile_navigation)
@@ -120,6 +113,7 @@ class MainActivity : AppCompatActivity(), KodeinAware {
         val dest = R.id.currentWeatherFragment
         navGraph.startDestination = dest
         navController.setGraph(navGraph, bundleOf(Pair("Logged", logged)))
+
         // use destination fragment
 /*        navController = Navigation.findNavController(this, R.id.nav_host_fragment)
 
@@ -127,24 +121,48 @@ class MainActivity : AppCompatActivity(), KodeinAware {
         bottom_nav.setupWithNavController(navController) // setting up bottom nav bar
         NavigationUI.setupActionBarWithNavController(this, navController)
 
+        val fragments = supportFragmentManager.fragments
         // setting up navigation controller
+        var fragmBefore: String = bottom_nav.selectedItemId.toString()
+        var currentFragm: String = bottom_nav.selectedItemId.toString()
+        navController.addOnDestinationChangedListener { controller, destination, arguments ->
+            var abc = supportFragmentManager.findFragmentById(R.id.nav_host_fragment)
+            currentFragm = bottom_nav.selectedItemId.toString()
+            Log.d("fgfgfgf", currentFragm + "| |" + fragmBefore + abc.toString())
+            var fragm = supportFragmentManager.findFragmentById(currentFragm.toInt())
+            Log.d("ERERERER", fragm?.toString().toString())
+            var ite = supportFragmentManager.fragments[0].id
+            Log.d("LOLOLO", ite.toString())
+        }
 
+        bottom_nav.setOnNavigationItemSelectedListener {
+            if (it.itemId != bottom_nav.selectedItemId)
+                NavigationUI.onNavDestinationSelected(it, navController)
+            true
+
+        }
+
+
+
+
+        val fr = supportFragmentManager.findFragmentById(R.id.nav_host_fragment)
+        Log.d("HYHYHY", fr?.tag.toString())
         model.loggedIn.postValue(logged)
         model.registered.postValue(registered)
-//        model.personInfo.postValue(user)
         model.email.postValue(email)
         with(sharedPreferences.edit()){
             putString("UID", model.uid.value)
             apply()
         }
+        Log.d("POPOPO", currentFragm)
+/*        val ite = supportFragmentManager.fragments[0].id
+        Log.d("LOLOLO", ite.toString())*/
 
         observeModel(model)
         observeIfFromSettings(model)
         if (hasLocationPermission()){
             bindLocationManager()
         }
-        else
-            requestLocationPermission()
     }
 
 
