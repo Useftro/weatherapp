@@ -12,6 +12,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import androidx.preference.PreferenceManager
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
@@ -40,6 +41,7 @@ import java.io.File
 import java.io.FileWriter
 import java.util.*
 import kotlin.collections.ArrayList
+import kotlin.math.log
 
 class CurrentWeatherFragment : ScopeFragment(), KodeinAware {
     override val kodein by closestKodein()
@@ -61,7 +63,6 @@ class CurrentWeatherFragment : ScopeFragment(), KodeinAware {
         current_group.visibility = View.INVISIBLE
         viewModel = ViewModelProviders.of(this, viewModelFactory).
             get(CurrentWeatherViewModel::class.java)
-//        getUser(model.email.value.toString())
         if(model.loggedIn.value == true) {
             readData(model.uid.value.toString())
         }
@@ -112,6 +113,7 @@ class CurrentWeatherFragment : ScopeFragment(), KodeinAware {
             imageView.imageAlpha = 90
             model.forJsonWeather.value = it
         })
+
         model.loggedIn.observe(viewLifecycleOwner, Observer {
             if (it == null) return@Observer
             if (it == false) {
@@ -134,7 +136,6 @@ class CurrentWeatherFragment : ScopeFragment(), KodeinAware {
                 model.personInfo.postValue(viewModel.getUser(model.email.value.toString()).value)
             }
         })
-
         model.forJson.observe(viewLifecycleOwner, Observer {
             val strForWeather = "CurrentWeather"
             val strForLocation = "WeatherLocation"
@@ -143,14 +144,12 @@ class CurrentWeatherFragment : ScopeFragment(), KodeinAware {
                 writeToFile(it)
             }
         })
-
         model.forJsonLocation.observe(viewLifecycleOwner, Observer {
             if (it == null) return@Observer
             if (model.writtenLoc.value != true) {
                 model.forJson.value += "\n" + it.toString()
                 model.writtenLoc.value = true
             }
-            Log.d("jjgjgjg", it.toString())
         })
         model.forJsonWeather.observe(viewLifecycleOwner, Observer {
             if (it == null) return@Observer
@@ -158,10 +157,7 @@ class CurrentWeatherFragment : ScopeFragment(), KodeinAware {
                 model.forJson.value += "\n" + it.toString()
                 model.writtenWea.value = true
             }
-            Log.d("jjgjgjg", it.toString())
         })
-
-        Log.d("opopopo", model.forJsonWeather.value.toString() + model.forJsonLocation.value.toString())
     }
 
     private fun addToFavorite(favoriteLocation: Locations){
@@ -201,7 +197,7 @@ class CurrentWeatherFragment : ScopeFragment(), KodeinAware {
     ){
         textView_maxWind.text = getString(R.string.windSpeed, windSpeed)
         textView_humidity.text = getString(R.string.humidity, humidity.toString())
-        textView_pressure.text = getString(R.string.pressure, pressure)
+        textView_pressure.text = getString(R.string.pressure, (pressure*0.75).toInt())
         textView_weatherDesc.text = getString(
             R.string.weatherDescription,
             weatherDescription.toLowerCase(),
@@ -252,6 +248,7 @@ class CurrentWeatherFragment : ScopeFragment(), KodeinAware {
         val firebaseRootRef = firebaseDatabase.reference
         val usersRef = firebaseRootRef.child("Users")
         val namesList = ArrayList<String>()
+        val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(activity)
 
         val valueEventListener = object: ValueEventListener{
             override fun onDataChange(dataSnapshot: DataSnapshot) {
@@ -275,6 +272,15 @@ class CurrentWeatherFragment : ScopeFragment(), KodeinAware {
                                 phoneNumber, name, surname, address
                             )
                         }
+                        with(sharedPreferences.edit()){
+                            putString("UserName", name)
+                            putString("UserSurname", surname)
+                            putString("UserLogin", login)
+                            putString("UserPhoneNumber", phoneNumber)
+                            putString("UserAddress", address)
+                            putString("UserEmail", email)
+                            apply()
+                        }
                     }
                 }
 
@@ -288,69 +294,4 @@ class CurrentWeatherFragment : ScopeFragment(), KodeinAware {
 
         usersRef.addListenerForSingleValueEvent(valueEventListener)
     }
-
-
-    /*private fun getUser(userEmail: String){ // getting info from firebase database about user
-        // getting reference of FirebaseDatabase
-        val rootRef = FirebaseDatabase.getInstance().reference
-        rootRef.keepSynced(true)
-        // going to Users where searching for email of user if it is then return data about user
-        val ordersRef = rootRef.child("Users").orderByChild("email").equalTo(userEmail)
-        val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(activity)
-
-        val valueEventListener = object : ValueEventListener {
-            override fun onDataChange(dataSnapshot: DataSnapshot) {
-                for (ds in dataSnapshot.children) {
-                    val name = ds.child("name").getValue(String::class.java)
-                    val login = ds.child("login").getValue(String::class.java)
-                    val surname = ds.child("surname").getValue(String::class.java)
-                    val phoneNumber = ds.child("phoneNumber").getValue(String::class.java)
-                    val address = ds.child("address").getValue(String::class.java)
-                    val email = ds.child("email").getValue(String::class.java)
-                    if (login != null) {
-                        with(sharedPreferences.edit()){
-                            putStringSet("userSet", setOf(name, login, surname, phoneNumber, address, email))
-                            Log.d("IUIUIUI", setOf(name, login, surname, phoneNumber, address, email).toString())
-                            apply()
-                        }
-                        model.user.postValue(User(login, email!!, phoneNumber!!, name!!, surname!!, address!!))
-                    }
-                }
-            }
-
-            override fun onCancelled(databaseError: DatabaseError) {
-                Log.d("ERRORINDATABASEFIREBASE", databaseError.message)
-            }
-        }
-        ordersRef.addListenerForSingleValueEvent(valueEventListener)
-    }*/
-
-/*    private fun getUser(userEmail: String){ // getting info from firebase database about user
-        // getting reference of FirebaseDatabase
-        val rootRef = FirebaseDatabase.getInstance().reference
-        rootRef.keepSynced(true)
-        // going to Users where searching for email of user if it is then return data about user
-        val ordersRef = rootRef.child("Users").orderByChild("email").equalTo(userEmail)
-
-        val valueEventListener = object : ValueEventListener {
-            override fun onDataChange(dataSnapshot: DataSnapshot) {
-                for (ds in dataSnapshot.children) {
-                    val name = ds.child("name").getValue(String::class.java)
-                    val login = ds.child("login").getValue(String::class.java)
-                    val surname = ds.child("surname").getValue(String::class.java)
-                    val phoneNumber = ds.child("phoneNumber").getValue(String::class.java)
-                    val address = ds.child("address").getValue(String::class.java)
-                    val email = ds.child("email").getValue(String::class.java)
-                    if (login != null) {
-                        model.user.postValue(User(login, email!!, phoneNumber!!, name!!, surname!!, address!!))
-                    }
-                }
-            }
-
-            override fun onCancelled(databaseError: DatabaseError) {
-                Log.d("ERRORINDATABASEFIREBASE", databaseError.message)
-            }
-        }
-        ordersRef.addListenerForSingleValueEvent(valueEventListener)
-    }*/
 }

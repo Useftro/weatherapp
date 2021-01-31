@@ -14,7 +14,7 @@
     <string name="emailText">Enter your email</string>
     <string name="nameText">Enter your name</string>
     <string name="surnameText">Enter your surname</string>
-    <string name="addressText">Enter your address</string>
+    <string name="addressText">Enter your address (country, city)</string>
 
     <string name="feelsLikeTemperature">Feels like: %s°C</string>
     <string name="temperature">%s°C</string>
@@ -77,5 +77,7 @@
     <string name="legendForChart">Temperature chart for next %s days of %s</string>
 
     <string name="loading">Loading</string>
+
+    <string name="preferencesClickToInfoUser">Click to see information about user</string>
 
 </resources>

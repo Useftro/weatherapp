@@ -13,7 +13,7 @@
     <string name="emailText">Введите почту</string>
     <string name="nameText">Введите имя</string>
     <string name="surnameText">Введите фамилию</string>
-    <string name="addressText">Введите адрес</string>
+    <string name="addressText">Введите адрес (страна, город) </string>
 
     <string name="feelsLikeTemperature">Чувствуется как: %s°C</string>
     <string name="temperature">%s°C</string>
@@ -41,8 +41,8 @@
     <string name="toastAuthFailed">Ошибка входа.</string>
 
     <!-- SETTINGS  -->
-    <string name="settingsLogIn">Войти</string>
-    <string name="settingsLogOut">Выйти</string>
+    <string name="settingsLogIn">Выйти</string>
+    <string name="settingsLogOut">Войти</string>
     <string name="settingsToastSignedOut">Удачно разлогинено!</string>
     <string name="settingsGreeting">Привет, %s!</string>
     <string name="settingsNotAuthorised">Не авторизовано.</string>
@@ -74,5 +74,7 @@
     <string name="legendForChart">График температуры для следующих %s дней %s</string>
 
     <string name="loading">Загрузка</string>
+
+    <string name="preferencesClickToInfoUser">Нажмите для информации о пользователе</string>
 
 </resources>

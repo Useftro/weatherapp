@@ -48,7 +48,7 @@
         <Preference
             android:title="@string/preferencesUserSummary"
             android:key="Info"
-            android:summary=""
+            android:summary="@string/preferencesClickToInfoUser"
             />
     </PreferenceCategory>
 

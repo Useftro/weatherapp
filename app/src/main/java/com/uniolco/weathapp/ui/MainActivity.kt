@@ -68,8 +68,6 @@ class MainActivity : AppCompatActivity(), KodeinAware {
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
 
-
-
         val sharedPreferences: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(
             applicationContext
         )
@@ -83,26 +81,9 @@ class MainActivity : AppCompatActivity(), KodeinAware {
         model.uid.value = uid
 
         // notifications
-        createNotificationChannel()
-        val inte: Intent = Intent(this, ReminderBroadcast::class.java)
-        val pendingIntent = PendingIntent.getBroadcast(
-            this,
-            0,
-            inte,
-            PendingIntent.FLAG_UPDATE_CURRENT
-        )
 
-        // alarm manager for creating notofications every 60 seconds
-        val alarmManager = getSystemService(ALARM_SERVICE) as AlarmManager
-        val time = System.currentTimeMillis()
-        val time10sec: Long = 1000 * 3600 * 12
+        notifications()
 
-        if(sharedPreferences.getBoolean("USE_NOTIFICATION", true)) {
-            alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, time, time10sec, pendingIntent)
-        }
-        else{
-            alarmManager.cancel(pendingIntent)
-        }
         // end of notifications
 
 
@@ -121,14 +102,18 @@ class MainActivity : AppCompatActivity(), KodeinAware {
         bottom_nav.setupWithNavController(navController) // setting up bottom nav bar
         NavigationUI.setupActionBarWithNavController(this, navController)
 
+
         // fixed fragments reloading by this
         // so then stopped many requests to api because of recreating fragment
         // Request sended now only when 30 minutes pass
         bottom_nav.setOnNavigationItemSelectedListener {
-            if (it.itemId != bottom_nav.selectedItemId)
+            if (it.itemId != bottom_nav.selectedItemId) {
                 NavigationUI.onNavDestinationSelected(it, navController)
+            }
             true
         }
+
+        // to remove back arrow we need to remove fragment from back stack (?)
 
         model.loggedIn.postValue(logged)
         model.registered.postValue(registered)
@@ -201,5 +186,29 @@ class MainActivity : AppCompatActivity(), KodeinAware {
             fusedLocationProviderClient,
             locationCallback
         )
+    }
+
+    private fun notifications(){
+        val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
+        createNotificationChannel()
+        val inte: Intent = Intent(this, ReminderBroadcast::class.java)
+        val pendingIntent = PendingIntent.getBroadcast(
+            this,
+            0,
+            inte,
+            PendingIntent.FLAG_UPDATE_CURRENT
+        )
+
+        // alarm manager for creating notofications every 60 seconds
+        val alarmManager = getSystemService(ALARM_SERVICE) as AlarmManager
+        val time = System.currentTimeMillis()
+        val time10sec: Long = 1000 * 3600 * 12
+
+        if(sharedPreferences.getBoolean("USE_NOTIFICATION", true)) {
+            alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, time, time10sec, pendingIntent)
+        }
+        else{
+            alarmManager.cancel(pendingIntent)
+        }
     }
 }

@@ -62,7 +62,6 @@ class FavoriteDetailWeatherFragment : ScopeFragment(), KodeinAware, OnMapReadyCa
         super.onActivityCreated(savedInstanceState)
         val safeArgs = arguments?.let { FavoriteDetailWeatherFragmentArgs.fromBundle(it) }
 
-        Log.d("ARGS", safeArgs.toString())
         val loc = safeArgs?.locationName.toString()
         viewModel = ViewModelProviders.of(this, viewModelFactoryInstanceFactory(loc)).get(FavoriteDetailWeatherViewModel::class.java)
         bindUI()
@@ -76,15 +75,10 @@ class FavoriteDetailWeatherFragment : ScopeFragment(), KodeinAware, OnMapReadyCa
                 clicked = true
                 val relPar: RelativeLayout.LayoutParams = RelativeLayout.LayoutParams(layoutHeight, layoutWidth)
                 mapView.rootView.layoutParams = relPar
-//                mapView.layoutParams.height = 2
-//                Log.d("HEHEHE", mapView.layoutParams.height.toString() + "; $layoutHeight")
-//                mapView.layoutParams.width = 2
             }
             else{
                 val relPar: RelativeLayout.LayoutParams = RelativeLayout.LayoutParams(mapViewHeight, mapViewWidth)
                 mapView.rootView.layoutParams = relPar
-//                mapView.layoutParams.height = mapViewHeight
-//                mapView.layoutParams.width = mapViewWidth
                 clicked = false
             }
         }

@@ -1,84 +1,110 @@
-<?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.uniolco.weathapp">
+<?xml version="1.0" encoding="utf-8"?><manifest xmlns:android="http://schemas.android.com/apk/res/android"
+package="com.uniolco.weathapp">
 
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.INTERNET" />
+<uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+<uses-permission android:name="android.permission.INTERNET" />
+<uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
-    <application
-        android:name=".ForecastApplication"
-        android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
-        android:label="WeatherApp"
-        android:roundIcon="@mipmap/ic_launcher_round"
-        android:supportsRtl="true"
-        android:theme="@style/AppTheme">
-        <activity android:name=".ui.WaitingActivity">
-        </activity>
-        <activity android:name=".ui.SplashActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+<application
+    android:name=".ForecastApplication"
+    android:allowBackup="true"
+    android:icon="@mipmap/ic_launcher"
+    android:label="WeatherApp"
+    android:roundIcon="@mipmap/ic_launcher_round"
+    android:supportsRtl="true"
+    android:theme="@style/AppTheme">
+    <activity
+        android:name=".ui.WaitingActivity"
+        android:screenOrientation="portrait">
+    </activity>
 
-            <!-- Branch URI Scheme -->
-            <intent-filter>
-                <data android:scheme="weatherapp" />
-                <action android:name="android.intent.action.VIEW" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-            </intent-filter>
+    <activity
+        android:name=".ui.SplashActivity"
+        android:screenOrientation="portrait">
+        <intent-filter>
+            <action android:name="android.intent.action.MAIN" />
+            <category android:name="android.intent.category.LAUNCHER" />
+        </intent-filter>
 
-            <!-- Branch App Links (optional) -->
-            <intent-filter android:autoVerify="true">
-                <action android:name="android.intent.action.VIEW" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-                <data android:scheme="https" android:host="6wrbi.app.link" />
-                <!-- example-alternate domain is required for App Links when the Journeys/Web SDK and Deepviews are used inside your website.  -->
-                <data android:scheme="https" android:host="6wrbi-alternate.app.link" />
-            </intent-filter>
-        </activity>
+        <!-- Branch URI Scheme -->
+        <intent-filter>
+            <data android:scheme="weatherapp" />
+            <action android:name="android.intent.action.VIEW" />
 
-        <!-- Branch init -->
-        <meta-data android:name="io.branch.sdk.BranchKey" android:value="key_live_ll0dzoc73YjzRuh4pq0ZHegnDCbB1Q5b" />
-        <meta-data android:name="io.branch.sdk.BranchKey.test" android:value="key_test_hlxrWC5Zx16DkYmWu4AHiimdqugRYMr" />
-        <meta-data android:name="io.branch.sdk.TestMode" android:value="false" />     <!-- Set to true to use Branch_Test_Key (useful when simulating installs and/or switching between debug and production flavors) -->
+            <category android:name="android.intent.category.DEFAULT" />
+            <category android:name="android.intent.category.BROWSABLE" />
+        </intent-filter>
+
+        <!-- Branch App Links (optional) -->
+        <intent-filter android:autoVerify="true">
+            <action android:name="android.intent.action.VIEW" />
+
+            <category android:name="android.intent.category.DEFAULT" />
+            <category android:name="android.intent.category.BROWSABLE" />
+
+            <data
+                android:scheme="https"
+                android:host="6wrbi.app.link" />
+            <!-- example-alternate domain is required for App Links when the Journeys/Web SDK and Deepviews are used inside your website.  -->
+            <data
+                android:scheme="https"
+                android:host="6wrbi-alternate.app.link" />
+        </intent-filter>
+    </activity>
+
+    <!-- Branch init -->
+    <meta-data
+        android:name="io.branch.sdk.BranchKey"
+        android:value="key_live_ll0dzoc73YjzRuh4pq0ZHegnDCbB1Q5b" />
+    <meta-data
+        android:name="io.branch.sdk.BranchKey.test"
+        android:value="key_test_hlxrWC5Zx16DkYmWu4AHiimdqugRYMr" />
+    <meta-data
+        android:name="io.branch.sdk.TestMode"
+        android:value="false" />     <!-- Set to true to use Branch_Test_Key (useful when simulating installs and/or switching between debug and production flavors) -->
 
 
-        <!--6wrbi.app.link -->
+    <!--6wrbi.app.link -->
 
-        <receiver
-            android:name=".internal.notification.ReminderBroadcast"
-            android:enabled="true" />
+    <receiver
+        android:name=".internal.notification.ReminderBroadcast"
+        android:enabled="true" />
 
-        <service
-            android:name=".data.firebase.MineFirebaseMessagingService"
-            android:exported="false">
-            <intent-filter>
-                <action android:name="com.google.firebase.MESSAGING_EVENT" />
-            </intent-filter>
-        </service>
+    <service
+        android:name=".data.firebase.MineFirebaseMessagingService"
+        android:exported="false">
+        <intent-filter>
+            <action android:name="com.google.firebase.MESSAGING_EVENT" />
+        </intent-filter>
+    </service>
 
-        <meta-data
-            android:name="com.google.android.geo.API_KEY"
-            android:value="${mapsApiKey}" />
+    <meta-data
+        android:name="com.google.android.geo.API_KEY"
+        android:value="${mapsApiKey}" />
 
-        <activity
-            android:name=".ui.LoginActivity"
-            android:screenOrientation="portrait"></activity>
-        <activity
-            android:name=".ui.SignUpActivity"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".ui.MainActivity"
-            android:screenOrientation="portrait">
+    <activity
+        android:name=".ui.LoginActivity"
+        android:screenOrientation="portrait">
+    </activity>
 
-            <nav-graph android:value="@navigation/mobile_navigation" />
+    <activity
+        android:name=".ui.SignUpActivity"
+        android:screenOrientation="portrait" />
 
-        </activity>
-    </application>
+    <activity
+        android:name=".ui.MainActivity"
+        android:screenOrientation="portrait">
+
+        <nav-graph android:value="@navigation/mobile_navigation" />
+
+    </activity>
+
+    <activity android:name="com.uniolco.weathapp.ui.UserActivity"
+        android:screenOrientation="portrait">
+    </activity>
+
+</application>
 
 </manifest>
