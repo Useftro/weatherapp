@@ -16,19 +16,28 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
+import com.google.gson.Gson
 import com.uniolco.weathapp.R
+import com.uniolco.weathapp.data.db.entity.current.Condition
+import com.uniolco.weathapp.data.db.entity.current.CurrentWeather
+import com.uniolco.weathapp.data.db.entity.current.WeatherLocation
 import com.uniolco.weathapp.data.db.entity.favorite.Locations
 import com.uniolco.weathapp.data.firebase.User
+import com.uniolco.weathapp.data.network.response.CurrentWeatherResponse
 import com.uniolco.weathapp.internal.background
 import com.uniolco.weathapp.internal.glide.GlideApp
 import com.uniolco.weathapp.ui.base.ScopeFragment
 import com.uniolco.weathapp.ui.base.SharedViewModel
 import kotlinx.android.synthetic.main.current_weather_fragment.*
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.x.closestKodein
 import org.kodein.di.generic.instance
 import org.threeten.bp.ZonedDateTime
+import java.io.BufferedWriter
+import java.io.File
+import java.io.FileWriter
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -59,53 +68,100 @@ class CurrentWeatherFragment : ScopeFragment(), KodeinAware {
         bindUI()
     }
 
+    private fun writeToFile(json: String){
+        launch(Dispatchers.IO) {
+            val file = File(context?.filesDir, "Biba.json")
+            val fileWriter = FileWriter(file)
+            val bufferedWriter = BufferedWriter(fileWriter)
+            bufferedWriter.write(json)
+            bufferedWriter.close()
+        }
+    }
+
     private fun bindUI() = launch {
         val currentLocation = viewModel.weatherLocation.await()
         val currentWeather = viewModel.weather.await()
 
+
         currentLocation.observe(viewLifecycleOwner, Observer { location ->
+            if (location == null) return@Observer
             current_group.visibility = View.VISIBLE
             progressBar0.visibility = View.GONE
             updateLocation(location.name)
             updateDate(location.zonedDateTime)
             addToFavorite(Locations(0, location, model.email.value.toString()))
-            if (location == null) return@Observer
+            model.forJsonLocation.value = location
         })
         currentWeather.observe(viewLifecycleOwner, Observer {
-            if(it == null) return@Observer
+            if (it == null) return@Observer
             progressBar0.visibility = View.GONE
             updateTemperature(it.tempC, it.feelslikeC)
-            updateCondition(it.windKph, it.visKm.toString(), it.humidity, it.pressureMb.toInt(), it.condition.text)
+            updateCondition(
+                it.windKph,
+                it.visKm.toString(),
+                it.humidity,
+                it.pressureMb.toInt(),
+                it.condition.text
+            )
             GlideApp.with(this@CurrentWeatherFragment)
                 .load("https:${it.condition.icon}")
                 .into(imageView_Weather)
-            GlideApp.with(this@CurrentWeatherFragment).load(background(it.condition.code)).into(imageView)
+            GlideApp.with(this@CurrentWeatherFragment).load(background(it.condition.code)).into(
+                imageView
+            )
             imageView.imageAlpha = 90
+            model.forJsonWeather.value = it
         })
         model.loggedIn.observe(viewLifecycleOwner, Observer {
-            if(it == null) return@Observer
-            if (it == false){
+            if (it == null) return@Observer
+            if (it == false) {
                 favorite_button.isClickable = false
                 buttonDisappearOrAppear(disappear = true, clickable = false)
-            }
-            else{
+            } else {
                 favorite_button.isClickable = true
                 buttonDisappearOrAppear(disappear = false, clickable = true)
             }
         })
         model.registered.observe(viewLifecycleOwner, Observer {
-            if(it == null) return@Observer
-            if(it == true){
+            if (it == null) return@Observer
+            if (it == true) {
                 val user = model.personInfo.value
                 if (user != null) {
                     insertUser(user)
                     model.registered.postValue(false)
                 }
-            }
-            else{
+            } else {
                 model.personInfo.postValue(viewModel.getUser(model.email.value.toString()).value)
             }
         })
+
+        model.forJson.observe(viewLifecycleOwner, Observer {
+            val strForWeather = "CurrentWeather"
+            val strForLocation = "WeatherLocation"
+            if (it == null) return@Observer
+            if (strForWeather in it && strForLocation in it){
+                writeToFile(it)
+            }
+        })
+
+        model.forJsonLocation.observe(viewLifecycleOwner, Observer {
+            if (it == null) return@Observer
+            if (model.writtenLoc.value != true) {
+                model.forJson.value += "\n" + it.toString()
+                model.writtenLoc.value = true
+            }
+            Log.d("jjgjgjg", it.toString())
+        })
+        model.forJsonWeather.observe(viewLifecycleOwner, Observer {
+            if (it == null) return@Observer
+            if (model.writtenWea.value != true) {
+                model.forJson.value += "\n" + it.toString()
+                model.writtenWea.value = true
+            }
+            Log.d("jjgjgjg", it.toString())
+        })
+
+        Log.d("opopopo", model.forJsonWeather.value.toString() + model.forJsonLocation.value.toString())
     }
 
     private fun addToFavorite(favoriteLocation: Locations){
@@ -133,15 +189,24 @@ class CurrentWeatherFragment : ScopeFragment(), KodeinAware {
 
     private fun updateTemperature(temperature: Double, temperatureFeelsLike: Double){
         textView_cityName.text = getString(R.string.temperature, temperature.toString())
-        textView_feels_like_temperature.text = getString(R.string.feelsLikeTemperature, temperatureFeelsLike.toString())
+        textView_feels_like_temperature.text = getString(
+            R.string.feelsLikeTemperature,
+            temperatureFeelsLike.toString()
+        )
     }
 
-    private fun updateCondition(windSpeed: Double, weatherDescription: String, humidity: Int,
-    pressure: Int, condition: String){
+    private fun updateCondition(
+        windSpeed: Double, weatherDescription: String, humidity: Int,
+        pressure: Int, condition: String
+    ){
         textView_maxWind.text = getString(R.string.windSpeed, windSpeed)
         textView_humidity.text = getString(R.string.humidity, humidity.toString())
         textView_pressure.text = getString(R.string.pressure, pressure)
-        textView_weatherDesc.text = getString(R.string.weatherDescription, weatherDescription.toLowerCase(), condition.toLowerCase())
+        textView_weatherDesc.text = getString(
+            R.string.weatherDescription,
+            weatherDescription.toLowerCase(),
+            condition.toLowerCase()
+        )
 //            "Visibility: $weatherDescription\n\nSeems to be like its ${condition.toLowerCase()} today"
     }
 
@@ -163,16 +228,15 @@ class CurrentWeatherFragment : ScopeFragment(), KodeinAware {
     }
 
     private fun animate(anim: Animation, clickable: Boolean){
-        anim.setAnimationListener(object: Animation.AnimationListener{
+        anim.setAnimationListener(object : Animation.AnimationListener {
             override fun onAnimationStart(animation: Animation?) {
                 favorite_button.isClickable = false
             }
 
             override fun onAnimationEnd(animation: Animation?) {
-                if(clickable){
+                if (clickable) {
                     favorite_button.visibility = View.VISIBLE
-                }
-                else{
+                } else {
                     favorite_button.visibility = View.GONE
                 }
 
@@ -206,8 +270,10 @@ class CurrentWeatherFragment : ScopeFragment(), KodeinAware {
                             namesList.add(phoneNumber!!)
                             namesList.add(address!!)
                             namesList.add(email!!)
-                            model.firebaseUser.value = User(login, email,
-                                phoneNumber, name, surname, address)
+                            model.firebaseUser.value = User(
+                                login, email,
+                                phoneNumber, name, surname, address
+                            )
                         }
                     }
                 }

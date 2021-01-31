@@ -3,6 +3,7 @@ package com.uniolco.weathapp.ui
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.preference.PreferenceManager
 import com.google.firebase.auth.FirebaseAuth
@@ -10,6 +11,9 @@ import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.uniolco.weathapp.R
+import io.branch.referral.Branch
+import io.branch.referral.Branch.BranchReferralInitListener
+
 
 private const val MY_PERMISSION_ACCESS_COARSE_LOCATION = 1
 
@@ -25,6 +29,8 @@ class SplashActivity : AppCompatActivity() {
 
     public override fun onStart() {
         super.onStart()
+        Branch.sessionBuilder(this).withCallback(branchReferralInitListener)
+            .withData(if (intent != null) intent.data else null).init()
         auth = Firebase.auth
         val currentUser = auth.currentUser
         Handler().postDelayed({
@@ -33,6 +39,18 @@ class SplashActivity : AppCompatActivity() {
         }, 2000)
 
     }
+
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+        setIntent(intent)
+        Branch.sessionBuilder(this).withCallback(branchReferralInitListener).reInit()
+    }
+
+    private val branchReferralInitListener =
+        BranchReferralInitListener { linkProperties, error ->
+            // do stuff with deep link data (nav to page, display content, etc)
+            Log.d("DEEPLINK", "DEEP LINK IS ALIVE")
+        }
 
     private fun updateUI(currentUser: FirebaseUser?) {
         val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(applicationContext)

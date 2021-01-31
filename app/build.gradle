@@ -75,6 +75,9 @@ dependencies {
     // graph
     implementation 'com.jjoe64:graphview:4.2.2'
 
+    //io branch
+    implementation 'io.branch.sdk.android:library:5.+'
+
     // Navigation
     implementation "android.arch.navigation:navigation-fragment:$navigation_version"
     implementation "android.arch.navigation:navigation-ui:$navigation_version"

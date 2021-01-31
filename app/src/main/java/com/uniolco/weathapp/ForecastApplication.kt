@@ -15,6 +15,7 @@ import com.uniolco.weathapp.ui.favorite.detail.FavoriteDetailWeatherViewModelFac
 import com.uniolco.weathapp.ui.weather.current.CurrentWeatherViewModelFactory
 import com.uniolco.weathapp.ui.weather.future.detail.FutureDetailWeatherViewModelFactory
 import com.uniolco.weathapp.ui.weather.future.list.FutureListWeatherViewModelFactory
+import io.branch.referral.Branch
 import org.kodein.di.Kodein
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.x.androidXModule
@@ -48,6 +49,8 @@ class ForecastApplication: Application(), KodeinAware {
 
     override fun onCreate() {
         super.onCreate()
+        Branch.enableLogging()
+        Branch.getAutoInstance(this)
         AndroidThreeTen.init(this) // using ThreeTen because of Java 8 which is not
         // good to use because of new java.time
     }

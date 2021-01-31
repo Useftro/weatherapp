@@ -7,6 +7,8 @@ import com.uniolco.weathapp.data.network.response.FutureWeatherResponse
 import kotlinx.coroutines.Deferred
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
+import okhttp3.Request
+import okhttp3.WebSocketListener
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
@@ -17,6 +19,7 @@ const val API_KEY = "3cf54167b82e44289c7144355200812"
 // api.openweathermap.org/data/2.5/weather?q=London&appid=e6837893ce79229aee822e26a1556818
 
 const val BASE_URL = "https://api.weatherapi.com/v1/"
+const val BASE_SOCKET_URL = "wss://api.weatherapi.com/v1/"
 
 interface ApiWeatherService {
 
@@ -32,6 +35,7 @@ interface ApiWeatherService {
         @Query("days") days: Int,
         @Query("language") language: String
     ): Deferred<FutureWeatherResponse>
+
 
 
     companion object{
@@ -54,6 +58,7 @@ interface ApiWeatherService {
                  // we could use just ConnectivityInterceptorImpl as argument
                     //but it's not good because of tight coupling, that's why we use interface to further do DI with Kodein
                 .build()
+
 
             return Retrofit.Builder()
                 .client(okHttpClient)

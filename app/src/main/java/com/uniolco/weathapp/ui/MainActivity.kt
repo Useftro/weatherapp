@@ -121,32 +121,15 @@ class MainActivity : AppCompatActivity(), KodeinAware {
         bottom_nav.setupWithNavController(navController) // setting up bottom nav bar
         NavigationUI.setupActionBarWithNavController(this, navController)
 
-        val fragments = supportFragmentManager.fragments
-        // setting up navigation controller
-        var fragmBefore: String = bottom_nav.selectedItemId.toString()
-        var currentFragm: String = bottom_nav.selectedItemId.toString()
-        navController.addOnDestinationChangedListener { controller, destination, arguments ->
-            var abc = supportFragmentManager.findFragmentById(R.id.nav_host_fragment)
-            currentFragm = bottom_nav.selectedItemId.toString()
-            Log.d("fgfgfgf", currentFragm + "| |" + fragmBefore + abc.toString())
-            var fragm = supportFragmentManager.findFragmentById(currentFragm.toInt())
-            Log.d("ERERERER", fragm?.toString().toString())
-            var ite = supportFragmentManager.fragments[0].id
-            Log.d("LOLOLO", ite.toString())
-        }
-
+        // fixed fragments reloading by this
+        // so then stopped many requests to api because of recreating fragment
+        // Request sended now only when 30 minutes pass
         bottom_nav.setOnNavigationItemSelectedListener {
             if (it.itemId != bottom_nav.selectedItemId)
                 NavigationUI.onNavDestinationSelected(it, navController)
             true
-
         }
 
-
-
-
-        val fr = supportFragmentManager.findFragmentById(R.id.nav_host_fragment)
-        Log.d("HYHYHY", fr?.tag.toString())
         model.loggedIn.postValue(logged)
         model.registered.postValue(registered)
         model.email.postValue(email)
@@ -154,9 +137,6 @@ class MainActivity : AppCompatActivity(), KodeinAware {
             putString("UID", model.uid.value)
             apply()
         }
-        Log.d("POPOPO", currentFragm)
-/*        val ite = supportFragmentManager.fragments[0].id
-        Log.d("LOLOLO", ite.toString())*/
 
         observeModel(model)
         observeIfFromSettings(model)

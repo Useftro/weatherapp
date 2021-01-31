@@ -2,11 +2,15 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    app:startDestination="@id/settingsFragment">
+    app:startDestination="@id/currentWeatherFragment">
     <fragment
         android:id="@+id/currentWeatherFragment"
         android:name="com.uniolco.weathapp.ui.weather.current.CurrentWeatherFragment"
-        tools:layout="@layout/current_weather_fragment" />
+        tools:layout="@layout/current_weather_fragment">
+        <deepLink
+            android:id="@+id/deepLink2"
+            app:uri="https://www.onliner.by/"/>
+    </fragment>
     <fragment
         android:id="@+id/futureListWeatherFragment"
         android:name="com.uniolco.weathapp.ui.weather.future.list.FutureListWeatherFragment"
