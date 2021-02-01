@@ -24,6 +24,7 @@ import androidx.preference.PreferenceManager
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
 import com.uniolco.weathapp.R
+import com.uniolco.weathapp.data.network.ApiEchoService
 import com.uniolco.weathapp.internal.notification.ReminderBroadcast
 import com.uniolco.weathapp.ui.base.SharedViewModel
 import com.uniolco.weathapp.ui.weather.current.CurrentWeatherFragment
@@ -67,6 +68,8 @@ class MainActivity : AppCompatActivity(), KodeinAware {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
+
+        ApiEchoService("Hihihi")
 
         val sharedPreferences: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(
             applicationContext

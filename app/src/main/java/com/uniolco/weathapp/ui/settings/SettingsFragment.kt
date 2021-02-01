@@ -67,6 +67,17 @@ class SettingsFragment: PreferenceFragmentCompat() {
                     return true
                 }
             }
+
+            userButton.onPreferenceClickListener = Preference.OnPreferenceClickListener {
+                if(item) {
+                    val intent = Intent(context, UserActivity::class.java)
+                    startActivity(intent)
+                } else{
+                    Toast.makeText(activity, "Log in first", Toast.LENGTH_SHORT).show()
+                }
+                true
+            }
+
         })
         if(model.loggedIn.value == true){
             subtitle = getString(R.string.settingsGreeting, model.email.value)
@@ -84,15 +95,6 @@ class SettingsFragment: PreferenceFragmentCompat() {
         else{
             Log.d("FDDFDFDPDSFJKDGFS{GKR", "EMPTY")
         }*/
-
-        userButton.onPreferenceClickListener = object: Preference.OnPreferenceClickListener{
-            override fun onPreferenceClick(preference: Preference?): Boolean {
-                val intent = Intent(context, UserActivity::class.java)
-                startActivity(intent)
-                return true
-            }
-
-        }
 
     }
 }
