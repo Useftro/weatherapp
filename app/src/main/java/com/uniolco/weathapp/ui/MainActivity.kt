@@ -108,7 +108,6 @@ class MainActivity : AppCompatActivity(), KodeinAware {
 
         // fixed fragments reloading by this
         // so then stopped many requests to api because of recreating fragment
-        // Request sended now only when 30 minutes pass
         bottom_nav.setOnNavigationItemSelectedListener {
             if (it.itemId != bottom_nav.selectedItemId) {
                 NavigationUI.onNavDestinationSelected(it, navController)
@@ -160,14 +159,6 @@ class MainActivity : AppCompatActivity(), KodeinAware {
 
     override fun onSupportNavigateUp(): Boolean {
         return navController.navigateUp()
-    }
-
-    private fun requestLocationPermission(){
-        ActivityCompat.requestPermissions(
-            this,
-            arrayOf(Manifest.permission.ACCESS_COARSE_LOCATION),
-            MY_PERMISSION_ACCESS_COARSE_LOCATION
-        )
     }
 
     override fun onRequestPermissionsResult(

@@ -22,10 +22,9 @@ abstract class SwipeToDeleteCallback(context: Context) : ItemTouchHelper.SimpleC
         viewHolder: RecyclerView.ViewHolder,
         target: RecyclerView.ViewHolder
     ): Boolean {
-        return false // We don't want support moving items up/down
+        return false // No support moving items up/down
     }
 
-    // Let's draw our delete view
     @SuppressLint("ResourceAsColor")
     override fun onChildDraw(
         c: Canvas,

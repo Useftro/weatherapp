@@ -5,7 +5,6 @@ import androidx.lifecycle.ViewModel
 import com.uniolco.weathapp.data.db.entity.current.CurrentWeather
 import com.uniolco.weathapp.data.db.entity.current.WeatherLocation
 import com.uniolco.weathapp.data.firebase.User
-import com.uniolco.weathapp.data.network.response.CurrentWeatherResponse
 
 class SharedViewModel : ViewModel() {
     val loggedIn = MutableLiveData<Boolean>()
@@ -15,7 +14,6 @@ class SharedViewModel : ViewModel() {
     val user = MutableLiveData<User>()
     val firebaseUser = MutableLiveData<User>()
     val uid = MutableLiveData<String>()
-    val locationName = MutableLiveData<String>()
 
     val forJson = MutableLiveData<String>("")
     val forJsonWeather = MutableLiveData<CurrentWeather>()
@@ -28,9 +26,5 @@ class SharedViewModel : ViewModel() {
 
     fun select(item: Boolean) {
         loggedIn.value = item
-    }
-
-    fun selectPersonInfo(item: User){
-        personInfo.value = item
     }
 }

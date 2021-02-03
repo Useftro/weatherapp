@@ -45,27 +45,26 @@ class SettingsFragment: PreferenceFragmentCompat() {
             }
             if(item == null)
                 return@Observer
-            logButton.onPreferenceClickListener = object: Preference.OnPreferenceClickListener{
-                override fun onPreferenceClick(preference: Preference?): Boolean {
-                    if(item == false){
-                        val intent = Intent(logButton.context, LoginActivity::class.java)
-                        startActivity(intent)
-                        model.ifFromSettings.postValue(true)
-                    } else{
-                        try {
-                            FirebaseAuth.getInstance().signOut()
-                            model.loggedIn.postValue(false)
-                            with(sharedPreferences.edit()){
-                                putBoolean("UserNotNull", false)
-                                apply()
-                            }
-                            Toast.makeText(logButton.context,getString(R.string.settingsToastSignedOut), Toast.LENGTH_SHORT).show()
-                        } catch (e: Exception){
-                            Log.e("ERROR", "ERROR WITH LOGGING OUT: ${e}")
+
+            logButton.onPreferenceClickListener = Preference.OnPreferenceClickListener {
+                if(item == false){
+                    val intent = Intent(logButton.context, LoginActivity::class.java)
+                    startActivity(intent)
+                    model.ifFromSettings.postValue(true)
+                } else{
+                    try {
+                        FirebaseAuth.getInstance().signOut()
+                        model.loggedIn.postValue(false)
+                        with(sharedPreferences.edit()){
+                            putBoolean("UserNotNull", false)
+                            apply()
                         }
+                        Toast.makeText(logButton.context,getString(R.string.settingsToastSignedOut), Toast.LENGTH_SHORT).show()
+                    } catch (e: Exception){
+                        Log.e("ERROR", "ERROR WITH LOGGING OUT: ${e}")
                     }
-                    return true
                 }
+                true
             }
 
             userButton.onPreferenceClickListener = Preference.OnPreferenceClickListener {
@@ -79,22 +78,12 @@ class SettingsFragment: PreferenceFragmentCompat() {
             }
 
         })
-        if(model.loggedIn.value == true){
-            subtitle = getString(R.string.settingsGreeting, model.email.value)
-        }
-        else{
-            subtitle = getString(R.string.settingsNotAuthorised)
+        subtitle = if(model.loggedIn.value == true){
+            getString(R.string.settingsGreeting, model.email.value)
+        } else{
+            getString(R.string.settingsNotAuthorised)
         }
         (activity as? AppCompatActivity)?.supportActionBar?.subtitle = subtitle
-
-        val infoPref: Preference? = findPreference("Info")
-/*        val setO = sharedPreferences.getStringSet("userSet", setOf())
-        if (!setO.isNullOrEmpty()){
-            infoPref?.summary = "${setO?.elementAt(1)}, ${setO?.elementAt(2)}, ${setO?.elementAt(3)}"
-        }
-        else{
-            Log.d("FDDFDFDPDSFJKDGFS{GKR", "EMPTY")
-        }*/
-
     }
+
 }

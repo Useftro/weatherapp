@@ -186,10 +186,8 @@ class ForecastRepositoryImpl(
         }
     }
 
-    override/* suspend */fun getUser(email: String): LiveData<User> {
-/*        return withContext(Dispatchers.IO){*/
+    override fun getUser(email: String): LiveData<User> {
             return userDao.getUser(email)
-//        }
     }
 
     override suspend fun insertUser(user: User) {

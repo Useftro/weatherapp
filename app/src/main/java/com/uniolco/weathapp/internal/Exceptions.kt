@@ -7,5 +7,3 @@ class NoConnectivityException: IOException()
 class LocationPermissionNotGrantedException: Exception()
 
 class DateNotFoundException: Exception()
-
-class CityNotFound: RuntimeException()
