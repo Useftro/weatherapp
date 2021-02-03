@@ -2,7 +2,6 @@ package com.uniolco.weathapp.ui
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.util.Patterns
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -65,7 +64,6 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun login() {
-        val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(applicationContext)
         if (emailloginEditText.text.isEmpty() || passwordEditText.text.isEmpty()){
             Toast.makeText(this, getString(R.string.toastFillAllFields), Toast.LENGTH_SHORT).show()
         }

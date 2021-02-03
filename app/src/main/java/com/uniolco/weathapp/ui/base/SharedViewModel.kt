@@ -15,6 +15,7 @@ class SharedViewModel : ViewModel() {
     val user = MutableLiveData<User>()
     val firebaseUser = MutableLiveData<User>()
     val uid = MutableLiveData<String>()
+    val locationName = MutableLiveData<String>()
 
     val forJson = MutableLiveData<String>("")
     val forJsonWeather = MutableLiveData<CurrentWeather>()

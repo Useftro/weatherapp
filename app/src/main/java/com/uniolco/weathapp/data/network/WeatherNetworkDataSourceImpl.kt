@@ -1,16 +1,20 @@
 package com.uniolco.weathapp.data.network
 
 
+import android.content.Context
 import android.content.res.Resources
 import android.util.Log
+import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.preference.PreferenceManager
 import com.uniolco.weathapp.data.db.entity.current.Condition
 import com.uniolco.weathapp.data.db.entity.current.CurrentWeather
 import com.uniolco.weathapp.data.db.entity.current.WeatherLocation
 import com.uniolco.weathapp.data.network.response.CurrentWeatherResponse
 import com.uniolco.weathapp.data.network.response.FutureWeatherResponse
 import com.uniolco.weathapp.internal.NoConnectivityException
+import kotlin.coroutines.coroutineContext
 
 const val NUMBER_OF_DAYS = 7
 
@@ -46,10 +50,13 @@ class WeatherNetworkDataSourceImpl(
             Log.e("Connectivity", "No internet connection fetchCurrentWeather", e)
         }
         catch (e: retrofit2.HttpException){
-            val currentResp = CurrentWeatherResponse(CurrentWeather(condition =
+/*            val currentResp = CurrentWeatherResponse(CurrentWeather(condition =
             Condition(code = 1000, icon = "//cdn.weatherapi.com/weather/64x64/day/113.png")),
                 WeatherLocation(name = "Wrong location.", tzId = "Europe/Madrid"))
-            _downloadedCurrentWeather.postValue(currentResp)
+            _downloadedCurrentWeather.postValue(currentResp)*/
+            val fetchedCurrentWeather = apiWeatherService
+                .getCurrentWeather("New York", language).await()
+            _downloadedCurrentWeather.postValue(fetchedCurrentWeather)
         }
     }
 
@@ -64,7 +71,7 @@ class WeatherNetworkDataSourceImpl(
         }
         catch (e: retrofit2.HttpException){
             val fetchedFutureWeather = apiWeatherService
-                .getFutureWeather("Minsk", 7, language).await()
+                .getFutureWeather("New York", 7, language).await()
             _downloadedFutureWeather.postValue(fetchedFutureWeather)
         }
     }

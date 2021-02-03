@@ -66,6 +66,7 @@ class RecyclerAdapterFutureList(private val futureWeatherList: MutableList<UnitS
 
         override fun onLongClick(v: View?): Boolean {
             val sendIntent: Intent = Intent().apply {
+
                 action = Intent.ACTION_SEND
                 putExtra(Intent.EXTRA_TEXT, "On " +
                         "${future!!.date.dayOfMonth} ${future!!.date.month}".toLowerCase(Locale.ROOT) +

@@ -81,9 +81,7 @@ class SignUpActivity : AppCompatActivity() {
                             Toast.LENGTH_SHORT).show()
 
                     }
-                }
+            }
         }
-
-
     }
 }
